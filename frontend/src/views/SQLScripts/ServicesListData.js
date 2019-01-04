@@ -1,0 +1,20 @@
+const servicesListData = [{name: 'HDFS', hdpCompatible: 1, hdfCompatible: 0},
+{name: 'YARN', hdpCompatible: 1, hdfCompatible: 0},
+{name: 'HIVE', hdpCompatible: 1, hdfCompatible: 0},
+{name: 'HBASE', hdpCompatible: 1, hdfCompatible: 0},
+{name: 'SPARK', hdpCompatible: 1, hdfCompatible: 0},
+{name: 'DRUID', hdpCompatible: 1, hdfCompatible: 0},
+{name: 'SUPERSET', hdpCompatible: 1, hdfCompatible: 0},
+{name: 'KAFKA', hdpCompatible: 1, hdfCompatible: 1},
+{name: 'ZEPELLIN', hdpCompatible: 1, hdfCompatible: 0},
+{name: 'ATLAS', hdpCompatible: 1, hdfCompatible: 0},
+{name: 'RANGER', hdpCompatible: 1, hdfCompatible: 0},
+{name: 'KNOX', hdpCompatible: 1, hdfCompatible: 0},
+{name: 'NIFI', hdpCompatible: 0, hdfCompatible: 1},
+{name: 'NIFI REGISTRY', hdpCompatible: 0, hdfCompatible: 1},
+{name: 'SCHEMA REGISTRY', hdpCompatible: 0, hdfCompatible: 1},
+{name: 'STORM', hdpCompatible: 0, hdfCompatible: 1},
+{name: 'SAM', hdpCompatible: 0, hdfCompatible: 1},
+{name: 'SOLR', hdpCompatible: 1, hdfCompatible: 0}]
+
+export default servicesListData

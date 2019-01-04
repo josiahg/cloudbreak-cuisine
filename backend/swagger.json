@@ -1,0 +1,107 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the backend for Cloudbreak Cuisine. You can find out more about Cloudbreak Cuisine at [Cloudbreak Cuisine](https://github.com/josiahg/cloudbreak-cuisine-backend)",
+    "version": "0.1.0",
+    "title": "Cloudbreak Cuisine"
+  },
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "library",
+      "description": "Explore collection of items in Library",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "https://github.com/josiahg/cloudbreak-cuisine-backend"
+      }
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/library": {
+      "get": {
+        "tags": [
+          "library"
+        ],
+        "summary": "Returns a list of all Library items",
+        "description": "Library items will be returned as an array of JSON LibraryItem Objects",
+        "operationId": "findLibraryItems",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LibraryItem"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "LibraryItem": {
+      "type": "object",
+      "required": [
+        "id",
+        "git_url"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string",
+          "example": "Awesome Bundle"
+        },
+        "description": {
+          "type": "string",
+          "example": "My awesome bundle does cool stuff"
+        },
+        "is_deployment_ready": {
+          "type": "boolean"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "git_url": {
+          "type": "string"
+        },
+        "zip_url": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "LibraryItem"
+      }
+    },
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Cloudbreak Cuisine",
+    "url": "https://github.com/josiahg/cloudbreak-cuisine-backend"
+  }
+}

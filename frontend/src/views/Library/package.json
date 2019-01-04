@@ -1,0 +1,7 @@
+{
+    "name": "Library",
+    "version": "0.0.0",
+    "private": true,
+    "main": "./Library.js"
+  }
+  

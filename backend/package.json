@@ -1,0 +1,34 @@
+{
+  "name": "cloudbreak-cuisine-backend",
+  "version": "0.1.0",
+  "description": "Backend for Cloudbreak Cuisine",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "babel-watch app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josiahg/cloudbreak-cuisine-backend.git"
+  },
+  "author": "Josiah Goodson",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/josiahg/cloudbreak-cuisine-backend/issues"
+  },
+  "homepage": "https://github.com/josiahg/cloudbreak-cuisine-backend#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-watch": "^2.0.7"
+  },
+  "dependencies": {
+    "archiver": "^3.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "mongoose": "^5.3.13",
+    "pg-promise": "^8.5.3",
+    "request": "^2.88.0",
+    "swagger-ui-express": "^4.0.2"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "NifiTemplates",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./NifiTemplates.js"
+}

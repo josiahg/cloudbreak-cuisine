@@ -1,0 +1,20 @@
+const recipesData = [{id: 1, serviceId: 1, recipeDescription: 'Utils Install', addon_type: 'Recipe', recipe_type: 'Pre Ambari Start', mandatory: 1,  display: 0},
+{id: 2, serviceId: 2, recipeDescription: 'Utils Install', addon_type: 'Recipe', recipe_type: 'Pre Ambari Start', mandatory: 1,  display: 0},
+{id: 3, serviceId: 3, recipeDescription: 'Utils Install', addon_type: 'Recipe', recipe_type: 'Pre Ambari Start', mandatory: 1,  display: 0},
+{id: 4, serviceId: 25, recipeDescription: 'Ranger metastore setup', addon_type: 'Recipe', recipe_type: 'Pre Ambari Start', mandatory: 1,  display: 1},
+{id: 5, serviceId: 26, recipeDescription: 'Ranger metastore setup', addon_type: 'Recipe', recipe_type: 'Pre Ambari Start', mandatory: 1,  display: 1},
+{id: 6, serviceId: 14, recipeDescription: 'Druid metastore setup', addon_type: 'Recipe', recipe_type: 'Pre Ambari Start', mandatory: 1,  display: 1},
+{id: 7, serviceId: 15, recipeDescription: 'Druid metastore setup', addon_type: 'Recipe', recipe_type: 'Pre Ambari Start', mandatory: 1,  display: 1},
+{id: 8, serviceId: 33, recipeDescription: 'Registry metastore setup', addon_type: 'Recipe', recipe_type: 'Pre Ambari Start', mandatory: 1,  display: 1},
+{id: 9, serviceId: 34, recipeDescription: 'Registry metastore setup', addon_type: 'Recipe', recipe_type: 'Pre Ambari Start', mandatory: 1,  display: 1},
+{id: 10, serviceId: 37, recipeDescription: 'SAM metastore setup', addon_type: 'Recipe', recipe_type: 'Pre Ambari Start', mandatory: 1,  display: 1},
+{id: 11, serviceId: 38, recipeDescription: 'SAM metastore setup', addon_type: 'Recipe', recipe_type: 'Pre Ambari Start', mandatory: 1,  display: 1},
+{id: 12, serviceId: 29, recipeDescription: 'Nifi Template for IoT Workshop', addon_type: 'Nifi Template', recipe_type: 'Post Cluster Install', mandatory: 0,  display: 1},
+{id: 13, serviceId: 30, recipeDescription: 'Nifi Template for IoT Workshop', addon_type: 'Nifi Template', recipe_type: 'Post Cluster Install', mandatory: 0,  display: 1},
+{id: 14, serviceId: 21, recipeDescription: 'Zeppelin Note for Data Science Workshop', addon_type: 'Zeppelin Note', recipe_type: 'Post Cluster Install', mandatory: 0,  display: 1},
+{id: 15, serviceId: 22, recipeDescription: 'Zeppelin Note for Data Science Workshop', addon_type: 'Zeppelin Note', recipe_type: 'Post Cluster Install', mandatory: 0,  display: 1},
+{id: 16, serviceId: 8, recipeDescription: 'Hive SQL to preload Data Science Workshop tables', addon_type: 'SQL Script', recipe_type: 'Post Cluster Install', mandatory: 0,  display: 1},
+{id: 17, serviceId: 9, recipeDescription: 'Hive SQL to preload Data Science Workshop tables', addon_type: 'SQL Script', recipe_type: 'Post Cluster Install', mandatory: 0,  display: 1},
+]
+
+export default recipesData
