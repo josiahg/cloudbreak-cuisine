@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+  #frontend: 
+    #image: 'josiahgoodson/cloudbreak-cuisine-frontend'
+    #ports:
+      #- 3000:3000
+    #links:
+      #- backend
+  backend:
+    image: 'josiahgoodson/cloudbreak-cuisine-backend'
+    ports:
+      - 4000:4000
+    links:
+      - db
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: pg_pass123!
+    volumes:
+      - ./assets/db_scripts:/docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
