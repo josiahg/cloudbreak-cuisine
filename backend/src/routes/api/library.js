@@ -12,4 +12,15 @@ router.route('/').get((req, res) => {
         })
 });
 
+router.route('/:id').get((req, res) => {
+    db.one('select * from cloudbreak_cuisine.external_bundles where id = ' + req.params.id)
+        .then(data => {
+            res.json(data);
+        })
+        .catch(error => {
+            console.log('ERROR:', error)
+        })
+});
+
+
 module.exports = router;

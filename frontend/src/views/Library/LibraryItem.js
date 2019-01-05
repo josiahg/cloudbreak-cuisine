@@ -3,10 +3,7 @@ import { Card, CardBody, CardColumns, CardHeader, Row, Col, Container, Button, P
 
 import libraryData from './LibraryData'
 
-
-
 class LibraryItem extends Component {
-
 
   render() {
     const libraryItem = libraryData.find( libraryItem => libraryItem.id.toString() === this.props.match.params.id)
@@ -14,19 +11,15 @@ class LibraryItem extends Component {
     return (
       <div className="animated fadeIn">
       <Row>
-          <Col  xs={6} md={4}>
-
+          <Col xs={6} md={4}>
             <div className="chart-wrapper" align="center" >
               <p><img src={libraryItem.image}/></p>
             </div>
-
-
         </Col>
-        <Col  xs={12} md={8}>
+        <Col xs={12} md={8}>
         <Card>
         <CardHeader className="text-white bg-success">
         <h2>{libraryItem.name.toString()} Bundle</h2>
-  
           </CardHeader>
           <CardBody >
             <div className="chart-wrapper" align="left">
