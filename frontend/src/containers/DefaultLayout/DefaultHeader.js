@@ -32,7 +32,7 @@ class DefaultHeader extends Component {
             <DropdownToggle nav>
               <img src={'../../assets/img/avatars/1.png'} className="img-avatar" alt="admin@bootstrapmaster.com" /> admin@hortonworks.com &nbsp; &nbsp;
             </DropdownToggle>
-            <DropdownMenu left style={{ right: 'auto' }}>
+            <DropdownMenu style={{ right: 'auto' }}>
               <DropdownItem href="#/users/23"><i className="fa fa-user"></i> Profile</DropdownItem>
               <DropdownItem onClick={e => this.props.onLogout(e)}><i className="fa fa-lock"></i> Logout</DropdownItem>
             </DropdownMenu>

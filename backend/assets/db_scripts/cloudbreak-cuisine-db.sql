@@ -71,11 +71,10 @@ CREATE TABLE cloudbreak_cuisine.external_bundles
 (
   id SERIAL NOT NULL PRIMARY KEY,
   name text,
+  version text,
   description text,
-  is_deployment_ready integer,
-  image_url text,
-  git_url text,
-  zip_url text
+  image text,
+  download_url text
 );
 
 DROP TABLE IF EXISTS cloudbreak_cuisine.cb_credentials;
@@ -305,6 +304,8 @@ insert into cloudbreak_cuisine.components_recipes (service_id, recipe_descriptio
 
 insert into cloudbreak_cuisine.management_packs values(1,3,'HDF MPACK FOR HDP+HDF','http://public-repo-1.hortonworks.com/HDF/amazonlinux2/3.x/updates/3.2.0.0/tars/hdf_ambari_mp/hdf-ambari-mpack-3.2.0.0-520.tar.gz');
 
-insert into cloudbreak_cuisine.external_bundles values(1,'Data Science Workshop','Bundle creating a single node HDP cluster with pre-loaded Data Science Workshop Notebooks',0,'https://raw.githubusercontent.com/paulvid/hwx-data-science-workshop/master/HWX_LOGO.png','https://github.com/paulvid/hwx-data-science-workshop.git','https://github.com/paulvid/hwx-data-science-workshop/archive/master.zip');
-insert into cloudbreak_cuisine.external_bundles values(2,'Personality Detection','Bundle creating a 3 node HDP & HDF Cluster for personality recognition demo',0,'https://raw.githubusercontent.com/paulvid/perso-detection-demo/master/PERSO_RECOG_DEMO.png','https://github.com/paulvid/perso-detection-demo.git','https://github.com/paulvid/perso-detection-demo/archive/master.zip');
-insert into cloudbreak_cuisine.external_bundles values(3,'HCP (Metron) Cluster','Bundle creating a fully kerberized Metron environment',0,'https://raw.githubusercontent.com/josiahg/hwx-hackathon-2018/master/default-recipes/METRON_LOGO.png','https://github.com/simonellistonball/cloudbreak-hcp/archive/master.zip','https://github.com/simonellistonball/cloudbreak-hcp/archive/master.zip');
+insert into cloudbreak_cuisine.external_bundles values(1,'Data Science Workshop','HDP 3.0 (1 Node)','Bundle creating a single node HDP cluster with pre-loaded Data Science Workshop Notebooks','https://raw.githubusercontent.com/paulvid/hwx-data-science-workshop/master/HWX_LOGO.png','https://github.com/paulvid/hwx-data-science-workshop/archive/master.zip');
+insert into cloudbreak_cuisine.external_bundles values(2,'Personality Detection','HDP 3.0/HDF 3.2 (3 Nodes)','Bundle creating a 3 node HDP & HDF Cluster for personality recognition demo','https://raw.githubusercontent.com/paulvid/perso-detection-demo/master/PERSO_RECOG_DEMO.png','https://github.com/paulvid/perso-detection-demo/archive/master.zip');
+insert into cloudbreak_cuisine.external_bundles values(3,'Metron','HDP 3.0/HDF 3.2 (3 Nodes)','Bundle creating a fully kerberized Metron environment','https://raw.githubusercontent.com/josiahg/hwx-hackathon-2018/master/default-recipes/METRON_LOGO.png','https://github.com/simonellistonball/cloudbreak-hcp/archive/master.zip');
+insert into cloudbreak_cuisine.external_bundles values(4,'IoT Workshop', 'HDP 3.1/HDF 3.3 (3 Nodes)', 'This bundle contains blueprints and recipes necessary for the creation of a single node HDF cluster pre-loaded with IoT Workshop flows and topics', '../../assets/img/cuisine/iot_bundle.png', '')
+
