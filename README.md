@@ -27,7 +27,12 @@ git clone https://github.com/josiahg/cloudbreak-cuisine
 The following will start the backend database and API server.
 
 ```
-cd cloudbreak-cuisine
+cd cloudbreak-cuisine/backend
+npm install
+```
+
+```
+cd .. # back to cloudbreak-cuisine directory
 docker-compose -f dev-docker-compose.yml up
 ```
 
@@ -38,7 +43,7 @@ When startup is complete, find the Swagger API UI at [http://localhost:4000/api-
 In a new terminal:
 
 ```
-cd frontend
+cd cloudbreak-cuisine/frontend
 npm install
 npm start
 ```
