@@ -36,7 +36,7 @@ cd .. # back to cloudbreak-cuisine directory
 docker-compose -f dev-docker-compose.yml up
 ```
 
-When startup is complete, find the Swagger API UI at [http://localhost:4000/api-doc](http://localhost:4000/api-doc).
+When startup is complete, find the Swagger API UI at [http://localhost:4000/api-docs](http://localhost:4000/api-docs).
 
 ### Start the frontend
 
