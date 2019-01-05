@@ -22,18 +22,6 @@ Until then...
 git clone https://github.com/josiahg/cloudbreak-cuisine
 ```
 
-### Install NPM Dependencies
-
-```
-cd cloudbreak-cuisine/frontend
-npm install
-```
-
-```
-cd cloudbreak-cuisine/backend
-npm install
-```
-
 ### Start the backend
 
 The following will start the backend database and API server.
@@ -50,7 +38,8 @@ When startup is complete, find the Swagger API UI at [http://localhost:4000/api-
 In a new terminal:
 
 ```
-cd cloudbreak-cuisine/frontend
+cd frontend
+npm install
 npm start
 ```
 
