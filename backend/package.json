@@ -29,6 +29,7 @@
     "mongoose": "^5.3.13",
     "pg-promise": "^8.5.3",
     "request": "^2.88.0",
-    "swagger-ui-express": "^4.0.2"
+    "swagger-ui-express": "^4.0.2",
+    "yamljs": "^0.3.0"
   }
 }

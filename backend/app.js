@@ -5,7 +5,10 @@ import bodyParser from 'body-parser';
 const app = express();
 const router = express.Router();
 const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
+const YAML = require('yamljs');
+//const swaggerDocument = require('./swagger.json');
+const swaggerDocument = YAML.load('./swagger.yml');//require('./swagger.json');
+
 
 app.use(cors());
 app.use(bodyParser.json());
