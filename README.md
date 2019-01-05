@@ -12,6 +12,39 @@ Cloudbreak Cuisine is a React application allowing easier use of Hortonworks Clo
 
 # Installation
 
+This project is under rapid development. Stay tuned for an "easy button" to get this up and running.
+
+Until then...
+
+### Clone this repository
+
+```
+git clone https://github.com/josiahg/cloudbreak-cuisine
+```
+
+### Start the backend
+
+The following will start the backend database and API server.
+
+```
+docker-compose -f dev-docker-compose.yml up
+```
+
+When startup is complete, find the Swagger API UI at [http://localhost:4000/api-doc](http://localhost:4000/api-doc).
+
+### Start the frontend
+
+In a new terminal:
+
+```
+cd frontend
+npm install
+npm start
+```
+
+When startup completes, the default browser will open to the UI. Or, visit [http://localhost:3000/](http://localhost:3000/).
+
+
 # Basic usage
 
 
@@ -20,3 +53,4 @@ Cloudbreak Cuisine is a React application allowing easier use of Hortonworks Clo
 **Paul Vidal** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/paulvid/)
 
 **Josiah Goodson** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/josiahgoodson/)
+
