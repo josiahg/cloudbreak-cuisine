@@ -58,7 +58,7 @@ paths:
       tags:
         - services
       summary: Returns a list of all services
-      description: Library items will be returned as an array of JSON LibraryItem Objects
+      description: Services will be returned as an array of JSON LibraryItem Objects
       operationId: getAllServices
       produces:
         - application/json
@@ -96,6 +96,49 @@ paths:
           description: Invalid ID supplied
         404:
           description: Service not found
+  /recipes:
+    get:
+      tags:
+        - recipes
+      summary: Returns a list of all recipes
+      description: Recipes will be returned as an array of JSON LibraryItem Objects
+      operationId: getAllRecipes
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Recipe'
+        '400':
+          description: Invalid status value
+  /recipes/{recipeId}:
+    get:
+      tags:
+      - recipes
+      summary: Get recipe by id
+      description: Returns a single recipe
+      operationId: getRecipeById
+      produces:
+      - application/json
+      parameters:
+      - name: recipeId
+        in: path
+        description: ID of recipe to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Recipe'
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Recipe not found
 definitions:
   LibraryItem:
     type: object
@@ -141,6 +184,25 @@ definitions:
         type: string
       dependency:
         type: string
+  Recipe:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: integer
+      serviceid:
+        type: integer
+      recipedescription:
+        type: string
+      addon_type:
+        type: string
+      recipe_type:
+        type: string
+      mandatory:
+        type: integer
+      display:
+        type: integer
   ApiResponse:
     type: object
     properties:

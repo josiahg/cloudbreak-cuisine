@@ -29,8 +29,8 @@ DROP TABLE IF EXISTS cloudbreak_cuisine.recipes;
 CREATE TABLE cloudbreak_cuisine.recipes
 (
   id integer unique NOT NULL PRIMARY KEY,
-  serviceId integer,
-  recipeDescription VARCHAR(50),
+  serviceid integer,
+  recipedescription VARCHAR(50),
   addon_type VARCHAR(50),
   recipe_type VARCHAR(50),
   mandatory integer,
