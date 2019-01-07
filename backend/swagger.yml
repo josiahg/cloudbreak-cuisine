@@ -31,28 +31,71 @@ paths:
   /library/{itemId}:
     get:
       tags:
-      - "library"
-      summary: "Get library item by ID"
-      description: "Returns a single library item"
-      operationId: "getLibraryItemById"
+      - library
+      summary: Get library item by ID
+      description: Returns a single library item
+      operationId: getLibraryItemById
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "itemId"
-        in: "path"
-        description: "ID of library item to return"
+      - name: itemId
+        in: path
+        description: ID of library item to return
         required: true
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       responses:
         200:
-          description: "successful operation"
+          description: successful operation
           schema:
             $ref: '#/definitions/LibraryItem'
         400:
-          description: "Invalid ID supplied"
+          description: Invalid ID supplied
         404:
-          description: "Library item not found"
+          description: Library item not found
+  /services:
+    get:
+      tags:
+        - services
+      summary: Returns a list of all services
+      description: Library items will be returned as an array of JSON LibraryItem Objects
+      operationId: getAllServices
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Service'
+        '400':
+          description: Invalid status value
+  /services/{serviceId}:
+    get:
+      tags:
+      - services
+      summary: Get service by id
+      description: Returns a single service
+      operationId: getServiceById
+      produces:
+      - application/json
+      parameters:
+      - name: serviceId
+        in: path
+        description: ID of service to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Service'
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Service not found
 definitions:
   LibraryItem:
     type: object
@@ -76,6 +119,28 @@ definitions:
         type: string
     xml:
       name: LibraryItem
+  Service:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: integer
+      service_description:
+        type: string
+        example: This is my service
+      cluster:
+        type: integer
+      mandatory:
+        type: integer
+      extensible:
+        type: integer
+      display:
+        type: integer
+      img:
+        type: string
+      dependency:
+        type: string
   ApiResponse:
     type: object
     properties:
@@ -89,4 +154,3 @@ definitions:
 externalDocs:
   description: Find out more about Cloudbreak Cuisine
   url: 'https://github.com/josiahg/cloudbreak-cuisine'
-  
