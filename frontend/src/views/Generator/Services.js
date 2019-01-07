@@ -12,21 +12,31 @@ import { Card, CardBody, CardHeader, Progress, Row, Col, Button, Form,
 import { AppSwitch } from '@coreui/react'
 import { throws } from 'assert';
 
-import servicesData from './ServicesData'
-
+//import servicesData from './ServicesData'
 
 class Services extends Component{
     constructor(props) {
         super(props);
         this.changeSwitch = this.changeSwitch.bind(this);
 
-        this.state = {firstLoad: true}
-
+        this.state = { firstLoad: true, servicesData: [] }
     }
-    
 
+    loadData() {
+        fetch('http://localhost:4000/api/services')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({servicesData: data})
+            })
+            .catch(err => console.error(this.props.url, err.toString()))
+    }
+
+    componentDidMount() {
+        this.loadData()
+    }
 
     saveAndContinue = (e) => {
+        var servicesData = this.state.servicesData; // DEBUG
         const {values: { clusterType, clusterVersion, clusterId }} = this.props;
      
         var services= [];
@@ -34,14 +44,14 @@ class Services extends Component{
         // Mandatory Services
         const mandatoryServiceList = servicesData.filter((service) => ((service.cluster_id == clusterId) && (service.mandatory == 1))); 
         mandatoryServiceList.map((service) => {
-            services.push(JSON.parse(JSON.stringify({id: service.id, name: service.description, img: service.img, display: service.display}))); 
+            services.push(JSON.parse(JSON.stringify({id: service.id, name: service.service_description, img: service.img, display: service.display}))); 
         })
 
         // Selected Services
         const serviceList = servicesData.filter((service) => ((service.cluster_id == clusterId) && (service.display == 1))); 
         serviceList.map((service) => {
             if(this.state[service.id]){
-                services.push(JSON.parse(JSON.stringify({id: service.id, name: service.description, img: service.img, display: service.display})));  
+                services.push(JSON.parse(JSON.stringify({id: service.id, name: service.service_description, img: service.img, display: service.display})));  
             }
         })
 
@@ -56,6 +66,7 @@ class Services extends Component{
     }
 
     changeSwitch = (e) => {
+        var servicesData = this.state.servicesData; // DEBUG
         const serviceId = e.target.id;
         const isChecked = this.state[serviceId];
 
@@ -91,6 +102,8 @@ class Services extends Component{
     loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
     
     render(){
+        var servicesData = this.state.servicesData; // DEBUG
+
         const {values: { clusterType, clusterVersion, clusterId }} = this.props;
      
         const serviceList = servicesData.filter((service) => ((service.cluster_id == clusterId) && (service.display == 1))); 
@@ -138,7 +151,7 @@ class Services extends Component{
                             return  <Col md="2">
                                         <Card className='border-success'>
                                             <CardHeader className='text-white bg-success'>
-                                                {service.description}
+                                                {service.service_description}
                                                 <div className="card-header-actions">
                                                     <AppSwitch id={service.id} className={'mx-1'} variant={'pill'} color={'success'} outline={'alt'} checked disabled/>
                                                 </div>
@@ -151,7 +164,7 @@ class Services extends Component{
                             return <Col md="2">
                                         <Card className={this.state["cardClass"+service.id]}>
                                             <CardHeader className={this.state["cardHeaderClass"+service.id]}>
-                                                {service.description}
+                                                {service.service_description}
                                                 <div className="card-header-actions">
                                                     <AppSwitch id={service.id} className={'mx-1'} variant={'pill'} color={'success'} outline={'alt'} checked={this.state[service.id]} onChange={this.changeSwitch}/>
                                                 </div>

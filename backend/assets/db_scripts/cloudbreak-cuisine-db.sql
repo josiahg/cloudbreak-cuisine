@@ -17,9 +17,12 @@ CREATE TABLE cloudbreak_cuisine.services
 (
   id integer unique NOT NULL PRIMARY KEY,
   service_description VARCHAR(50) NOT NULL,
-  associated_cluster integer NOT NULL,
+  cluster_id integer NOT NULL,
   mandatory integer NOT NULL,
-  extensible integer NOT NULL
+  extensible integer NOT NULL,
+  display integer NOT NULL,
+  img VARCHAR(200) NOT NULL,
+  dependency VARCHAR(50)
 );
 
 DROP TABLE IF EXISTS cloudbreak_cuisine.services_dependencies;
@@ -93,55 +96,54 @@ insert into cloudbreak_cuisine.clusters values(1,'3.0','HDP','');
 insert into cloudbreak_cuisine.clusters values(2,'3.2','HDF','');
 insert into cloudbreak_cuisine.clusters values(3,'3.0','HDP+HDF','');
 
-
-insert into cloudbreak_cuisine.services values(1,'UTILITIES',1,1,0);
-insert into cloudbreak_cuisine.services values(2,'UTILITIES',2,1,0);
-insert into cloudbreak_cuisine.services values(3,'UTILITIES',3,1,0);
-insert into cloudbreak_cuisine.services values(4,'HDFS',1,1,0);
-insert into cloudbreak_cuisine.services values(5,'HDFS',3,1,0);
-insert into cloudbreak_cuisine.services values(6,'YARN',1,1,0);
-insert into cloudbreak_cuisine.services values(7,'YARN',3,1,0);
-insert into cloudbreak_cuisine.services values(8,'HIVE',1,0,1);
-insert into cloudbreak_cuisine.services values(9,'HIVE',3,0,1);
-insert into cloudbreak_cuisine.services values(10,'HBASE',1,0,1);
-insert into cloudbreak_cuisine.services values(11,'HBASE',3,0,1);
-insert into cloudbreak_cuisine.services values(12,'SPARK',1,0,0);
-insert into cloudbreak_cuisine.services values(13,'SPARK',3,0,0);
-insert into cloudbreak_cuisine.services values(14,'DRUID',1,0,0);
-insert into cloudbreak_cuisine.services values(15,'DRUID',3,0,0);
-insert into cloudbreak_cuisine.services values(16,'SUPERSET',1,0,0);
-insert into cloudbreak_cuisine.services values(17,'SUPERSET',3,0,0);
-insert into cloudbreak_cuisine.services values(18,'KAFKA',1,0,1);
-insert into cloudbreak_cuisine.services values(19,'KAFKA',2,0,1);
-insert into cloudbreak_cuisine.services values(20,'KAFKA',3,0,1);
-insert into cloudbreak_cuisine.services values(21,'ZEPELLIN',1,0,1);
-insert into cloudbreak_cuisine.services values(22,'ZEPELLIN',3,0,1);
-insert into cloudbreak_cuisine.services values(23,'ATLAS',1,0,0);
-insert into cloudbreak_cuisine.services values(24,'ATLAS',3,0,0);
-insert into cloudbreak_cuisine.services values(25,'RANGER',1,0,0);
-insert into cloudbreak_cuisine.services values(26,'RANGER',3,0,0);
-insert into cloudbreak_cuisine.services values(27,'KNOX',1,0,0);
-insert into cloudbreak_cuisine.services values(28,'KNOX',3,0,0);
-insert into cloudbreak_cuisine.services values(29,'NIFI',2,0,1);
-insert into cloudbreak_cuisine.services values(30,'NIFI',3,0,1);
-insert into cloudbreak_cuisine.services values(31,'NIFI REGISTRY',2,0,0);
-insert into cloudbreak_cuisine.services values(32,'NIFI REGISTRY',3,0,0);
-insert into cloudbreak_cuisine.services values(33,'SCHEMA REGISTRY',2,0,1);
-insert into cloudbreak_cuisine.services values(34,'SCHEMA REGISTRY',3,0,1);
-insert into cloudbreak_cuisine.services values(35,'STORM',2,0,0);
-insert into cloudbreak_cuisine.services values(36,'STORM',3,0,0);
-insert into cloudbreak_cuisine.services values(37,'SAM',2,0,0);
-insert into cloudbreak_cuisine.services values(38,'SAM',3,0,0);
-insert into cloudbreak_cuisine.services values(39,'SOLR',1,0,0);
-insert into cloudbreak_cuisine.services values(40,'SOLR',3,0,0);
-insert into cloudbreak_cuisine.services values(41,'ZOOKEEPER',1,1,0);
-insert into cloudbreak_cuisine.services values(42,'ZOOKEEPER',2,1,0);
-insert into cloudbreak_cuisine.services values(43,'ZOOKEEPER',3,1,0);
-insert into cloudbreak_cuisine.services values(44,'MAPREDUCE2',1,1,0);
-insert into cloudbreak_cuisine.services values(45,'MAPREDUCE2',3,1,0);
-insert into cloudbreak_cuisine.services values(46,'AMBARI_METRICS',1,1,0);
-insert into cloudbreak_cuisine.services values(47,'AMBARI_METRICS',2,1,0);
-insert into cloudbreak_cuisine.services values(48,'AMBARI_METRICS',3,1,0);
+insert into cloudbreak_cuisine.services values(1, 'UTILITIES', 1, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(2, 'UTILITIES', 2, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(3, 'UTILITIES', 3, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(4, 'HDFS', 1, 1, 0, 1, '../../assets/img/cuisine/hdfs_128.png', '[]');
+insert into cloudbreak_cuisine.services values(5, 'HDFS', 3, 1, 0, 1, '../../assets/img/cuisine/hdfs_128.png', '[]');
+insert into cloudbreak_cuisine.services values(6, 'YARN', 1, 1, 0, 1, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(7, 'YARN', 3, 1, 0, 1, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(8, 'HIVE', 1, 0, 1, 1, '../../assets/img/cuisine/hive_128.png', '[]');
+insert into cloudbreak_cuisine.services values(9, 'HIVE', 3, 0, 1, 1, '../../assets/img/cuisine/hive_128.png', '[]');
+insert into cloudbreak_cuisine.services values(10, 'HBASE', 1, 0, 1, 1, '../../assets/img/cuisine/hbase_128.png', '[]');
+insert into cloudbreak_cuisine.services values(11, 'HBASE', 3, 0, 1, 1, '../../assets/img/cuisine/hbase_128.png', '[]');
+insert into cloudbreak_cuisine.services values(12, 'SPARK', 1, 0, 0, 1, '../../assets/img/cuisine/spark_128.png', '[]');
+insert into cloudbreak_cuisine.services values(13, 'SPARK', 3, 0, 0, 1, '../../assets/img/cuisine/spark_128.png', '[]');
+insert into cloudbreak_cuisine.services values(14, 'DRUID', 1, 0, 0, 1, '../../assets/img/cuisine/druid_128.png', '[]');
+insert into cloudbreak_cuisine.services values(15, 'DRUID', 3, 0, 0, 1, '../../assets/img/cuisine/druid_128.png', '[]');
+insert into cloudbreak_cuisine.services values(16, 'SUPERSET', 1, 0, 0, 1, '../../assets/img/cuisine/superset_128.png', '[]');
+insert into cloudbreak_cuisine.services values(17, 'SUPERSET', 3, 0, 0, 1, '../../assets/img/cuisine/superset_128.png', '[]');
+insert into cloudbreak_cuisine.services values(18, 'KAFKA', 1, 0, 1, 1, '../../assets/img/cuisine/kafka_128.png', '[]');
+insert into cloudbreak_cuisine.services values(19, 'KAFKA', 2, 0, 1, 1, '../../assets/img/cuisine/kafka_128.png', '[]');
+insert into cloudbreak_cuisine.services values(20, 'KAFKA', 3, 0, 1, 1, '../../assets/img/cuisine/kafka_128.png', '[]');
+insert into cloudbreak_cuisine.services values(21, 'ZEPELLIN', 1, 0, 1, 1, '../../assets/img/cuisine/zeppelin_128.png', '[]');
+insert into cloudbreak_cuisine.services values(22, 'ZEPELLIN', 3, 0, 1, 1, '../../assets/img/cuisine/zeppelin_128.png', '[]');
+insert into cloudbreak_cuisine.services values(23, 'ATLAS', 1, 0, 0, 1, '../../assets/img/cuisine/default_service.png', '18');
+insert into cloudbreak_cuisine.services values(24, 'ATLAS', 3, 0, 0, 1, '../../assets/img/cuisine/default_service.png', '20');
+insert into cloudbreak_cuisine.services values(25, 'RANGER', 1, 0, 0, 1, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(26, 'RANGER', 3, 0, 0, 1, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(27, 'KNOX', 1, 0, 0, 1, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(28, 'KNOX', 3, 0, 0, 1, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(29, 'NIFI', 2, 0, 1, 1, '../../assets/img/cuisine/nifi_128.png', '31');
+insert into cloudbreak_cuisine.services values(30, 'NIFI', 3, 0, 1, 1, '../../assets/img/cuisine/nifi_128.png', '32');
+insert into cloudbreak_cuisine.services values(31, 'NIFI REGISTRY', 2, 0, 0, 1, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(32, 'NIFI REGISTRY', 3, 0, 0, 1, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(33, 'SCHEMA REGISTRY', 2, 0, 1, 1, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(34, 'SCHEMA REGISTRY', 3, 0, 1, 1, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(35, 'STORM', 2, 0, 0, 1, '../../assets/img/cuisine/storm_128.png', '[]');
+insert into cloudbreak_cuisine.services values(36, 'STORM', 3, 0, 0, 1, '../../assets/img/cuisine/storm_128.png', '[]');
+insert into cloudbreak_cuisine.services values(37, 'SAM', 2, 0, 0, 1, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(38, 'SAM', 3, 0, 0, 1, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(39, 'SOLR', 1, 0, 0, 1, '../../assets/img/cuisine/solr_128.png', '[]');
+insert into cloudbreak_cuisine.services values(40, 'SOLR', 3, 0, 0, 1, '../../assets/img/cuisine/solr_128.png', '[]');
+insert into cloudbreak_cuisine.services values(41, 'ZOOKEEPER', 1, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(42, 'ZOOKEEPER', 2, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(43, 'ZOOKEEPER', 3, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(44, 'MAPREDUCE2', 1, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(45, 'MAPREDUCE2', 3, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(46, 'AMBARI_METRICS', 1, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(47, 'AMBARI_METRICS', 2, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
+insert into cloudbreak_cuisine.services values(48, 'AMBARI_METRICS', 3, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
 
 insert into cloudbreak_cuisine.services_dependencies values(1,12,'SPARK',8,'HIVE');
 insert into cloudbreak_cuisine.services_dependencies values(2,13,'SPARK',9,'HIVE');
