@@ -12,7 +12,7 @@ import { Card, CardBody, CardHeader, Progress, Row, Col, Button, Form,
 import { AppSwitch } from '@coreui/react'
 import { throws } from 'assert';
 
-import recipesData from './RecipesData'
+//import recipesData from './RecipesData'
 
 
 class Recipes extends Component{
@@ -20,10 +20,22 @@ class Recipes extends Component{
         super(props);
         this.toggleCheckbox = this.toggleCheckbox.bind(this);
 
-        this.state = {firstLoad: true}
+        this.state = { firstLoad: true, recipesData: [] }
 
     }
     
+    loadData() {
+        fetch('http://localhost:4000/api/recipes')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({recipesData: data})
+            })
+            .catch(err => console.error(this.props.url, err.toString()))
+    }
+
+    componentDidMount() {
+        this.loadData()
+    }
 
     changeSwitch = (e) => {
         const recipeId = e.target.id;
@@ -43,6 +55,7 @@ class Recipes extends Component{
     }
 
     saveAndContinue = (e) => {
+        var recipesData = this.state.recipesData;
         
         const {values: { services }} = this.props;
         
@@ -50,19 +63,19 @@ class Recipes extends Component{
         var recipes= [];
         // Mandatory Services
         serviceList.map((service) => {
-            const mandatoryRecipes = recipesData.filter((recipe) => ((recipe.serviceId == service.id) && (recipe.mandatory == 1)))
+            const mandatoryRecipes = recipesData.filter((recipe) => ((recipe.serviceid == service.id) && (recipe.mandatory == 1)))
             mandatoryRecipes.map((recipe) => {
-                recipes.push(JSON.parse(JSON.stringify({id: recipe.id, name: recipe.recipeDescription, type: recipe.recipe_type, addon_type: recipe.addon_type, display: recipes.display}))); 
+                recipes.push(JSON.parse(JSON.stringify({id: recipe.id, name: recipe.recipedescription, type: recipe.recipe_type, addon_type: recipe.addon_type, display: recipes.display}))); 
             })
         });
                 
 
         // Selected Services
         serviceList.map((service) => {
-            const otherRecipes = recipesData.filter((recipe) => ((recipe.serviceId == service.id) && (recipe.mandatory == 0)))
+            const otherRecipes = recipesData.filter((recipe) => ((recipe.serviceid == service.id) && (recipe.mandatory == 0)))
             otherRecipes.map((recipe) => {
                 if(this.state[recipe.id]){
-                    recipes.push(JSON.parse(JSON.stringify({id: recipe.id, name: recipe.recipeDescription, type: recipe.recipe_type, addon_type: recipe.addon_type, display: recipes.display}))); 
+                    recipes.push(JSON.parse(JSON.stringify({id: recipe.id, name: recipe.recipedescription, type: recipe.recipe_type, addon_type: recipe.addon_type, display: recipes.display}))); 
                 }
             })
         });
@@ -84,6 +97,8 @@ class Recipes extends Component{
     loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
     
     render(){
+        var recipesData = this.state.recipesData;
+        console.log(recipesData)
         const {values: { services }} = this.props;
         
         const serviceList = services.filter((service) => service.id);
@@ -134,7 +149,7 @@ class Recipes extends Component{
        
                     {serviceList.map((service) => {
                             //return <h1>{service.id}</h1>
-                            const associatedRecipes = recipesData.filter((recipe) => ((recipe.serviceId == service.id) && (recipe.display == 1)))
+                            const associatedRecipes = recipesData.filter((recipe) => ((recipe.serviceid == service.id) && (recipe.display == 1)))
                             return associatedRecipes.map((recipe) => {
                                   if(recipe.mandatory == 1) 
                                       return <tr className="text-white bg-green">
@@ -150,7 +165,7 @@ class Recipes extends Component{
                                        <div>{recipe.addon_type}</div>
                                       </td>
                                       <td>
-                                       <div>{recipe.recipeDescription}</div>
+                                       <div>{recipe.recipedescription}</div>
                                       </td>
                                       <td  >
                                       <div>{recipe.recipe_type}</div>
@@ -174,7 +189,7 @@ class Recipes extends Component{
                                     <div>{recipe.addon_type}</div>
                                    </td>
                                    <td>
-                                    <div>{recipe.recipeDescription}</div>
+                                    <div>{recipe.recipedescription}</div>
                                    </td>
                                    <td  >
                                    <div>{recipe.recipe_type}</div>

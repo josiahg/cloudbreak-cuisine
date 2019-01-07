@@ -25,6 +25,19 @@ CREATE TABLE cloudbreak_cuisine.services
   dependency VARCHAR(50)
 );
 
+DROP TABLE IF EXISTS cloudbreak_cuisine.recipes;
+CREATE TABLE cloudbreak_cuisine.recipes
+(
+  id integer unique NOT NULL PRIMARY KEY,
+  serviceId integer,
+  recipeDescription VARCHAR(50),
+  addon_type VARCHAR(50),
+  recipe_type VARCHAR(50),
+  mandatory integer,
+  display integer
+);
+
+
 DROP TABLE IF EXISTS cloudbreak_cuisine.services_dependencies;
 CREATE TABLE cloudbreak_cuisine.services_dependencies
 (
@@ -144,6 +157,55 @@ insert into cloudbreak_cuisine.services values(45, 'MAPREDUCE2', 3, 1, 0, 0, '..
 insert into cloudbreak_cuisine.services values(46, 'AMBARI_METRICS', 1, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
 insert into cloudbreak_cuisine.services values(47, 'AMBARI_METRICS', 2, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
 insert into cloudbreak_cuisine.services values(48, 'AMBARI_METRICS', 3, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
+
+insert into cloudbreak_cuisine.recipes values(1, 1, 'Utils Install', 'Recipe', 'Pre Ambari Start', 1,  0);
+insert into cloudbreak_cuisine.recipes values(2, 2, 'Utils Install', 'Recipe', 'Pre Ambari Start', 1,  0);
+insert into cloudbreak_cuisine.recipes values(3, 3, 'Utils Install', 'Recipe', 'Pre Ambari Start', 1,  0);
+insert into cloudbreak_cuisine.recipes values(4, 25, 'Ranger metastore setup', 'Recipe', 'Pre Ambari Start', 1,  1);
+insert into cloudbreak_cuisine.recipes values(5, 26, 'Ranger metastore setup', 'Recipe', 'Pre Ambari Start', 1,  1);
+insert into cloudbreak_cuisine.recipes values(6, 14, 'Druid metastore setup', 'Recipe', 'Pre Ambari Start', 1,  1);
+insert into cloudbreak_cuisine.recipes values(7, 15, 'Druid metastore setup', 'Recipe', 'Pre Ambari Start', 1,  1);
+insert into cloudbreak_cuisine.recipes values(8, 33, 'Registry metastore setup', 'Recipe', 'Pre Ambari Start', 1,  1);
+insert into cloudbreak_cuisine.recipes values(9, 34, 'Registry metastore setup', 'Recipe', 'Pre Ambari Start', 1,  1);
+insert into cloudbreak_cuisine.recipes values(10, 37, 'SAM metastore setup', 'Recipe', 'Pre Ambari Start', 1,  1);
+insert into cloudbreak_cuisine.recipes values(11, 38, 'SAM metastore setup', 'Recipe', 'Pre Ambari Start', 1,  1);
+insert into cloudbreak_cuisine.recipes values(12, 29, 'Nifi Teamplate for IoT Workshop', 'Nifi Template', 'Post Cluster Install', 0,  1);
+insert into cloudbreak_cuisine.recipes values(13, 30, 'Nifi Teamplate for IoT Workshop', 'Nifi Template', 'Post Cluster Install', 0,  1);
+insert into cloudbreak_cuisine.recipes values(14, 21, 'Zeppelin Note for Data Science Workshop', 'Zeppelin Note', 'Post Cluster Install', 0,  1);
+insert into cloudbreak_cuisine.recipes values(15, 22, 'Zeppelin Note for Data Science Workshop', 'Zeppelin Note', 'Post Cluster Install', 0,  1);
+insert into cloudbreak_cuisine.recipes values(16, 8, 'Hive SQL to preload Data Science Workshop tables', 'SQL Script', 'Post Cluster Install', 0,  1);
+insert into cloudbreak_cuisine.recipes values(17, 9, 'Hive SQL to preload Data Science Workshop tables', 'SQL Script', 'Post Cluster Install', 0,  1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 insert into cloudbreak_cuisine.services_dependencies values(1,12,'SPARK',8,'HIVE');
 insert into cloudbreak_cuisine.services_dependencies values(2,13,'SPARK',9,'HIVE');
@@ -293,16 +355,16 @@ insert into cloudbreak_cuisine.components_blueprints values(130,37,'SAM_SERVER',
 insert into cloudbreak_cuisine.components_blueprints values(131,38,'SAM_GENERAL','{"streamline-common":{"jar.storage.type":"local","streamline.storage.type":"mysql","streamline.storage.connector.connectURI":"jdbc:mysql://localhost:3306/streamline","registry.url":"http://localhost:7788/api/v1","streamline.dashboard.url":"http://localhost:9089","streamline.storage.connector.password":"streamline"}}','','','');
 insert into cloudbreak_cuisine.components_blueprints values(132,38,'SAM_SERVER','','{"name":"STREAMLINE_SERVER"}','','');
 
-insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(1,'Utills Install','Standard','pas-utilities.sh');
-insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(2,'Utills Install','Standard','pas-utilities.sh');
-insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(3,'Utills Install','Standard','pas-utilities.sh');
-insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(25,'Ranger metastore PG','Standard','pas-ranger.sh');
-insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(26,'Ranger metastore PG','Standard','pas-ranger.sh');
-insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(14,'Druid Metastore PG','Standard','pas-druid.sh');
-insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(15,'Druid Metastore PG','Standard','pas-druid.sh');
-insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(33,'Registry Metastore MySQL','Standard','pas-registry.sh');
-insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(34,'Registry Metastore MySQL','Standard','pas-registry.sh');
-insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(37,'SAM Metastore MySQL','Standard','pas-sam.sh');
+-- insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(1,'Utills Install','Standard','pas-utilities.sh');
+-- insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(2,'Utills Install','Standard','pas-utilities.sh');
+-- insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(3,'Utills Install','Standard','pas-utilities.sh');
+-- insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(25,'Ranger metastore PG','Standard','pas-ranger.sh');
+-- insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(26,'Ranger metastore PG','Standard','pas-ranger.sh');
+-- insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(14,'Druid Metastore PG','Standard','pas-druid.sh');
+-- insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(15,'Druid Metastore PG','Standard','pas-druid.sh');
+-- insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(33,'Registry Metastore MySQL','Standard','pas-registry.sh');
+-- insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(34,'Registry Metastore MySQL','Standard','pas-registry.sh');
+-- insert into cloudbreak_cuisine.components_recipes (service_id, recipe_description, extra_type, pre_ambari_start) values(37,'SAM Metastore MySQL','Standard','pas-sam.sh');
 
 insert into cloudbreak_cuisine.management_packs values(1,3,'HDF MPACK FOR HDP+HDF','http://public-repo-1.hortonworks.com/HDF/amazonlinux2/3.x/updates/3.2.0.0/tars/hdf_ambari_mp/hdf-ambari-mpack-3.2.0.0-520.tar.gz');
 
