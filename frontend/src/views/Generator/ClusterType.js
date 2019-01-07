@@ -198,6 +198,7 @@ class ClusterType extends Component{
             </CardHeader>
             <CardBody >
                 <table>
+                    <tbody>
                     <tr>
                         <td width="50%">
                             <img src='../../assets/img/cuisine/hdp_cluster.png' height="200" width="200" />
@@ -219,6 +220,7 @@ class ClusterType extends Component{
                             <strong>Hortonworks Data Platform (HDP)</strong> helps enterprises gain insights from structured and unstructured data. It is an open source framework for distributed storage and processing of large, multi-source data sets.
                         </td>
                     </tr>
+                    </tbody>
                 </table>
           </CardBody>
         </Card>
@@ -233,6 +235,7 @@ class ClusterType extends Component{
             </CardHeader>
             <CardBody >
                 <table>
+                    <tbody>
                     <tr>
                         <td width="50%">
                         <img src='../../assets/img/cuisine/hdf_cluster.png' height="200" width="200"/>
@@ -254,6 +257,7 @@ class ClusterType extends Component{
                             <strong>Hortonworks DataFlow (HDF)</strong> is a scalable, real-time streaming analytics platform that ingests, curates and analyzes data for key insights and immediate actionable intelligence.
                         </td>
                     </tr>
+                    </tbody>
                 </table>
           </CardBody>
         </Card>
@@ -268,6 +272,7 @@ class ClusterType extends Component{
             </CardHeader>
             <CardBody >
                 <table>
+                    <tbody>
                     <tr>
                         <td width="50%">
                             <img src='../../assets/img/cuisine/both_cluster.png' height="200" width="200"/>
@@ -289,6 +294,7 @@ class ClusterType extends Component{
                             <strong>Combined HDP + HDF clusters</strong> allow you to leverage the best out of Hortonworks platforms. Manage all your services in one central place and build Edge to AI applications.
                         </td>
                     </tr>
+                    </tbody>
                 </table>
           </CardBody>
         </Card>
