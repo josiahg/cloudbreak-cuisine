@@ -1,6 +1,6 @@
 import React, { Component, Suspense } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import { Container } from 'reactstrap';
+import { Container, Row } from 'reactstrap';
 
 import {
   AppAside,
@@ -51,8 +51,8 @@ class DefaultLayout extends Component {
             <AppSidebarMinimizer />
           </AppSidebar>
           <main className="main">
-            <AppBreadcrumb appRoutes={routes}/>
             <Container fluid>
+            <Row>&nbsp;</Row>
               <Suspense fallback={this.loading()}>
                 <Switch>
                   {routes.map((route, idx) => {

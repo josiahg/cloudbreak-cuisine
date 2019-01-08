@@ -8,16 +8,16 @@ import { Card, CardBody, CardHeader, Progress, Row, Col, Button, Form,
   InputGroupAddon,
   InputGroupText,
   Label,
-  Table, Badge, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+  Table, Badge, Nav, NavItem, NavLink, TabContent, TabPane  } from 'reactstrap';
 
 import profilesData from './ProfilesData'
-import { pathToFileURL } from 'url';
 
-function ProfileDetails(props) {
-  const profile = props.profile
+function ProfileDetails() {
+ 
 
   return (
     <CardBody>
+    <Form>
       <FormGroup row>
         <Col md="3">
           <Label htmlFor="name">Profile ID</Label>
@@ -27,7 +27,7 @@ function ProfileDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-bullseye"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="text" id="profileID" name="profileID" value={profile.id} disabled/>
+            <Input type="text" id="profileID" name="profileID" value='2' disabled/>
           </InputGroup>
         </Col>     
       </FormGroup>
@@ -41,8 +41,10 @@ function ProfileDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-cloud"></i></InputGroupText>
             </InputGroupAddon>
-              <Input type="select" id="profileType" name="profileType" disabled>
-                  <option>{profile.profile_type}</option>
+              <Input type="select" id="profileType" name="profileType">
+                  <option>Cloudbreak</option>
+                  <option>Director</option>
+                  <option>Whoville</option>
               </Input>
           </InputGroup>
         </Col>     
@@ -57,7 +59,7 @@ function ProfileDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="text" id="profileName" name="profileName" value={profile.name} disabled/>
+            <Input type="text" id="profileName" name="profileName" placeholder="Enter a name for your profile"/>
           </InputGroup>
         </Col>     
       </FormGroup>
@@ -72,8 +74,8 @@ function ProfileDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-user"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="select" id="associatedUserName" name="associatedUserName" disabled>
-                  <option>{profile.associated_user_name}</option>
+            <Input type="select" id="associatedUserName" name="associatedUserName">
+                  <option>admin</option>
               </Input>
           </InputGroup>
         </Col>     
@@ -88,7 +90,7 @@ function ProfileDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-link"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="text" id="baseURL" name="baseURL" value={profile.base_url} disabled/>
+            <Input type="text" id="baseURL" name="baseURL" placeholder="Enter the base URL your profile"/>
           </InputGroup>
         </Col>     
       </FormGroup>
@@ -102,8 +104,10 @@ function ProfileDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-cloud-upload"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="select" id="cloudType" name="cloudType" disabled>
-                  <option>{profile.cloud_type}</option>
+            <Input type="select" id="cloudType" name="cloudType">
+                  <option>GCP</option>
+                  <option>AWS</option>
+                  <option>Azure</option>
               </Input>
           </InputGroup>
         </Col>     
@@ -118,7 +122,7 @@ function ProfileDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-file-code-o"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="text" id="baseURL" name="baseURL" value={profile.profile_file_location} disabled/>
+            <Input type="text" id="baseURL" name="baseURL" placeholder="Enter a location for profile file"/>
           </InputGroup>
         </Col>     
       </FormGroup>
@@ -133,60 +137,64 @@ function ProfileDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-times"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="select" id="status" name="status" disabled>
-                  <option>{profile.status}</option>
+            <Input type="select" id="status" name="status">
+                  <option>Active</option>
+                  <option>Inactive</option>
               </Input>
           </InputGroup>
         </Col>     
       </FormGroup>
-      <FormGroup row>
+ <FormGroup row>
                     
-                    <Col md="3">
-                      &nbsp;
-                      </Col>
-                      <Col xs="12" md="9" align="right">
-                     
-                      <Button size="lg" color="warning" href ={"#/editprofiles/"+profile.id}>
-                                        <i className="icon-note" ></i>&nbsp;Edit
-                                    </Button>
-                                    &nbsp;
-                                   <Button size="lg" color="danger" href ="#/profiles">
-                                        <i className="fa fa-ban" ></i>&nbsp;Back
-                                    </Button>
-                      
-                    </Col>
-                   </FormGroup>
+ <Col md="3">
+   &nbsp;
+   </Col>
+   <Col xs="12" md="9" align="right">
+  
+   <Button size="lg" color="primary">
+                     <i className="fa fa-save"></i>&nbsp;Save
+                 </Button>
+                 &nbsp;
+                <Button size="lg" color="danger" href ="#/profiles">
+                     <i className="fa fa-ban" ></i>&nbsp;Cancel
+                 </Button>
+   
+ </Col>
+</FormGroup>
+</Form>
+</CardBody>
 
-    </CardBody>
+    
   )
   
 }
 
 
 
-class Profile extends Component {
+class AddProfile extends Component {
 
   render() {
 
-    const profileList = profilesData.filter((profile) => (profile.id.toString() === this.props.match.params.id));
     
     return (
       <div className="animated fadeIn">
         <Row>
           <Col>
-          <Card className="border-primary">
-            <CardHeader className="text-white bg-primary">
-              <h2>View Profile</h2>
+          <Card className="border-success">
+            <CardHeader className="text-white bg-success">
+              <h2>Add Profile</h2>
             </CardHeader>
-              {profileList.map((profile) =>
-                  <ProfileDetails profile={profile}/>
-              )}
+            
+                  <ProfileDetails />
+            
+             
             </Card>
           </Col>
+          
         </Row>
       </div>
     )
   }
 }
 
-export default Profile;
+export default AddProfile;

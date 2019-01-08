@@ -11,6 +11,8 @@ const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 const Profiles = React.lazy(() => import('./views/Profiles/Profiles'));
 const Profile = React.lazy(() => import('./views/Profiles/Profile'));
+const EditProfile = React.lazy(() => import('./views/Profiles/EditProfile'));
+const AddProfile = React.lazy(() => import('./views/Profiles/AddProfile'));
 const Recipes = React.lazy(() => import('./views/Recipes/Recipes'));
 const AddRecipe = React.lazy(() => import('./views/Recipes/AddRecipe'));
 const NifiTemplates = React.lazy(() => import('./views/NifiTemplates/NifiTemplates'));
@@ -37,6 +39,8 @@ const routes = [
    { path: '/users/:id', exact: true, name: 'User Details', component: User },
    { path: '/profiles', exact: true,  name: 'Profiles', component: Profiles },
    { path: '/profiles/:id', exact: true, name: 'Profile', component: Profile },
+   { path: '/editprofiles/:id', exact: true, name: 'EditProfile', component: EditProfile },
+   { path: '/addprofile', exact: true, name: 'AddProfile', component: AddProfile },
 
   { path: '/library', exact: true, name: 'Library', component: Library },
   { path: '/library/:id', exact: true, name: 'Bundle Details', component: LibraryItem },

@@ -7,6 +7,7 @@ import profilesData from './ProfilesData'
 function ProfileRow(props) {
   const profile = props.profile
   const profileLink = `/profiles/${profile.id}`
+  const editProfileLink = `/editprofiles/${profile.id}`
 
   const getBadge = (status) => {
     return status === 'Active' ? 'success' :
@@ -32,7 +33,7 @@ function ProfileRow(props) {
                                         <i className="icon-eyeglass"></i>&nbsp;View
                                     </Button></Link>
                                     &nbsp;
-                                    <Link to={profileLink}><Button size="sm" color="warning">
+                                    <Link to={editProfileLink}><Button size="sm" color="warning">
                                         <i className="icon-note"></i>&nbsp;Edit
                                     </Button></Link>
                                     &nbsp;
@@ -54,7 +55,15 @@ class Profiles extends Component {
       <Row>
                     <Col>
                         <h1>Cuisine Profiles</h1>
+                        </Col>
+                        <Col align="right" > 
+                        <div >
+                            <Button size="lg" color="success" href="#/AddProfile">
+                                        <i className="fa fa-plus"></i>&nbsp;Add New
+                            </Button>
+                        </div>
                     </Col>
+                    
                 </Row>
                 <Row>
                     <Col>
