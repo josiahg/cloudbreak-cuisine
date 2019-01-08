@@ -108,20 +108,7 @@ function ProfileDetails(props) {
           </InputGroup>
         </Col>     
       </FormGroup>
-     
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="name">Profile File</Label>
-        </Col>   
-        <Col xs="12" md="9">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-file-code-o"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="text" id="baseURL" name="baseURL" value={profile.profile_file_location} disabled/>
-          </InputGroup>
-        </Col>     
-      </FormGroup>
+
 
 
       <FormGroup row>
@@ -139,6 +126,20 @@ function ProfileDetails(props) {
           </InputGroup>
         </Col>     
       </FormGroup>
+      <FormGroup row>
+        <Col md="3">
+          <Label htmlFor="name">Profile File</Label>
+        </Col>   
+        <Col xs="12" md="9">
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText><i className="fa fa-code"></i></InputGroupText>
+            </InputGroupAddon>
+            <Input type="textarea" id="profileFile" name="profileFile" value={'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.'} disabled/>
+          </InputGroup>
+        </Col>     
+      </FormGroup>
+      
       <FormGroup row>
                     
                     <Col md="3">

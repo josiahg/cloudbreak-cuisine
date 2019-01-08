@@ -26,7 +26,6 @@ function ProfileRow(props) {
       <td><a href={'#/users/'+ profile.associated_user_id}>{profile.associated_user_name}</a></td>
       <td>{profile.base_url}</td>
       <td><img src={profile.cloud_type_img} height="50px"/></td>
-      <td><a href={profile.profile_file_location}>{profile.profile_file}</a></td>
       <td>{profile.registered}</td>
       <td><Badge color={getBadge(profile.status)}>{profile.status}</Badge></td>
       <td><Link to={profileLink}><Button size="sm" color="primary">
@@ -84,7 +83,6 @@ class Profiles extends Component {
                       <th scope="col">Associated User</th>
                       <th scope="col">Base URL</th>
                       <th scope="col">Cloud Type</th>
-                      <th scope="col">Profile File</th>
                       <th scope="col">Registered</th>
                       <th scope="col">Status</th>
                       <th scope="col">Actions</th>

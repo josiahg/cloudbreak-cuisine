@@ -12,11 +12,72 @@ import { Card, CardBody, CardHeader, Progress, Row, Col, Button, Form,
 
 import profilesData from './ProfilesData'
 
-function ProfileDetails() {
- 
 
-  return (
-    <CardBody>
+
+
+
+class AddProfile extends Component {
+  constructor(props) {
+    super(props);
+
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      activeTab: new Array(4).fill('1'),
+    };
+  }
+
+  lorem() {
+    return 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.'
+  }
+
+  toggle(tabPane, tab) {
+    const newArray = this.state.activeTab.slice()
+    newArray[tabPane] = tab
+    this.setState({
+      activeTab: newArray,
+    });
+  }
+
+  tabPane() {
+    return (
+      <>
+        <TabPane tabId="1">
+        <Button size="lg" color="success">
+                                    <i className="fa fa-upload"></i>&nbsp;Upload
+                                </Button>
+        </TabPane>
+        <TabPane tabId="2">
+        <InputGroup>
+        <InputGroupAddon addonType="prepend">
+          <InputGroupText><i className="fa fa-link"></i></InputGroupText>
+        </InputGroupAddon>
+        <Input type="text" id="recipeURL" name="recipeURL" placeholder="Enter URL"/>
+        </InputGroup>
+        </TabPane>
+        <TabPane tabId="3">
+        <InputGroup>
+        <InputGroupAddon addonType="prepend">
+          <InputGroupText><i className="fa fa-code"></i></InputGroupText>
+        </InputGroupAddon>
+        <Input type="textarea" id="recipeCode" name="recipeCode" placeholder="Enter profile file code"/>
+        </InputGroup>
+        </TabPane>
+      </>
+    );
+  }
+  render() {
+
+    
+    return (
+      <div className="animated fadeIn">
+        <Row>
+          <Col>
+          <Card className="border-success">
+            <CardHeader className="text-white bg-success">
+              <h2>Add Profile</h2>
+            </CardHeader>
+            
+            <CardBody>
     <Form>
       <FormGroup row>
         <Col md="3">
@@ -113,19 +174,6 @@ function ProfileDetails() {
         </Col>     
       </FormGroup>
      
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="name">Profile File</Label>
-        </Col>   
-        <Col xs="12" md="9">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-file-code-o"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="text" id="baseURL" name="baseURL" placeholder="Enter a location for profile file"/>
-          </InputGroup>
-        </Col>     
-      </FormGroup>
 
 
       <FormGroup row>
@@ -144,8 +192,45 @@ function ProfileDetails() {
           </InputGroup>
         </Col>     
       </FormGroup>
+      <FormGroup row>
+                                  <Col md="3">
+                                    <Label htmlFor="content">Profile File</Label>
+                                    </Col>
+                                    <Col xs="12" md="9">
+                                    <Nav tabs>
+                            <NavItem>
+                              <NavLink
+                                active={this.state.activeTab[0] === '1'}
+                                onClick={() => { this.toggle(0, '1'); }}
+                              >
+                                File
+                              </NavLink>
+                            </NavItem>
+                            <NavItem>
+                              <NavLink
+                                active={this.state.activeTab[0] === '2'}
+                                onClick={() => { this.toggle(0, '2'); }}
+                              >
+                                URL
+                              </NavLink>
+                            </NavItem>
+                            <NavItem>
+                              <NavLink
+                                active={this.state.activeTab[0] === '3'}
+                                onClick={() => { this.toggle(0, '3'); }}
+                              >
+                                Type
+                              </NavLink>
+                            </NavItem>
+                          </Nav>
+                          <TabContent activeTab={this.state.activeTab[0]}>
+                            {this.tabPane()}
+                          </TabContent>
+              
+                                  </Col>
+                                </FormGroup>
  <FormGroup row>
-                    
+
  <Col md="3">
    &nbsp;
    </Col>
@@ -163,29 +248,6 @@ function ProfileDetails() {
 </FormGroup>
 </Form>
 </CardBody>
-
-    
-  )
-  
-}
-
-
-
-class AddProfile extends Component {
-
-  render() {
-
-    
-    return (
-      <div className="animated fadeIn">
-        <Row>
-          <Col>
-          <Card className="border-success">
-            <CardHeader className="text-white bg-success">
-              <h2>Add Profile</h2>
-            </CardHeader>
-            
-                  <ProfileDetails />
             
              
             </Card>

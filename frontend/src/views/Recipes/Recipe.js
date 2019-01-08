@@ -15,7 +15,7 @@ import recipesData from './RecipesData'
 import servicesData from './ServicesData'
 import servicesListData from './ServicesListData'
 
-class AddRecipe extends Component{
+class Recipe extends Component{
     constructor(props) {
         super(props);
     
@@ -46,20 +46,10 @@ class AddRecipe extends Component{
                                     </Button>
             </TabPane>
             <TabPane tabId="2">
-            <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-link"></i></InputGroupText>
-            </InputGroupAddon>
             <Input type="text" id="recipeURL" name="recipeURL" placeholder="Enter URL"/>
-            </InputGroup>
             </TabPane>
             <TabPane tabId="3">
-            <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-code"></i></InputGroupText>
-            </InputGroupAddon>
             <Input type="textarea" id="recipeCode" name="recipeCode" placeholder="// Enter recipe code"/>
-            </InputGroup>
             </TabPane>
           </>
         );
@@ -72,6 +62,7 @@ class AddRecipe extends Component{
     
     render(){
         const serviceList = servicesListData.filter((service) => ((service.name)))
+        const recipeList = recipesData.filter((recipe) => (recipe.id.toString() === this.props.match.params.id));
 
         return(  
                      
@@ -79,14 +70,13 @@ class AddRecipe extends Component{
 
                 <Row>
                 <Col>
-                <Card className="border-success">
-                        <CardHeader className="text-white bg-success">
-                            <h2>Add Recipe</h2>
+                <Card className="border-primary">
+                        <CardHeader className="text-white bg-primary">
+                            <h2>View Recipe</h2>
                         </CardHeader>
+                        {recipeList.map((recipe) =>
                         <CardBody>
                         <Form>
-
-
                         <FormGroup row>
         <Col md="3">
           <Label htmlFor="name">Recipe ID</Label>
@@ -96,10 +86,12 @@ class AddRecipe extends Component{
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-bullseye"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="text" id="recipeID" name="recipeID" value='24' disabled/>
+            <Input type="text" id="recipeID" name="recipeID" value={recipe.id} disabled/>
           </InputGroup>
         </Col>     
       </FormGroup>
+
+
 
                   <FormGroup row>
                     
@@ -111,7 +103,7 @@ class AddRecipe extends Component{
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
                       </InputGroupAddon>
-                      <Input type="text" id="recipeName" name="recipeName" placeholder="Enter recipe name" autoComplete="name"/>
+                      <Input type="text" id="recipeName" name="recipeName" value={recipe.recipeDescription} autoComplete="name" disabled/>
                     </InputGroup>
                     </Col>
                   </FormGroup>
@@ -126,7 +118,7 @@ class AddRecipe extends Component{
                         <InputGroupText><i className="fa fa-comment"></i></InputGroupText>
                       </InputGroupAddon>
 
-                      <Input type="textarea" id="recipeDescription" name="recipeDescription" placeholder="Enter recipe description"/>
+                      <Input type="textarea" id="recipeDescription" name="recipeDescription" value={recipe.recipeDescription} disabled/>
                     </InputGroup>
                     </Col>
                   </FormGroup>
@@ -141,11 +133,11 @@ class AddRecipe extends Component{
                       <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-clock-o"></i></InputGroupText>
             </InputGroupAddon>
-                      <Input type="select" name="recipeType" id="recipeType">
-                                    <option>Pre Ambari Start</option>
-                                    <option>Post Ambari Start</option>
-                                    <option>Post Cluster Install</option>
-                                    <option>Pre Termination</option>
+                      <Input type="select" name="recipeType" id="recipeType" disabled>
+                                    <option selected={recipe.recipe_type.toString() === 'Pre Ambari Start'}>Pre Ambari Start</option>
+                                    <option selected={recipe.recipe_type.toString() === 'Post Ambari Start'}>Post Ambari Start</option>
+                                    <option selected={recipe.recipe_type.toString() === 'Post Cluster Install'}>Post Cluster Install</option>
+                                    <option selected={recipe.recipe_type.toString() === 'Pre Termination'}>Pre Termination</option>
                                 </Input>
                       </InputGroup>
                     </Col>
@@ -162,7 +154,7 @@ class AddRecipe extends Component{
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText><i className="fa fa-cog"></i></InputGroupText>
                       </InputGroupAddon>
-                      <Input type="select" name="service" id="service">
+                      <Input type="select" name="service" id="service" disabled>
                       {serviceList.map((service) =>
                         <option>{service.name}</option>
                             )}
@@ -181,7 +173,7 @@ class AddRecipe extends Component{
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText><i className="fa fa-server"></i></InputGroupText>
                       </InputGroupAddon>
-                      <Input type="select" name="clusterType" id="clusterType">
+                      <Input type="select" name="clusterType" id="clusterType" disabled>
                                     <option>HDP</option>
                                     <option>HDF</option>
                                     <option>HDP + HDF</option>
@@ -197,35 +189,12 @@ class AddRecipe extends Component{
                       <Label htmlFor="content">Recipe Content</Label>
                       </Col>
                       <Col xs="12" md="9">
-                      <Nav tabs>
-              <NavItem>
-                <NavLink
-                  active={this.state.activeTab[0] === '1'}
-                  onClick={() => { this.toggle(0, '1'); }}
-                >
-                  File
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  active={this.state.activeTab[0] === '2'}
-                  onClick={() => { this.toggle(0, '2'); }}
-                >
-                  URL
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  active={this.state.activeTab[0] === '3'}
-                  onClick={() => { this.toggle(0, '3'); }}
-                >
-                  Type
-                </NavLink>
-              </NavItem>
-            </Nav>
-            <TabContent activeTab={this.state.activeTab[0]}>
-              {this.tabPane()}
-            </TabContent>
+                      <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText><i className="fa fa-code"></i></InputGroupText>
+                      </InputGroupAddon>
+                      <Input type="textarea" id="recipeContent" name="recipeContent" value={this.lorem()} disabled/>
+                    </InputGroup>
 
                     </Col>
                   </FormGroup>
@@ -236,8 +205,8 @@ class AddRecipe extends Component{
                       </Col>
                       <Col xs="12" md="9" align="right">
                      
-                      <Button size="lg" color="primary">
-                                        <i className="fa fa-save"></i>&nbsp;Save
+                      <Button size="lg" color="warning" href ={"#/editrecipes/"+recipe.id}>
+                                        <i className="icon-note"></i>&nbsp;Edit
                                     </Button>
                                     &nbsp;
                                    <Button size="lg" color="danger" href ="#/recipes">
@@ -253,6 +222,7 @@ class AddRecipe extends Component{
   
                 </Form>
                         </CardBody>
+                        )}
                     </Card>
               
 
@@ -264,4 +234,4 @@ class AddRecipe extends Component{
     }
 }
 
-export default AddRecipe;
+export default Recipe;

@@ -21,7 +21,7 @@ class AddRecipe extends Component{
     
         this.toggle = this.toggle.bind(this);
         this.state = {
-          activeTab: new Array(4).fill('1'),
+          activeTab: new Array(4).fill('3'),
         };
       }
     
@@ -58,7 +58,7 @@ class AddRecipe extends Component{
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-code"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="textarea" id="recipeCode" name="recipeCode" placeholder="// Enter recipe code"/>
+            <Input type="textarea" id="recipeCode" name="recipeCode" value={this.lorem()}/>
             </InputGroup>
             </TabPane>
           </>
@@ -72,6 +72,7 @@ class AddRecipe extends Component{
     
     render(){
         const serviceList = servicesListData.filter((service) => ((service.name)))
+        const recipeList = recipesData.filter((recipe) => (recipe.id.toString() === this.props.match.params.id));
 
         return(  
                      
@@ -79,13 +80,13 @@ class AddRecipe extends Component{
 
                 <Row>
                 <Col>
-                <Card className="border-success">
-                        <CardHeader className="text-white bg-success">
-                            <h2>Add Recipe</h2>
+                <Card className="border-warning">
+                        <CardHeader className="text-white bg-warning">
+                            <h2>Edit Recipe</h2>
                         </CardHeader>
+                        {recipeList.map((recipe) =>
                         <CardBody>
                         <Form>
-
 
                         <FormGroup row>
         <Col md="3">
@@ -96,7 +97,7 @@ class AddRecipe extends Component{
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-bullseye"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="text" id="recipeID" name="recipeID" value='24' disabled/>
+            <Input type="text" id="recipeID" name="recipeID" value={recipe.id} disabled/>
           </InputGroup>
         </Col>     
       </FormGroup>
@@ -111,7 +112,7 @@ class AddRecipe extends Component{
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
                       </InputGroupAddon>
-                      <Input type="text" id="recipeName" name="recipeName" placeholder="Enter recipe name" autoComplete="name"/>
+                      <Input type="text" id="recipeName" name="recipeName" value={recipe.recipeDescription} autoComplete="name"/>
                     </InputGroup>
                     </Col>
                   </FormGroup>
@@ -126,7 +127,7 @@ class AddRecipe extends Component{
                         <InputGroupText><i className="fa fa-comment"></i></InputGroupText>
                       </InputGroupAddon>
 
-                      <Input type="textarea" id="recipeDescription" name="recipeDescription" placeholder="Enter recipe description"/>
+                      <Input type="textarea" id="recipeDescription" name="recipeDescription" value={recipe.recipeDescription} />
                     </InputGroup>
                     </Col>
                   </FormGroup>
@@ -142,10 +143,10 @@ class AddRecipe extends Component{
               <InputGroupText><i className="fa fa-clock-o"></i></InputGroupText>
             </InputGroupAddon>
                       <Input type="select" name="recipeType" id="recipeType">
-                                    <option>Pre Ambari Start</option>
-                                    <option>Post Ambari Start</option>
-                                    <option>Post Cluster Install</option>
-                                    <option>Pre Termination</option>
+                                    <option selected={recipe.recipe_type.toString() === 'Pre Ambari Start'}>Pre Ambari Start</option>
+                                    <option selected={recipe.recipe_type.toString() === 'Post Ambari Start'}>Post Ambari Start</option>
+                                    <option selected={recipe.recipe_type.toString() === 'Post Cluster Install'}>Post Cluster Install</option>
+                                    <option selected={recipe.recipe_type.toString() === 'Pre Termination'}>Pre Termination</option>
                                 </Input>
                       </InputGroup>
                     </Col>
@@ -253,6 +254,7 @@ class AddRecipe extends Component{
   
                 </Form>
                         </CardBody>
+                        )}
                     </Card>
               
 

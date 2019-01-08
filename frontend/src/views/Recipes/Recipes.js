@@ -97,15 +97,15 @@ class Recipes extends Component{
                                    <div>{recipe.recipe_type}</div>
                                    </td>
                                    <td>
-                                   <Button size="sm" color="primary">
+                                   <Button size="sm" color="primary" href={"#/recipes/" + recipe.id}>
                                         <i className="icon-eyeglass"></i>&nbsp;View
                                     </Button>
                                     &nbsp;
-                                   <Button size="sm" color="warning">
+                                   <Button size="sm" color="warning" href={"#/editrecipes/" + recipe.id}>
                                         <i className="icon-note"></i>&nbsp;Edit
                                     </Button>
                                     &nbsp;
-                                   <Button size="sm" color="danger">
+                                   <Button size="sm" color="danger" disabled>
                                         <i className="fa fa-remove"></i>&nbsp;Delete
                                     </Button>
                                    </td>

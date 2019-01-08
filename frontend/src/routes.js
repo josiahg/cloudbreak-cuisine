@@ -14,7 +14,9 @@ const Profile = React.lazy(() => import('./views/Profiles/Profile'));
 const EditProfile = React.lazy(() => import('./views/Profiles/EditProfile'));
 const AddProfile = React.lazy(() => import('./views/Profiles/AddProfile'));
 const Recipes = React.lazy(() => import('./views/Recipes/Recipes'));
+const Recipe = React.lazy(() => import('./views/Recipes/Recipe'));
 const AddRecipe = React.lazy(() => import('./views/Recipes/AddRecipe'));
+const EditRecipe = React.lazy(() => import('./views/Recipes/EditRecipe'));
 const NifiTemplates = React.lazy(() => import('./views/NifiTemplates/NifiTemplates'));
 const AddNifiTemplate = React.lazy(() => import('./views/NifiTemplates/AddNifiTemplate'));
 const ZeppelinNotes = React.lazy(() => import('./views/ZeppelinNotes/ZeppelinNotes'));
@@ -29,6 +31,8 @@ const routes = [
   { path: '/generator', name: 'Generator', component: Generator },
   { path: '/recipes', exact: true,  name: 'Recipes', component: Recipes },
   { path: '/addrecipe', exact: true,  name: 'Add Recipe', component: AddRecipe },
+  { path: '/recipes/:id', exact: true, name: 'Recipe', component: Recipe },
+  { path: '/editrecipes/:id', exact: true, name: 'Edit Recipe', component: EditRecipe },
   { path: '/nifitemplates', exact: true,  name: 'Nifi Templates', component: NifiTemplates },
   { path: '/addnifitemplate', exact: true,  name: 'Add Nifi Template', component: AddNifiTemplate },
   { path: '/zeppelinnotes', exact: true,  name: 'Zeppelin Notes', component: ZeppelinNotes },
@@ -39,8 +43,8 @@ const routes = [
    { path: '/users/:id', exact: true, name: 'User Details', component: User },
    { path: '/profiles', exact: true,  name: 'Profiles', component: Profiles },
    { path: '/profiles/:id', exact: true, name: 'Profile', component: Profile },
-   { path: '/editprofiles/:id', exact: true, name: 'EditProfile', component: EditProfile },
-   { path: '/addprofile', exact: true, name: 'AddProfile', component: AddProfile },
+   { path: '/editprofiles/:id', exact: true, name: 'Edit Profile', component: EditProfile },
+   { path: '/addprofile', exact: true, name: 'Add Profile', component: AddProfile },
 
   { path: '/library', exact: true, name: 'Library', component: Library },
   { path: '/library/:id', exact: true, name: 'Bundle Details', component: LibraryItem },
