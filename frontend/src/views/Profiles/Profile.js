@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import { Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
 
-import credentialsData from './CredentialsDetailsData'
+import profilesData from './ProfilesDetailsData'
 
-class Credential extends Component {
+class Profile extends Component {
 
   render() {
 
-    const credential = credentialsData.find( credential => credential.id.toString() === this.props.match.params.id)
+    const profile = profilesData.find( profile => profile.id.toString() === this.props.match.params.id)
 
-    const credentialDetails = credential ? Object.entries(credential) : [['id', (<span><i className="text-muted icon-ban"></i> Not found</span>)]]
+    const profileDetails = profile ? Object.entries(profile) : [['id', (<span><i className="text-muted icon-ban"></i> Not found</span>)]]
 
     return (
       <div className="animated fadeIn">
       <Row>
                     <Col>
-                        <h1>Credential Details</h1>
+                        <h1>Profile Details</h1>
                     </Col>
                 </Row>
                 <Row>
@@ -32,7 +32,7 @@ class Credential extends Component {
                   <Table responsive striped hover>
                     <tbody>
                       {
-                        credentialDetails.map(([key, value]) => {
+                        profileDetails.map(([key, value]) => {
                           return (
                             <tr key={key}>
                               <td>{`${key}:`}</td>
@@ -52,4 +52,4 @@ class Credential extends Component {
   }
 }
 
-export default Credential;
+export default Profile;

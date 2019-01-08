@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge, Card, CardBody, CardHeader, Col, Row, Table, Button } from 'reactstrap';
 
-import credentialsData from './CredentialsData'
+import profilesData from './ProfilesData'
 
-function CredentialRow(props) {
-  const credential = props.credential
-  const credentialLink = `/credentials/${credential.id}`
+function ProfileRow(props) {
+  const profile = props.profile
+  const profileLink = `/profiles/${profile.id}`
 
   const getBadge = (status) => {
     return status === 'Active' ? 'success' :
@@ -17,17 +17,17 @@ function CredentialRow(props) {
   }
 
   return (
-    <tr key={credential.id.toString()}>
-      <td>{credential.id}</td>
-      <td>{credential.name}</td>
-      <td>{credential.registered}</td>
-      <td><img src={credential.img } height="50px"/></td>
-      <td><Badge color={getBadge(credential.status)}>{credential.status}</Badge></td>
-      <td><Link to={credentialLink}><Button size="sm" color="primary">
+    <tr key={profile.id.toString()}>
+      <td>{profile.id}</td>
+      <td>{profile.name}</td>
+      <td>{profile.registered}</td>
+      <td><img src={profile.img } height="50px"/></td>
+      <td><Badge color={getBadge(profile.status)}>{profile.status}</Badge></td>
+      <td><Link to={profileLink}><Button size="sm" color="primary">
                                         <i className="icon-eyeglass"></i>&nbsp;View
                                     </Button></Link>
                                     &nbsp;
-                                    <Link to={credentialLink}><Button size="sm" color="warning">
+                                    <Link to={profileLink}><Button size="sm" color="warning">
                                         <i className="icon-note"></i>&nbsp;Edit
                                     </Button></Link>
                                     &nbsp;
@@ -38,17 +38,17 @@ function CredentialRow(props) {
   )
 }
 
-class Credentials extends Component {
+class Profiles extends Component {
 
   render() {
 
-    const credentialList = credentialsData.filter((credential) => credential.id )
+    const profileList = profilesData.filter((profile) => profile.id )
 
     return (
       <div className="animated fadeIn">
       <Row>
                     <Col>
-                        <h1>Cuisine credentials</h1>
+                        <h1>Cuisine Profiles</h1>
                     </Col>
                 </Row>
                 <Row>
@@ -73,8 +73,8 @@ class Credentials extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {credentialList.map((credential, index) =>
-                      <CredentialRow key={index} credential={credential}/>
+                    {profileList.map((profile, index) =>
+                      <ProfileRow key={index} profile={profile}/>
                     )}
                   </tbody>
                 </Table>
@@ -87,4 +87,4 @@ class Credentials extends Component {
   }
 }
 
-export default Credentials;
+export default Profiles;

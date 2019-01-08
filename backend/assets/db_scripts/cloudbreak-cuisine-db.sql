@@ -110,6 +110,7 @@ DROP TABLE IF EXISTS cloudbreak_cuisine.profiles;
 CREATE TABLE cloudbreak_cuisine.profiles
 (
   id SERIAL PRIMARY KEY,
+  name text,
   user_id integer,
   profile_type text,
   base_url text,
@@ -389,7 +390,7 @@ insert into cloudbreak_cuisine.external_bundles values(2,'Personality Detection'
 insert into cloudbreak_cuisine.external_bundles values(3,'Metron','HDP 3.0/HDF 3.2 (3 Nodes)','Bundle creating a fully kerberized Metron environment','https://raw.githubusercontent.com/josiahg/hwx-hackathon-2018/master/default-recipes/METRON_LOGO.png','https://github.com/simonellistonball/cloudbreak-hcp/archive/master.zip');
 insert into cloudbreak_cuisine.external_bundles values(4,'IoT Workshop', 'HDP 3.1/HDF 3.3 (3 Nodes)', 'This bundle contains blueprints and recipes necessary for the creation of a single node HDF cluster pre-loaded with IoT Workshop flows and topics', '../../assets/img/cuisine/iot_bundle.png', '')
 
-insert into cloudbreak_cuisine.profiles (profile_type, user_id, base_url, cloud_type, profile_file, registered, status) values ('Whoville', 1, 'http://localhost:5000/', 'aws', 'profile.yml', '2019/01/08', 'Active')
+insert into cloudbreak_cuisine.profiles (profile_type, name, user_id, base_url, cloud_type, profile_file, registered, status) values ('Whoville', 'Local Whoville', 1, 'http://localhost:5000/', 'aws', 'profile.yml', '2019/01/08', 'Active')
 
 insert into cloudbreak_cuisine.profiles (name, username, email, role, registered, status) values ('Cuisine Admin', 'admin', 'admin@hortonworks.com', 'Admin', '2019/01/08', 'Active')
 

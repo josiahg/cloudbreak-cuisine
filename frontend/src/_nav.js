@@ -64,8 +64,8 @@ export default {
       children: [
         
         {
-          name: 'Credentials',
-          url: '/credentials',
+          name: 'Profiles',
+          url: '/profiles',
           icon: 'icon-lock',
         },
         {
