@@ -66,7 +66,7 @@ export default {
         {
           name: 'Profiles',
           url: '/profiles',
-          icon: 'icon-lock',
+          icon: 'fa fa-cloud',
         },
         {
           name: 'Users',

@@ -1,7 +1,5 @@
-const credentialsData = [
-  {id: 1, name: 'Einar Randall SE AWS', registered: '2018/01/01', img: '../../assets/img/cuisine/aws.png', status: 'Active'},
-  {id: 2, name: 'Einar Randall Perso AWS', registered: '2018/01/01', img: '../../assets/img/cuisine/aws.png', status: 'Inactive'},
-  {id: 3, name: 'Einar Randall Perso GCP', registered: '2018/01/01', img: '../../assets/img/cuisine/gcp.png', status: 'Inactive'}
+const profilesData = [
+  {id: 1, profile_type: 'Whoville', name: 'Local Whoville', associated_user_name: 'admin', associated_user_id: 1, base_url: 'http://localhost:5000/', cloud_type: 'aws', cloud_type_img: '../../assets/img/cuisine/aws.png', profile_file: 'profile.yml', profile_file_location: '/some/location/profile.yml', registered: '2019/01/07', status: 'Active'},
 ]
 
-export default credentialsData
+export default profilesData

@@ -16,12 +16,17 @@ function ProfileRow(props) {
             'primary'
   }
 
+  
   return (
     <tr key={profile.id.toString()}>
       <td>{profile.id}</td>
+      <td>{profile.profile_type}</td>
       <td>{profile.name}</td>
+      <td><a href={'#/users/'+ profile.associated_user_id}>{profile.associated_user_name}</a></td>
+      <td>{profile.base_url}</td>
+      <td><img src={profile.cloud_type_img} height="50px"/></td>
+      <td><a href={profile.profile_file_location}>{profile.profile_file}</a></td>
       <td>{profile.registered}</td>
-      <td><img src={profile.img } height="50px"/></td>
       <td><Badge color={getBadge(profile.status)}>{profile.status}</Badge></td>
       <td><Link to={profileLink}><Button size="sm" color="primary">
                                         <i className="icon-eyeglass"></i>&nbsp;View
@@ -31,7 +36,7 @@ function ProfileRow(props) {
                                         <i className="icon-note"></i>&nbsp;Edit
                                     </Button></Link>
                                     &nbsp;
-                                    <Button size="sm" color="danger">
+                                    <Button size="sm" color="danger" disabled>
                                         <i className="fa fa-remove"></i>&nbsp;Delete
                                     </Button></td>
     </tr>
@@ -65,9 +70,13 @@ class Profiles extends Component {
                   <thead className="thead-light">
                     <tr>
                       <th scope="col">ID</th>
+                      <th scope="col">Type</th>
                       <th scope="col">Name</th>
+                      <th scope="col">Associated User</th>
+                      <th scope="col">Base URL</th>
+                      <th scope="col">Cloud Type</th>
+                      <th scope="col">Profile File</th>
                       <th scope="col">Registered</th>
-                      <th scope="col">Role</th>
                       <th scope="col">Status</th>
                       <th scope="col">Actions</th>
                     </tr>
