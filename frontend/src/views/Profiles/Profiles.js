@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge, Card, CardBody, CardHeader, Col, Row, Table, Button } from 'reactstrap';
 
-import profilesData from './ProfilesData'
+// import profilesData from './ProfilesData'
 
 function ProfileRow(props) {
   const profile = props.profile
@@ -16,14 +16,14 @@ function ProfileRow(props) {
           status === 'Banned' ? 'danger' :
             'primary'
   }
-
+ 
   
   return (
     <tr key={profile.id.toString()}>
       <td>{profile.id}</td>
       <td>{profile.profile_type}</td>
       <td>{profile.name}</td>
-      <td><a href={'#/users/'+ profile.associated_user_id}>{profile.associated_user_name}</a></td>
+      <td>{profile.user_name}</td>
       <td>{profile.base_url}</td>
       <td><img src={profile.cloud_type_img} height="50px"/></td>
       <td>{profile.registered}</td>
@@ -36,7 +36,7 @@ function ProfileRow(props) {
                                         <i className="icon-note"></i>&nbsp;Edit
                                     </Button></Link>
                                     &nbsp;
-                                    <Button size="sm" color="danger" disabled>
+                                    <Button id={profile.id} size="sm" color="danger" onChange={this.deleteProfile.bind(this)}>
                                         <i className="fa fa-remove"></i>&nbsp;Delete
                                     </Button></td>
     </tr>
@@ -45,9 +45,35 @@ function ProfileRow(props) {
 
 class Profiles extends Component {
 
+  constructor(props) {
+    super(props)
+      this.state = { profilesData: [] }
+  }
+  deleteProfile = (e) => {
+      fetch('http://localhost:4000/api/profiles/del/'+e.target.id, {
+        method: 'POST',
+        headers: {},
+        body: JSON.stringify({})
+      }).then(this.loadData())
+      
+ }
+  loadData() {
+      fetch('http://localhost:4000/api/profiles')
+          .then(response => response.json())
+          .then(data => {
+              this.setState({profilesData: data})
+          })
+          .catch(err => console.error(this.props.url, err.toString()))
+  }
+
+  componentDidMount() {
+      this.loadData()
+  }
+
+
   render() {
 
-    const profileList = profilesData.filter((profile) => profile.id )
+    const profileList = this.state.profilesData.filter((profile) => profile.id )
 
     return (
       <div className="animated fadeIn">
@@ -89,8 +115,43 @@ class Profiles extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {profileList.map((profile, index) =>
-                      <ProfileRow key={index} profile={profile}/>
+                    {profileList.map((profile, index) =>{
+                      const profileLink = `/profiles/${profile.id}`
+                      const editProfileLink = `/editprofiles/${profile.id}`
+                    
+                      const getBadge = (status) => {
+                        return status === 'Active' ? 'success' :
+                          status === 'Inactive' ? 'secondary' :
+                            status === 'Pending' ? 'warning' :
+                              status === 'Banned' ? 'danger' :
+                                'primary'
+                      }
+                      
+                      
+                      return (
+                        <tr key={profile.id.toString()}>
+                          <td>{profile.id}</td>
+                          <td>{profile.profile_type}</td>
+                          <td>{profile.name}</td>
+                          <td>{profile.user_name}</td>
+                          <td>{profile.base_url}</td>
+                          <td><img src={profile.cloud_type_img} height="50px"/></td>
+                          <td>{profile.registered}</td>
+                          <td><Badge color={getBadge(profile.status)}>{profile.status}</Badge></td>
+                          <td><Link to={profileLink}><Button size="sm" color="primary">
+                                                            <i className="icon-eyeglass"></i>&nbsp;View
+                                                        </Button></Link>
+                                                        &nbsp;
+                                                        <Link to={editProfileLink}><Button size="sm" color="warning" disabled>
+                                                            <i className="icon-note"></i>&nbsp;Edit
+                                                        </Button></Link>
+                                                        &nbsp;
+                                                        <Button id={profile.id} size="sm" color="danger" onClick={this.deleteProfile.bind(this)}>
+                                                            <i className="fa fa-remove"></i>&nbsp;Delete
+                                                        </Button></td>
+                        </tr>
+                      )
+                    }
                     )}
                   </tbody>
                 </Table>

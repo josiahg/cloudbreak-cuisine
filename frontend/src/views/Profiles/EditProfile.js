@@ -57,7 +57,7 @@ class EditProfile extends Component {
         <InputGroupAddon addonType="prepend">
           <InputGroupText><i className="fa fa-code"></i></InputGroupText>
         </InputGroupAddon>
-        <Input type="textarea" id="recipeCode" name="recipeCode" value={this.lorem()}/>
+        <Input type="textarea" rows="20" id="recipeCode" name="recipeCode" value={this.lorem()}/>
         </InputGroup>
         </TabPane>
       </>

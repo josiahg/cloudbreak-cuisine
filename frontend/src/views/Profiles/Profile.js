@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React,  { Component } from 'react';
+import Base64 from 'base-64';
 import { Card, CardBody, CardHeader, Progress, Row, Col, Button, Form,
   FormGroup,
   FormText,
@@ -10,7 +11,6 @@ import { Card, CardBody, CardHeader, Progress, Row, Col, Button, Form,
   Label,
   Table, Badge, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
-import profilesData from './ProfilesData'
 import { pathToFileURL } from 'url';
 
 function ProfileDetails(props) {
@@ -73,7 +73,7 @@ function ProfileDetails(props) {
               <InputGroupText><i className="fa fa-user"></i></InputGroupText>
             </InputGroupAddon>
             <Input type="select" id="associatedUserName" name="associatedUserName" disabled>
-                  <option>{profile.associated_user_name}</option>
+                  <option>{profile.user_name}</option>
               </Input>
           </InputGroup>
         </Col>     
@@ -135,11 +135,11 @@ function ProfileDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-code"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="textarea" id="profileFile" name="profileFile" value={'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.'} disabled/>
+            <Input type="textarea" rows="20" id="profileFile" name="profileFile" value={Base64.decode(profile.profile_file)} disabled/>
           </InputGroup>
         </Col>     
       </FormGroup>
-      
+
       <FormGroup row>
                     
                     <Col md="3">
@@ -147,7 +147,7 @@ function ProfileDetails(props) {
                       </Col>
                       <Col xs="12" md="9" align="right">
                      
-                      <Button size="lg" color="warning" href ={"#/editprofiles/"+profile.id}>
+                      <Button size="lg" color="warning" href ={"#/editprofiles/"+profile.id} disabled>
                                         <i className="icon-note" ></i>&nbsp;Edit
                                     </Button>
                                     &nbsp;
@@ -166,11 +166,29 @@ function ProfileDetails(props) {
 
 
 class Profile extends Component {
+  constructor(props) {
+    super(props)
+      this.state = { profilesData: [] }
+  }
+
+  loadData() {
+    fetch('http://localhost:4000/api/profiles/')
+        .then(response => response.json())
+        .then(data => {
+            this.setState({profilesData: data})
+        })
+        .catch(err => console.error(this.props.url, err.toString()))
+}
+
+componentDidMount() {
+    this.loadData()
+}
+
 
   render() {
-
-    const profileList = profilesData.filter((profile) => (profile.id.toString() === this.props.match.params.id));
     
+    const profileList = this.state.profilesData.filter((profile) => (profile.id.toString() === this.props.match.params.id) );
+
     return (
       <div className="animated fadeIn">
         <Row>
