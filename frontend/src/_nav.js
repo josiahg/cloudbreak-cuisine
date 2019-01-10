@@ -15,9 +15,14 @@ export default {
       class: ''             // optional class names space delimited list for title item ex: "text-center"
     },
     {
-      name: 'Browse',
+      name: 'Local',
       url: '/library',
-      icon: 'icon-grid',
+      icon: 'fa fa-book',
+    },
+    {
+      name: 'Whoville',
+      url: '/whoville',
+      icon: 'fa fa-building-o',
     },
     {
       name: 'Create Bundle',

@@ -6,7 +6,7 @@ import Widget02 from './Widget02';
 
 function LibraryItemCol(props) {
     const libraryItem = props.libraryItem
-    const itemLink = `#/library/${libraryItem.id}`
+    const itemLink = `#/whoville/${libraryItem.id}`
     const itemName = libraryItem.name
     const itemVersion = libraryItem.version
     if(itemName === undefined || itemVersion === undefined) {
@@ -15,13 +15,13 @@ function LibraryItemCol(props) {
     else {
     return (
       <Col xs="12" sm="6" lg="3">
-        <Widget02 header={itemName.toString()} mainText={itemVersion.toString()} icon="fa fa-archive" color="success" footer link={itemLink} />
+        <Widget02 header={itemName.toString()} mainText={itemVersion.toString()} icon="fa fa-github" color="primary" footer link={itemLink} />
       </Col>
     )
     }
 }
 
-class Library extends Component {
+class Whoville extends Component {
 
     constructor(props) {
         super(props)
@@ -44,7 +44,7 @@ class Library extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-      <h1>Cuisine Library</h1>
+      <h1>Whoville Library</h1>
         <Row>
           &nbsp;
         </Row>
@@ -59,4 +59,4 @@ class Library extends Component {
   }
 }
 
-export default Library;
+export default Whoville;

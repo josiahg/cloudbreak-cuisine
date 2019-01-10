@@ -4,6 +4,10 @@ import DefaultLayout from './containers/DefaultLayout';
 
 const Library = React.lazy(() => import('./views/Library/Library'));
 const LibraryItem = React.lazy(() => import('./views/Library/LibraryItem'));
+
+const Whoville = React.lazy(() => import('./views/Whoville/Whoville'));
+const WhovilleItem = React.lazy(() => import('./views/Whoville/WhovilleItem'));
+
 const Generator = React.lazy(() => import('./views/Generator/Generator'));
 
 const Dashboard = React.lazy(() => import('./views/Dashboard'));
@@ -46,8 +50,10 @@ const routes = [
    { path: '/editprofiles/:id', exact: true, name: 'Edit Profile', component: EditProfile },
    { path: '/addprofile', exact: true, name: 'Add Profile', component: AddProfile },
 
-  { path: '/library', exact: true, name: 'Library', component: Library },
-  { path: '/library/:id', exact: true, name: 'Bundle Details', component: LibraryItem },
+  { path: '/library', exact: true, name: 'Local Library', component: Library },
+  { path: '/library/:id', exact: true, name: 'Local Bundle Details', component: LibraryItem },
+  { path: '/whoville', exact: true, name: 'Whoville Library', component: Whoville },
+  { path: '/whoville/:id', exact: true, name: 'Whoville Bundle Details', component: WhovilleItem },
 ];
 
 export default routes;
