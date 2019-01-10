@@ -2,53 +2,52 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge, Card, CardBody, CardHeader, Col, Row, Table, Button } from 'reactstrap';
 
-import usersData from './UsersData'
-
-function UserRow(props) {
-  const user = props.user
-  const userLink = `/users/${user.id}`
-
-  const getBadge = (status) => {
-    return status === 'Active' ? 'success' :
-      status === 'Inactive' ? 'secondary' :
-        status === 'Pending' ? 'warning' :
-          status === 'Banned' ? 'danger' :
-            'primary'
-  }
-
-  return (
-    <tr key={user.id.toString()}>
-      <td>{user.id}</td>
-      <td>{user.name}</td>
-      <td>{user.registered}</td>
-      <td>{user.role}</td>
-      <td><Badge color={getBadge(user.status)}>{user.status}</Badge></td>
-      <td><Link to={userLink}><Button size="sm" color="primary">
-                                        <i className="icon-eyeglass"></i>&nbsp;View
-                                    </Button></Link>
-                                    &nbsp;
-                                    <Link to={userLink}><Button size="sm" color="warning">
-                                        <i className="icon-note"></i>&nbsp;Edit
-                                    </Button></Link>
-                                    &nbsp;
-                                    <Button size="sm" color="danger">
-                                        <i className="fa fa-remove"></i>&nbsp;Delete
-                                    </Button></td>
-    </tr>
-  )
-}
 
 class Users extends Component {
 
+  constructor(props) {
+    super(props)
+      this.state = { usersData: [] }
+  }
+  deleteProfile = (e) => {
+    fetch('http://localhost:4000/api/users/del/'+e.target.id, {
+      method: 'POST',
+      headers: {},
+      body: JSON.stringify({})
+    }).then(this.loadData())
+    
+}
+
+  loadData() {
+    fetch('http://localhost:4000/api/users')
+        .then(response => response.json())
+        .then(data => {
+            this.setState({usersData: data})
+        })
+        .catch(err => console.error(this.props.url, err.toString()))
+}
+
+componentDidMount() {
+    this.loadData()
+}
+
+
   render() {
 
-    const userList = usersData.filter((user) => user.id )
+    const userList = this.state.usersData.filter((user) => user.id )
 
     return (
       <div className="animated fadeIn">
       <Row>
                     <Col>
                         <h1>Cuisine Users</h1>
+                        </Col>
+                        <Col align="right" > 
+                        <div >
+                            <Button size="lg" color="success" href="#/AddUser" disabled>
+                                        <i className="fa fa-plus"></i>&nbsp;Add New
+                            </Button>
+                        </div>
                     </Col>
                 </Row>
                 <Row>
@@ -66,6 +65,8 @@ class Users extends Component {
                     <tr>
                       <th scope="col">ID</th>
                       <th scope="col">Name</th>
+                      <th scope="col">Username</th>
+                      <th scope="col">e-mail</th>
                       <th scope="col">Registered</th>
                       <th scope="col">Role</th>
                       <th scope="col">Status</th>
@@ -74,7 +75,36 @@ class Users extends Component {
                   </thead>
                   <tbody>
                     {userList.map((user, index) =>
-                      <UserRow key={index} user={user}/>
+                      {
+                        const userLink = `/users/${user.id}`
+
+                        const getBadge = (status) => {
+                          return status === 'Active' ? 'success' :
+                            status === 'Inactive' ? 'secondary' :
+                              status === 'Pending' ? 'warning' :
+                                status === 'Banned' ? 'danger' :
+                                  'primary'
+                        }
+                      return <tr key={user.id.toString()}>
+                      <td>{user.id}</td>
+                      <td>{user.name}</td>
+                      <td>{user.username}</td>
+                      <td>{user.email}</td>
+                      <td>{user.registered}</td>
+                      <td>{user.role}</td>
+                      <td><Badge color={getBadge(user.status)}>{user.status}</Badge></td>
+                      <td><Link to={userLink}><Button size="sm" color="primary">
+                                                        <i className="icon-eyeglass"></i>&nbsp;View
+                                                    </Button></Link>
+                                                    &nbsp;
+                                                    <Link to={userLink}><Button size="sm" color="warning" disabled>
+                                                        <i className="icon-note"></i>&nbsp;Edit
+                                                    </Button></Link>
+                                                    &nbsp;
+                                                    <Button size="sm" color="danger" disabled={user.id < 2}>
+                                                        <i className="fa fa-remove"></i>&nbsp;Delete
+                                                    </Button></td>
+                    </tr>}
                     )}
                   </tbody>
                 </Table>

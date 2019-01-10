@@ -4,45 +4,6 @@ import { Badge, Card, CardBody, CardHeader, Col, Row, Table, Button } from 'reac
 
 // import profilesData from './ProfilesData'
 
-function ProfileRow(props) {
-  const profile = props.profile
-  const profileLink = `/profiles/${profile.id}`
-  const editProfileLink = `/editprofiles/${profile.id}`
-
-  const getBadge = (status) => {
-    return status === 'Active' ? 'success' :
-      status === 'Inactive' ? 'secondary' :
-        status === 'Pending' ? 'warning' :
-          status === 'Banned' ? 'danger' :
-            'primary'
-  }
- 
-  
-  return (
-    <tr key={profile.id.toString()}>
-      <td>{profile.id}</td>
-      <td>{profile.profile_type}</td>
-      <td>{profile.name}</td>
-      <td>{profile.user_name}</td>
-      <td>{profile.base_url}</td>
-      <td><img src={profile.cloud_type_img} height="50px"/></td>
-      <td>{profile.registered}</td>
-      <td><Badge color={getBadge(profile.status)}>{profile.status}</Badge></td>
-      <td><Link to={profileLink}><Button size="sm" color="primary">
-                                        <i className="icon-eyeglass"></i>&nbsp;View
-                                    </Button></Link>
-                                    &nbsp;
-                                    <Link to={editProfileLink}><Button size="sm" color="warning">
-                                        <i className="icon-note"></i>&nbsp;Edit
-                                    </Button></Link>
-                                    &nbsp;
-                                    <Button id={profile.id} size="sm" color="danger" onChange={this.deleteProfile.bind(this)}>
-                                        <i className="fa fa-remove"></i>&nbsp;Delete
-                                    </Button></td>
-    </tr>
-  )
-}
-
 class Profiles extends Component {
 
   constructor(props) {
@@ -146,7 +107,7 @@ class Profiles extends Component {
                                                             <i className="icon-note"></i>&nbsp;Edit
                                                         </Button></Link>
                                                         &nbsp;
-                                                        <Button id={profile.id} size="sm" color="danger" onClick={this.deleteProfile.bind(this)}>
+                                                        <Button id={profile.id} size="sm" color="danger" onClick={this.deleteProfile.bind(this)} disabled={profile.id < 2}>
                                                             <i className="fa fa-remove"></i>&nbsp;Delete
                                                         </Button></td>
                         </tr>

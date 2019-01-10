@@ -31,8 +31,7 @@ class AddProfile extends Component {
       baseURL: '',
       cloudType: 'AWS',
       status: 'Active',
-      file: '',
-      firstRun: true
+      file: ''
     };
   }
   saveData = (e) => {
@@ -133,21 +132,6 @@ class AddProfile extends Component {
 
 
   render() {
-
-    if(this.state.firstRun){
-      this.state.userList.map((user) => 
-      this.setState({associatedUser: user.username})
-    
-    )
-
-    this.state.nextId.map((id) => {
-      this.setState({profileId: id.id})
-    }
-    
-    )
-      this.setState({firstRun: false})
-    }
-    
     return (
       <div className="animated fadeIn">
         <Row>
@@ -338,13 +322,12 @@ class AddProfile extends Component {
    &nbsp;
    </Col>
    <Col xs="12" md="9" align="right">
-  
+   <Button size="lg" outline color="primary"  href ="#/profiles">
+                                <i className="fa fa-long-arrow-left"></i> Back  
+                            </Button>
+                            &nbsp;
    <Button size="lg" color="primary" type="submit" onClick={this.saveData}>
                      <i className="fa fa-save"></i>&nbsp;Save
-                 </Button>
-                 &nbsp;
-                <Button size="lg" color="danger" href ="#/profiles">
-                     <i className="fa fa-ban" ></i>&nbsp;Cancel
                  </Button>
    
  </Col>

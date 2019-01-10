@@ -167,15 +167,13 @@ class AddZeppelinNote extends Component{
                       &nbsp;
                       </Col>
                       <Col xs="12" md="9" align="right">
-                     
+                      <Button size="lg" outline color="primary"  href ="#/zeppelinnotes">
+                                <i className="fa fa-long-arrow-left"></i> Back  
+                            </Button>
+                            &nbsp;
                       <Button size="lg" color="primary">
                                         <i className="fa fa-save"></i>&nbsp;Save
                                     </Button>
-                                    &nbsp;
-                                   <Button size="lg" color="danger" href ="#/zeppelinnotes">
-                                        <i className="fa fa-ban" ></i>&nbsp;Cancel
-                                    </Button>
-                      
                     </Col>
                   </FormGroup>
                   

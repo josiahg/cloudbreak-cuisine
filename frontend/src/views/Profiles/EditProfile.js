@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Base64 from 'base-64';
 import { Card, CardBody, CardHeader, Progress, Row, Col, Button, Form,
   FormGroup,
   FormText,
@@ -21,12 +22,85 @@ class EditProfile extends Component {
     this.toggle = this.toggle.bind(this);
     this.state = {
       activeTab: new Array(4).fill('3'),
+      profilesData: [] ,
+      nextId: [],
+      userList: [],
+      profileId: 0,
+      profileType: 'Cloudbreak',
+      profileName: '',
+      associatedUser: '',
+      baseURL: '',
+      cloudType: 'AWS',
+      status: 'Active',
+      file: ''
     };
   }
 
-  lorem() {
-    return 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.'
-  }
+
+  loadData() {
+    fetch('http://localhost:4000/api/profiles/')
+        .then(response => response.json())
+        .then(data => {
+          data.map((profile) => this.setState({
+            profileId: profile.id,
+            profileType: profile.profile_type,
+            profileName: profile.name,
+            associatedUser: profile.user_name,
+            baseURL: profile.base_url,
+            cloudType: profile.cloud_type,
+            status: profile.status,
+            file: profile.profile_file
+          }))
+        })
+        .catch(err => console.error(this.props.url, err.toString()))
+}
+
+loadUserData() {
+  fetch('http://localhost:4000/api/users')
+      .then(response => response.json())
+      .then(data => {
+          this.setState({userList: data})
+      })
+      .catch(err => console.error(this.props.url, err.toString()))
+}
+
+componentDidMount() {
+    this.loadData()
+    this.loadUserData()
+}
+
+  deleteProfile = (e) => {
+    fetch('http://localhost:4000/api/profiles/del/'+e.target.id, {
+      method: 'POST',
+      headers: {},
+      body: JSON.stringify({})
+    })
+    this.props.history.push('profiles')
+    
+}
+
+handlefileEntryChange = (e) => {
+  this.setState({file: Base64.encode(e.target.value)});
+}
+
+handleassociatedUserChange = (e) => {
+  this.setState({associatedUser: e.target.value});
+}
+
+handlestatusChange = (e) => {
+  this.setState({status: e.target.value});
+}
+handlebaseURLChange = (e) => {
+  this.setState({baseURL: e.target.value});
+}
+
+handleprofileTypeChange = (e) => {
+  this.setState({profileType: e.target.value});
+}
+
+handleprofileNameChange = (e) => {
+  this.setState({profileName: e.target.value});
+}
 
   toggle(tabPane, tab) {
     const newArray = this.state.activeTab.slice()
@@ -36,37 +110,9 @@ class EditProfile extends Component {
     });
   }
 
-  tabPane() {
-    return (
-      <>
-        <TabPane tabId="1">
-        <Button size="lg" color="success">
-                                    <i className="fa fa-upload"></i>&nbsp;Upload
-                                </Button>
-        </TabPane>
-        <TabPane tabId="2">
-        <InputGroup>
-        <InputGroupAddon addonType="prepend">
-          <InputGroupText><i className="fa fa-link"></i></InputGroupText>
-        </InputGroupAddon>
-        <Input type="text" id="recipeURL" name="recipeURL" placeholder="Enter URL"/>
-        </InputGroup>
-        </TabPane>
-        <TabPane tabId="3">
-        <InputGroup>
-        <InputGroupAddon addonType="prepend">
-          <InputGroupText><i className="fa fa-code"></i></InputGroupText>
-        </InputGroupAddon>
-        <Input type="textarea" rows="20" id="recipeCode" name="recipeCode" value={this.lorem()}/>
-        </InputGroup>
-        </TabPane>
-      </>
-    );
-  }
 
   render() {
 
-    const profileList = profilesData.filter((profile) => (profile.id.toString() === this.props.match.params.id));
     
     return (
       <div className="animated fadeIn">
@@ -77,7 +123,7 @@ class EditProfile extends Component {
               <h2>Edit Profile</h2>
             </CardHeader>
             
-              {profileList.map((profile) =>
+              
                   <CardBody>
                   <Form>
                     <FormGroup row>
@@ -89,7 +135,7 @@ class EditProfile extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-bullseye"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="text" id="profileID" name="profileID" value={profile.id} disabled/>
+                          <Input type="text" id="profileID" name="profileID" value={this.state.profileId} disabled/>
                         </InputGroup>
                       </Col>     
                     </FormGroup>
@@ -103,10 +149,10 @@ class EditProfile extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-cloud"></i></InputGroupText>
                           </InputGroupAddon>
-                            <Input type="select" id="profileType" name="profileType">
-                                <option selected={profile.profile_type.toString() === 'Cloudbreak'}>Cloudbreak</option>
-                                <option selected={profile.profile_type.toString() === 'Director'}>Director</option>
-                                <option selected={profile.profile_type.toString() === 'Whoville'}>Whoville</option>
+                            <Input type="select" id="profileType" name="profileType" onChange={this.handleprofileTypeChange}>
+                                <option selected={this.state.profileType.toString() === 'Cloudbreak'}>Cloudbreak</option>
+                                <option selected={this.state.profileType.toString() === 'Director'}>Director</option>
+                                <option selected={this.state.profileType.toString() === 'Whoville'}>Whoville</option>
                             </Input>
                         </InputGroup>
                       </Col>     
@@ -121,7 +167,7 @@ class EditProfile extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="text" id="profileName" name="profileName" value={profile.name}/>
+                          <Input type="text" id="profileName" name="profileName" value={this.state.profileName} onChange={this.handleprofileNameChange} required/>
                         </InputGroup>
                       </Col>     
                     </FormGroup>
@@ -136,8 +182,8 @@ class EditProfile extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-user"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" id="associatedUserName" name="associatedUserName">
-                                <option>{profile.associated_user_name}</option>
+                          <Input type="select" id="associatedUserName" name="associatedUserName" onChange={this.handleassociatedUserChange}>
+                                <option>{this.state.associatedUser}</option>
                             </Input>
                         </InputGroup>
                       </Col>     
@@ -152,7 +198,7 @@ class EditProfile extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-link"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="text" id="baseURL" name="baseURL" value={profile.base_url}/>
+                          <Input type="text" id="baseURL" name="baseURL" value={this.state.baseURL} onChange={this.handlebaseURLChange} required/>
                         </InputGroup>
                       </Col>     
                     </FormGroup>
@@ -167,9 +213,9 @@ class EditProfile extends Component {
                             <InputGroupText><i className="fa fa-cloud-upload"></i></InputGroupText>
                           </InputGroupAddon>
                           <Input type="select" id="cloudType" name="cloudType">
-                                <option selected={profile.cloud_type.toString() === 'GCP'}>GCP</option>
-                                <option selected={profile.cloud_type.toString() === 'AWS'}>AWS</option>
-                                <option selected={profile.cloud_type.toString() === 'Azure'}>Azure</option>
+                                <option selected={this.state.cloudType.toString() === 'GCP'}>GCP</option>
+                                <option selected={this.state.cloudType.toString() === 'AWS'}>AWS</option>
+                                <option selected={this.state.cloudType.toString() === 'Azure'}>Azure</option>
                             </Input>
                         </InputGroup>
                       </Col>     
@@ -186,8 +232,8 @@ class EditProfile extends Component {
                             <InputGroupText><i className="fa fa-times"></i></InputGroupText>
                           </InputGroupAddon>
                           <Input type="select" id="status" name="status">
-                                <option selected={profile.status.toString() === 'Active'}>Active</option>
-                                <option selected={profile.status.toString() === 'Inactive'}>Inactive</option>
+                                <option selected={this.state.status.toString() === 'Active'}>Active</option>
+                                <option selected={this.state.status.toString() === 'Inactive'}>Inactive</option>
                             </Input>
                         </InputGroup>
                       </Col>     
@@ -224,7 +270,27 @@ class EditProfile extends Component {
                             </NavItem>
                           </Nav>
                           <TabContent activeTab={this.state.activeTab[0]}>
-                            {this.tabPane()}
+                          <TabPane tabId="1">
+        <Button size="lg" color="success" disabled>
+                                    <i className="fa fa-upload"></i>&nbsp;Upload
+                                </Button>
+        </TabPane>
+        <TabPane tabId="2">
+        <InputGroup>
+        <InputGroupAddon addonType="prepend">
+          <InputGroupText><i className="fa fa-link"></i></InputGroupText>
+        </InputGroupAddon>
+        <Input type="text" id="recipeURL" name="recipeURL" placeholder="Enter URL" disabled/>
+        </InputGroup>
+        </TabPane>
+        <TabPane tabId="3">
+        <InputGroup>
+        <InputGroupAddon addonType="prepend">
+          <InputGroupText><i className="fa fa-code"></i></InputGroupText>
+        </InputGroupAddon>
+        <Input type="textarea" rows="20" id="recipeCode" name="recipeCode" value={Base64.decode(this.state.file)}/>
+        </InputGroup>
+        </TabPane>
                           </TabContent>
               
                                   </Col>
@@ -235,20 +301,23 @@ class EditProfile extends Component {
                  &nbsp;
                  </Col>
                  <Col xs="12" md="9" align="right">
-                
+                 <Button size="lg" outline color="primary"  href ="#/profiles">
+                                <i className="fa fa-long-arrow-left"></i> Back  
+                            </Button>
+                            &nbsp;
                  <Button size="lg" color="primary">
                                    <i className="fa fa-save"></i>&nbsp;Save
                                </Button>
                                &nbsp;
-                              <Button size="lg" color="danger" href ="#/profiles">
-                                   <i className="fa fa-ban" ></i>&nbsp;Cancel
+                              <Button size="lg" color="danger" onClick={this.deleteProfile.bind(this)} disabled={this.state.profileId < 2}>
+                                   <i className="fa fa-remove" ></i>&nbsp;Delete
                                </Button>
                  
                </Col>
               </FormGroup>
               </Form>
               </CardBody>
-              )}
+            
              
             </Card>
           </Col>

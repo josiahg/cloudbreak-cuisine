@@ -204,13 +204,12 @@ class Recipe extends Component{
                       &nbsp;
                       </Col>
                       <Col xs="12" md="9" align="right">
-                     
+                      <Button size="lg" outline color="primary"  href ="#/recipes">
+                                <i className="fa fa-long-arrow-left"></i> Back  
+                            </Button>
+                            &nbsp;
                       <Button size="lg" color="warning" href ={"#/editrecipes/"+recipe.id}>
                                         <i className="icon-note"></i>&nbsp;Edit
-                                    </Button>
-                                    &nbsp;
-                                   <Button size="lg" color="danger" href ="#/recipes">
-                                        <i className="fa fa-ban" ></i>&nbsp;Cancel
                                     </Button>
                       
                     </Col>
