@@ -7,14 +7,18 @@ class WhovilleItem extends Component {
 
     constructor(props) {
         super(props)
-        this.state = { libraryItem: {} }
+        this.state = { libraryItem: {},
+                        bundleId: ''
+                        }
     }
 
     loadData() {
+      
         fetch('http://localhost:4000/api/whoville/item/' + this.props.match.params.id)
             .then(response => response.json())
             .then(data => {
-                this.setState({libraryItem: data})
+              this.setState({libraryItem: data,
+                            bundleId: this.props.match.params.id})
             })
             .catch(err => console.error(this.props.url, err.toString()))
     }
@@ -31,6 +35,17 @@ class WhovilleItem extends Component {
           .then(response => response.json())
           .catch(err => console.error(this.props.url, err.toString()))*/
     }
+
+
+    deployWhoville = (e) => {
+      
+      fetch('http://localhost:4000/api/whoville/deploy/' + e.target.id)
+          .then(response => response.json())
+          .catch(err => console.error(this.props.url, err.toString()))
+          this.props.history.push('dashboard')
+    }
+            
+
 
   render() {
       // Wait to render until data has been loaded
@@ -75,7 +90,7 @@ class WhovilleItem extends Component {
                     </Button>
                     </td>
                     <td align="center" width="33%"> 
-                    <Button size="lg" color="primary">
+                    <Button id={this.state.bundleId} size="lg" color="primary" onClick={this.deployWhoville.bind(this)}>
                       <i className="fa fa-upload"></i>&nbsp;Deploy
                     </Button>
                     </td>
