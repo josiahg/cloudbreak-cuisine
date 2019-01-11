@@ -93,6 +93,17 @@ CREATE TABLE cloudbreak_cuisine.external_bundles
   download_url text
 );
 
+DROP TABLE IF EXISTS cloudbreak_cuisine.whoville;
+CREATE TABLE cloudbreak_cuisine.whoville
+(
+  id SERIAL NOT NULL PRIMARY KEY,
+  name text,
+  version text,
+  description text,
+  image text,
+  download_url text
+);
+
 DROP TABLE IF EXISTS cloudbreak_cuisine.users;
 CREATE TABLE cloudbreak_cuisine.users
 (

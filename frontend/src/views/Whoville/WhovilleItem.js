@@ -11,7 +11,7 @@ class WhovilleItem extends Component {
     }
 
     loadData() {
-        fetch('http://localhost:4000/api/library/' + this.props.match.params.id)
+        fetch('http://localhost:4000/api/whoville/item/' + this.props.match.params.id)
             .then(response => response.json())
             .then(data => {
                 this.setState({libraryItem: data})
@@ -21,6 +21,15 @@ class WhovilleItem extends Component {
 
     componentDidMount() {
         this.loadData()
+    }
+
+    handleDeployClick(id) {
+      //e.preventDefault();
+      console.log(id);
+      //console.log('http://localhost:4000/api/whoville/deploy/' + this.libraryItem.id);
+      /*fetch('http://localhost:4000/api/whoville/deploy/' + this.props.match.params.id)
+          .then(response => response.json())
+          .catch(err => console.error(this.props.url, err.toString()))*/
     }
 
   render() {
