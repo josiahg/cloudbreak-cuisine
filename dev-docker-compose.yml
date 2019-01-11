@@ -27,6 +27,6 @@ services:
   whoville:
     image: 'chaffelson/whoville:latest'
     volumes:
-      - ~/profile.yml:/profile.yml:ro
+      - ${PROFILE}:/profile.yml:ro
     ports:
       - 5000:5000
