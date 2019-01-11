@@ -27,16 +27,6 @@ class WhovilleItem extends Component {
         this.loadData()
     }
 
-    handleDeployClick(id) {
-      //e.preventDefault();
-      console.log(id);
-      //console.log('http://localhost:4000/api/whoville/deploy/' + this.libraryItem.id);
-      /*fetch('http://localhost:4000/api/whoville/deploy/' + this.props.match.params.id)
-          .then(response => response.json())
-          .catch(err => console.error(this.props.url, err.toString()))*/
-    }
-
-
     deployWhoville = (e) => {
       
       fetch('http://localhost:4000/api/whoville/deploy/' + e.target.id)
@@ -49,7 +39,7 @@ class WhovilleItem extends Component {
 
   render() {
       // Wait to render until data has been loaded
-      if(this.state.libraryItem.name === undefined) {
+      if(this.state.libraryItem.name == undefined) {
           return(null)
       }
       else {
