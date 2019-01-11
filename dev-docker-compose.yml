@@ -9,6 +9,7 @@ services:
       - 4000:4000
     links:
       - db
+      - whoville
   db:
     image: postgres
     restart: always
@@ -23,3 +24,9 @@ services:
     restart: always
     ports:
       - 8080:8080
+  whoville:
+    image: 'chaffelson/whoville:latest'
+    volumes:
+      - ~/profile.yml:/profile.yml:ro
+    ports:
+      - 5000:5000
