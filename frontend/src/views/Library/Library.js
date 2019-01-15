@@ -8,14 +8,14 @@ function LibraryItemCol(props) {
     const libraryItem = props.libraryItem
     const itemLink = `#/library/${libraryItem.id}`
     const itemName = libraryItem.name
-    const itemVersion = libraryItem.version
-    if(itemName === undefined || itemVersion === undefined) {
+    const itemHosts = libraryItem.hosts
+    if(itemName === undefined || itemHosts === undefined) {
         return(null)
     }
     else {
     return (
       <Col xs="12" sm="6" lg="3">
-        <Widget02 header={itemName.toString()} mainText={itemVersion.toString()} icon="fa fa-archive" color="success" footer link={itemLink} />
+        <Widget02 header={itemName.toString()} mainText={"Deploys " + itemHosts.toString() +" host(s)"} icon="fa fa-archive" color="success" footer link={itemLink} />
       </Col>
     )
     }
@@ -49,8 +49,8 @@ class Library extends Component {
           &nbsp;
         </Row>
         <Row>
-            {this.state.libraryData.map((libraryItem, index) =>
-                      <LibraryItemCol key={index} libraryItem={libraryItem}/>
+            {this.state.libraryData.map((libraryItem) =>
+                      <LibraryItemCol libraryItem={libraryItem}/>
             )}
         </Row>
      

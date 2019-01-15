@@ -56,7 +56,5 @@ When startup completes, the default browser will open to the UI. Or, visit [http
 
 # Authors
 
-**Paul Vidal** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/paulvid/)
-
 **Josiah Goodson** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/josiahgoodson/)
-
+**Paul Vidal** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/paulvid/)

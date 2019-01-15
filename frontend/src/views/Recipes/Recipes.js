@@ -17,16 +17,53 @@ import servicesData from './ServicesData'
 class Recipes extends Component{
     constructor(props) {
         super(props);
+        this.state = {  recipesData: [],
+                        servicesData: [],
+                        clustersData: []
+                     }
     }
-    
+
+    loadRecipeData() {
+        fetch('http://localhost:4000/api/recipes')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({recipesData: data})
+            })
+            .catch(err => console.error(this.props.url, err.toString()))
+    }
+
+    loadServiceData() {
+        fetch('http://localhost:4000/api/services')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({servicesData: data})
+            })
+            .catch(err => console.error(this.props.url, err.toString()))
+    }
+
+    loadClusterData() {
+        fetch('http://localhost:4000/api/clusters')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({clustersData: data})
+            })
+            .catch(err => console.error(this.props.url, err.toString()))
+    }
+  
+    componentDidMount() {
+        this.loadRecipeData()
+        this.loadServiceData()
+        this.loadClusterData()
+    }
+  
 
    
     
     loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
     
     render(){
-        const serviceList = servicesData.filter((service) => ((service.display == 1)))
-
+        const serviceList = this.state.servicesData.filter((service) => ((service.display == 1)))
+        const singleRecipes = this.state.recipesData.filter((recipe) => ((recipe.display == 1) && (recipe.serviceid == 0) && (recipe.addon_type == "Recipe")))
         return(  
                      
             <div className="animated fadeIn align-items-center">
@@ -37,7 +74,7 @@ class Recipes extends Component{
                         </Col>
                         <Col align="right" > 
                         <div >
-                            <Button size="lg" color="success" href="#/AddRecipe">
+                            <Button size="lg" color="success" href="#/AddRecipe" disabled>
                                         <i className="fa fa-plus"></i>&nbsp;Add New
                             </Button>
                         </div>
@@ -69,7 +106,7 @@ class Recipes extends Component{
        
                     {serviceList.map((service) => {
                             //return <h1>{service.id}</h1>
-                            const associatedRecipes = recipesData.filter((recipe) => ((recipe.display == 1) && (recipe.serviceId == service.id) && (recipe.addon_type == "Recipe")))
+                            const associatedRecipes = this.state.recipesData.filter((recipe) => ((recipe.display == 1) && (recipe.serviceid == service.id) && (recipe.addon_type == "Recipe")))
                             return associatedRecipes.map((recipe) => {
                                   
                                   
@@ -81,16 +118,26 @@ class Recipes extends Component{
                                      </div>
                                    </td>
                                    <td>
-                                     <div>{service.description}</div>
+                                     <div>{service.service_description}</div>
                                      
                                    </td>
+                                   
+                                     {this.state.clustersData.filter((cluster) => (cluster.id == service.cluster_id)).map((cluster) => {
+                                         return <td>
+                                         <div>{cluster.cluster_type}</div>
+                                         <div className="small text-muted">
+                                        Version: {cluster.version}
+                                    </div>
+                                    </td>
+                                        }
+                                     )
+                                    }
+                          
+                                   
                                    <td>
-                                     <div>{service.cluster_type}</div>
-                                   </td>
-                                   <td>
-                                    <div>{service.description} METASTORE</div>
+                                    <div>{recipe.recipename}</div>
                                     <div className="small text-muted">
-                                        {recipe.recipeDescription}
+                                        {recipe.recipedescription}
                                     </div>
                                    </td>
                                    <td>
@@ -101,7 +148,7 @@ class Recipes extends Component{
                                         <i className="icon-eyeglass"></i>&nbsp;View
                                     </Button>
                                     &nbsp;
-                                   <Button size="sm" color="warning" href={"#/editrecipes/" + recipe.id}>
+                                   <Button size="sm" color="warning" href={"#/editrecipes/" + recipe.id} disabled>
                                         <i className="icon-note"></i>&nbsp;Edit
                                     </Button>
                                     &nbsp;
@@ -114,6 +161,49 @@ class Recipes extends Component{
                             )
                         })
                     }
+                    {singleRecipes.map((recipe) => {
+                               
+                               
+
+                                return  <tr>
+                                <td className="text-center">
+                                  <div>
+                                    <img src='../../assets/img/cuisine/no-entry.png' height="50px" width="50px"/>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div>N/A</div>
+                                  
+                                </td>
+                                <td>
+                                  <div>N/A</div>
+                                </td>
+                                <td>
+                                 <div>{recipe.recipename}</div>
+                                 <div className="small text-muted">
+                                     {recipe.recipedescription}
+                                 </div>
+                                </td>
+                                <td>
+                                <div>{recipe.recipe_type}</div>
+                                </td>
+                                <td>
+                                <Button size="sm" color="primary" href={"#/recipes/" + recipe.id}>
+                                     <i className="icon-eyeglass"></i>&nbsp;View
+                                 </Button>
+                                 &nbsp;
+                                <Button size="sm" color="warning" href={"#/editrecipes/" + recipe.id}>
+                                     <i className="icon-note"></i>&nbsp;Edit
+                                 </Button>
+                                 &nbsp;
+                                <Button size="sm" color="danger" disabled>
+                                     <i className="fa fa-remove"></i>&nbsp;Delete
+                                 </Button>
+                                </td>
+                              </tr>
+                          }
+                         )
+                     }
                                </tbody>
                 </Table>
                 </CardBody> 

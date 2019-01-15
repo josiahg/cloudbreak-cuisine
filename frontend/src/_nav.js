@@ -46,21 +46,21 @@ export default {
           url: '/recipes',
           icon: 'icon-wrench',
         },
-        {
-          name: 'NiFi Templates',
-          url: '/nifitemplates',
-          icon: 'icon-note',
-        },
-        {
-          name: 'Zeppelin Notes',
-          url: '/zeppelinnotes',
-          icon: 'icon-notebook',
-        },
-        {
-          name: 'SQL Scripts',
-          url: '/sqlscripts',
-          icon: 'icon-puzzle',
-        },
+        // {
+        //   name: 'NiFi Templates',
+        //   url: '/nifitemplates',
+        //   icon: 'icon-note',
+        // },
+        // {
+        //   name: 'Zeppelin Notes',
+        //   url: '/zeppelinnotes',
+        //   icon: 'icon-notebook',
+        // },
+        // {
+        //   name: 'SQL Scripts',
+        //   url: '/sqlscripts',
+        //   icon: 'icon-puzzle',
+        // },
       ],
     },
     {

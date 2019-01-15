@@ -17,7 +17,7 @@ router.route('/').get((req, res) => {
             r.name = key;
             r.version = 'Whoville';
             r.description = message[key].desc;
-            r.image = 'https://raw.githubusercontent.com/paulvid/hwx-data-science-workshop/master/HWX_LOGO.png';
+            r.image = '../../assets/img/cuisine/whoville-bundle.png';
             r.download_url = '';
             db.none('insert into cloudbreak_cuisine.whoville values($1,$2,$3,$4,$5,$6) on conflict(id) do nothing', [r.id, r.name, r.version,r.description,r.image,r.download_url])
                 .then(() => {

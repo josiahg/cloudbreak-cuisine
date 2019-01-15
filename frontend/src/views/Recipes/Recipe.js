@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Base64 from 'base-64';
 import { Card, CardBody, CardHeader, Progress, Row, Col, Button, Form,
     FormGroup,
     FormText,
@@ -22,9 +23,45 @@ class Recipe extends Component{
         this.toggle = this.toggle.bind(this);
         this.state = {
           activeTab: new Array(4).fill('1'),
+          recipesData: [],
+        servicesData: [],
+        clustersData: []
         };
       }
-    
+
+
+loadRecipeData() {
+fetch('http://localhost:4000/api/recipes')
+.then(response => response.json())
+.then(data => {
+this.setState({recipesData: data})
+})
+.catch(err => console.error(this.props.url, err.toString()))
+}
+
+loadServiceData() {
+fetch('http://localhost:4000/api/services')
+.then(response => response.json())
+.then(data => {
+this.setState({servicesData: data})
+})
+.catch(err => console.error(this.props.url, err.toString()))
+}
+
+loadClusterData() {
+fetch('http://localhost:4000/api/clusters')
+.then(response => response.json())
+.then(data => {
+this.setState({clustersData: data})
+})
+.catch(err => console.error(this.props.url, err.toString()))
+}
+
+componentDidMount() {
+this.loadRecipeData()
+this.loadServiceData()
+this.loadClusterData()
+}
       lorem() {
         return 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.'
       }
@@ -61,8 +98,10 @@ class Recipe extends Component{
     loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
     
     render(){
-        const serviceList = servicesListData.filter((service) => ((service.name)))
-        const recipeList = recipesData.filter((recipe) => (recipe.id.toString() === this.props.match.params.id));
+        //const serviceList = this.state.servicesData.filter((service) => ((service.service_description)))
+        const recipeList = this.state.recipesData.filter((recipe) => (recipe.id.toString() === this.props.match.params.id));
+    
+
 
         return(  
                      
@@ -103,7 +142,7 @@ class Recipe extends Component{
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
                       </InputGroupAddon>
-                      <Input type="text" id="recipeName" name="recipeName" value={recipe.recipeDescription} autoComplete="name" disabled/>
+                      <Input type="text" id="recipeName" name="recipeName" value={recipe.recipename} autoComplete="name" disabled/>
                     </InputGroup>
                     </Col>
                   </FormGroup>
@@ -118,7 +157,7 @@ class Recipe extends Component{
                         <InputGroupText><i className="fa fa-comment"></i></InputGroupText>
                       </InputGroupAddon>
 
-                      <Input type="textarea" id="recipeDescription" name="recipeDescription" value={recipe.recipeDescription} disabled/>
+                      <Input type="textarea" id="recipeDescription" name="recipeDescription" value={recipe.recipedescription} disabled/>
                     </InputGroup>
                     </Col>
                   </FormGroup>
@@ -155,9 +194,11 @@ class Recipe extends Component{
                         <InputGroupText><i className="fa fa-cog"></i></InputGroupText>
                       </InputGroupAddon>
                       <Input type="select" name="service" id="service" disabled>
-                      {serviceList.map((service) =>
-                        <option>{service.name}</option>
-                            )}
+                     
+                        <option>{this.state.servicesData.filter((service) => (service.id == recipe.serviceid)).map((service) => {
+                                         return service.service_description
+                                        }
+                                     )}</option>
                                 </Input>
                       </InputGroup>
                     </Col>
@@ -174,9 +215,36 @@ class Recipe extends Component{
                         <InputGroupText><i className="fa fa-server"></i></InputGroupText>
                       </InputGroupAddon>
                       <Input type="select" name="clusterType" id="clusterType" disabled>
-                                    <option>HDP</option>
-                                    <option>HDF</option>
-                                    <option>HDP + HDF</option>
+                                    <option>{this.state.servicesData.filter((service) => (service.id == recipe.serviceid)).map((service) => {
+                                         return this.state.clustersData.filter((cluster) => (cluster.id == service.cluster_id)).map((cluster) => {
+                                          return cluster.cluster_type
+                                         }
+                                      )
+                                        }
+                                     )}</option>
+                                </Input>
+                      </InputGroup>
+                    </Col>
+                  </FormGroup>
+
+                  <FormGroup row>
+                    
+                    <Col md="3">
+                      <Label htmlFor="name">Cluster Version</Label>
+                      </Col>
+                      <Col xs="12" md="9">
+                      <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText><i className="fa fa-code-fork"></i></InputGroupText>
+                      </InputGroupAddon>
+                      <Input type="select" name="clusterType" id="clusterType" disabled>
+                                    <option>{this.state.servicesData.filter((service) => (service.id == recipe.serviceid)).map((service) => {
+                                         return this.state.clustersData.filter((cluster) => (cluster.id == service.cluster_id)).map((cluster) => {
+                                          return cluster.version
+                                         }
+                                      )
+                                        }
+                                     )}</option>
                                 </Input>
                       </InputGroup>
                     </Col>
@@ -193,7 +261,7 @@ class Recipe extends Component{
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText><i className="fa fa-code"></i></InputGroupText>
                       </InputGroupAddon>
-                      <Input type="textarea" id="recipeContent" name="recipeContent" value={this.lorem()} disabled/>
+                      <Input type="textarea" rows="20" id="recipeContent" name="recipeContent" value={Base64.decode(recipe.content)} disabled/>
                     </InputGroup>
 
                     </Col>

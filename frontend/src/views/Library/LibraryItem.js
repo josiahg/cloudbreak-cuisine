@@ -34,7 +34,7 @@ class LibraryItem extends Component {
           <Row>
               <Col xs={6} md={4}>
                 <div className="chart-wrapper" align="center" >
-                  <p><img src={this.state.libraryItem.image}/></p>
+                  <p><img src={this.state.libraryItem.image} height="400px" width="400px"/></p>
                 </div>
             </Col>
             <Col xs={12} md={8}>

@@ -35,4 +35,5 @@ Navigate to [http://localhost:3000](http://localhost:3000). The app will automat
 
 # Authors
 
+**Josiah Goodson** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/josiahgoodson/)
 **Paul Vidal** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/paulvid/)

@@ -40,3 +40,4 @@ The application includes Swagger for API documentation. Point your browser to [h
 # Authors
 
 **Josiah Goodson** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/josiahgoodson/)
+**Paul Vidal** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/paulvid/)
