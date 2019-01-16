@@ -27,6 +27,7 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "mongoose": "^5.3.13",
+    "nodejs-base64-encode": "0.0.2",
     "pg-promise": "^8.5.3",
     "request": "^2.88.0",
     "swagger-ui-express": "^4.0.2",

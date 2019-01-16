@@ -122,7 +122,7 @@ loadBundleContent() {
                     </td>
                     <td align="center" width="25%"> 
                     <Button color="success" disabled>
-                      <i className="fa fa-upload"></i>&nbsp;Deploy
+                      <i className="fa fa-upload"></i>&nbsp;Whoville
                     </Button>
                     </td>
                     <td align="center" width="25%">
@@ -224,7 +224,7 @@ loadBundleContent() {
                   </FormGroup>
                   <FormGroup row>
                           <Col md="3">
-                            <Label htmlFor="name">Associated Cluster</Label>
+                            <Label htmlFor="name">Associated Stack</Label>
                           </Col>   
                           <Col xs="12" md="9">
                             <InputGroup>
@@ -240,7 +240,7 @@ loadBundleContent() {
 
                         <FormGroup row>
                           <Col md="3">
-                            <Label htmlFor="name">Cluster Version</Label>
+                            <Label htmlFor="name">Stack Version</Label>
                           </Col>   
                           <Col xs="12" md="9">
                             <InputGroup>
@@ -276,7 +276,6 @@ loadBundleContent() {
               <Form>
               <FormGroup row>
                     <Col>
-                      <Label htmlFor="content">Recipe Content</Label>
                       
                       <InputGroup>
                       <InputGroupAddon addonType="prepend">
@@ -298,7 +297,6 @@ loadBundleContent() {
               <Form>
               <FormGroup row>
                     <Col>
-                      <Label htmlFor="content">Recipe Content</Label>
                       
                       <InputGroup>
                       <InputGroupAddon addonType="prepend">

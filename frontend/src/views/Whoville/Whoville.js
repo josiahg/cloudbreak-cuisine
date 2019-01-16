@@ -8,14 +8,14 @@ function LibraryItemCol(props) {
     const libraryItem = props.libraryItem
     const itemLink = `#/whoville/${libraryItem.id}`
     const itemName = libraryItem.name
-    const itemVersion = libraryItem.version
-    if(itemName === undefined || itemVersion === undefined) {
+    const itemDescription = libraryItem.description
+    if(itemName === undefined || itemDescription === undefined) {
         return(null)
     }
     else {
     return (
       <Col xs="12" sm="6" lg="3">
-        <Widget02 header={itemName.toString()} mainText={itemVersion.toString()} icon="fa fa-github" color="primary" footer link={itemLink} />
+        <Widget02 header={itemName.toString()} mainText={itemDescription.toString().substring(0, 35) + "..." } icon="fa fa-github" color="primary" footer link={itemLink} />
       </Col>
     )
     }
@@ -27,6 +27,12 @@ class Whoville extends Component {
         super(props)
         this.state = { libraryData: [] }
     }
+    initData() {
+        fetch('http://localhost:4000/api/whoville/refresh')
+            .then(response => response.json())
+            .catch(err => console.error(this.props.url, err.toString()))
+    }
+
 
     loadData() {
         fetch('http://localhost:4000/api/whoville')
@@ -38,6 +44,7 @@ class Whoville extends Component {
     }
 
     componentDidMount() {
+        this.initData()
         this.loadData()
     }
 
@@ -49,8 +56,8 @@ class Whoville extends Component {
           &nbsp;
         </Row>
         <Row>
-            {this.state.libraryData.map((libraryItem, index) =>
-                      <LibraryItemCol key={index} libraryItem={libraryItem}/>
+            {this.state.libraryData.map((libraryItem) =>
+                      <LibraryItemCol  libraryItem={libraryItem}/>
             )}
         </Row>
      

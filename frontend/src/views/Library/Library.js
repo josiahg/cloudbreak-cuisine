@@ -8,14 +8,14 @@ function LibraryItemCol(props) {
     const libraryItem = props.libraryItem
     const itemLink = `#/library/${libraryItem.id}`
     const itemName = libraryItem.name
-    const itemHosts = libraryItem.hosts
-    if(itemName === undefined || itemHosts === undefined) {
+    const itemDescription = libraryItem.description
+    if(itemName === undefined || itemDescription === undefined) {
         return(null)
     }
     else {
     return (
       <Col xs="12" sm="6" lg="3">
-        <Widget02 header={itemName.toString()} mainText={"Deploys " + itemHosts.toString() +" host(s)"} icon="fa fa-archive" color="success" footer link={itemLink} />
+        <Widget02 header={itemName.toString()} mainText={itemDescription.toString().substring(0, 35) + "..." } icon="fa fa-archive" color="success" footer link={itemLink} />
       </Col>
     )
     }

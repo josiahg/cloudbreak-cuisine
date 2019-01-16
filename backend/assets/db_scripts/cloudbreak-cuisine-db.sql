@@ -103,7 +103,6 @@ CREATE TABLE cloudbreak_cuisine.bundles
   name text,
   description text,
   image text,
-  hosts integer,
   type text
 );
 
@@ -125,7 +124,35 @@ CREATE TABLE cloudbreak_cuisine.bundles_contents
   content text
 );
 
+DROP TABLE IF EXISTS cloudbreak_cuisine.whoville_bundles;
+CREATE TABLE cloudbreak_cuisine.whoville_bundles
+(
+  id integer NOT NULL PRIMARY KEY,
+  name text UNIQUE NOT NULL,
+  description text,
+  image text,
+  type text
+);
 
+
+DROP TABLE IF EXISTS cloudbreak_cuisine.whoville_bundles_dependencies;
+CREATE TABLE cloudbreak_cuisine.whoville_bundles_dependencies
+(
+  id integer NOT NULL PRIMARY KEY,
+  bundle_id integer,
+  dep_type text,
+  dep_desc text
+);
+
+
+DROP TABLE IF EXISTS cloudbreak_cuisine.whoville_bundles_contents;
+CREATE TABLE cloudbreak_cuisine.whoville_bundles_contents
+(
+  id integer NOT NULL PRIMARY KEY,
+  bundle_id integer,
+  type text,
+  content text
+);
 
 
 DROP TABLE IF EXISTS cloudbreak_cuisine.whoville;
@@ -443,7 +470,7 @@ insert into cloudbreak_cuisine.profiles (profile_type, name, user_name, base_url
 
 insert into cloudbreak_cuisine.users (name, username, password, email, role, registered, status) values ('Cuisine Admin', 'admin', 'admin', 'admin@hortonworks.com', 'Admin', '2019/01/08', 'Active');
 
-insert into cloudbreak_cuisine.bundles (name, description, image, hosts, type) values ('Data Science Workshop','Bundle creating a single node HDP 3.0 cluster with pre-loaded Data Science Workshop Notebooks','../../assets/img/cuisine/local-bundle.png',1,'local');
+insert into cloudbreak_cuisine.bundles (name, description, image, type) values ('Data Science Workshop','Bundle creating a single node HDP 3.0 cluster with pre-loaded Data Science Workshop Notebooks','../../assets/img/cuisine/local-bundle.png','local');
 
 
 
