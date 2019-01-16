@@ -11,12 +11,12 @@ router.route('/refresh').get((req, res) => {
         var message = JSON.parse(body)
         var keys = Object.keys(message)
 
-        var i = 0;
-        var dep_id = 0;
-        var content_id = 0;
+        var i = 1;
+        var dep_id = 1;
+        var content_id = 1;
         keys.forEach((key)=>{
             var r = {};
-            r.id = i++;
+            r.id = i;
             r.name = key;
             r.description = message[key].desc;
             r.image = '../../assets/img/cuisine/whoville-bundle.png';
@@ -25,7 +25,7 @@ router.route('/refresh').get((req, res) => {
             if(message[key].blueprint){
              
               var cbp = {};
-              cbp.id = content_id++;
+              cbp.id = content_id;
               cbp.bundle_id = i;
               cbp.content = "whoville/v1/"+key+"/master/"+message[key].blueprint['name'];
               db.none('insert into cloudbreak_cuisine.whoville_bundles_contents (id, bundle_id, type, content) values($1,$2,$3,$4) on conflict(id) DO UPDATE set id=$1, bundle_id=$2, type=$3, content=$4', [cbp.id, cbp.bundle_id, 'BLUEPRINT',cbp.content])
@@ -35,11 +35,11 @@ router.route('/refresh').get((req, res) => {
                 .catch(error => {
                     console.log("DB Error: ", error);
                 });
-
+                content_id++;
             }
 
             var cy = {};
-            cy.id = content_id++;
+            cy.id = content_id;
             cy.bundle_id = i;
             cy.content = "whoville/v1/"+key+"/master/"+key+".yaml";
               db.none('insert into cloudbreak_cuisine.whoville_bundles_contents (id, bundle_id, type, content) values($1,$2,$3,$4) on conflict(id) DO UPDATE set id=$1, bundle_id=$2, type=$3, content=$4', [cy.id, cy.bundle_id, 'YAML',cy.content])
@@ -50,9 +50,10 @@ router.route('/refresh').get((req, res) => {
                     console.log("DB Error: ", error);
                 });
             
+                content_id++;
 
             if(message[key].input){
-            r.dep_id = dep_id++;
+            r.dep_id = dep_id;
             r.input = Buffer.from(JSON.stringify(message[key].input, null, 4)).toString('base64');
             db.none('insert into cloudbreak_cuisine.whoville_bundles_dependencies (id, bundle_id, dep_type, dep_desc) values($1,$2,$3,$4) on conflict(id) DO UPDATE set id=$1, bundle_id=$2, dep_type=$3, dep_desc=$4', [r.dep_id, r.id, 'INPUT',r.input])
                 .then(() => {
@@ -61,12 +62,13 @@ router.route('/refresh').get((req, res) => {
                 .catch(error => {
                     console.log("DB Error: ", error);
                 });
+                dep_id++;
             } else {
                 r.input = null; 
             }
             
             if(message[key].infra){
-                r.dep_id = dep_id++;
+                r.dep_id = dep_id;
                 r.stack = Buffer.from(JSON.stringify(message[key].infra, null, 4)).toString('base64');
                 db.none('insert into cloudbreak_cuisine.whoville_bundles_dependencies (id, bundle_id, dep_type, dep_desc) values($1,$2,$3,$4) on conflict(id) DO UPDATE set id=$1, bundle_id=$2, dep_type=$3, dep_desc=$4', [r.dep_id, r.id, 'STACK',r.stack])
                     .then(() => {
@@ -75,6 +77,8 @@ router.route('/refresh').get((req, res) => {
                     .catch(error => {
                         console.log("DB Error: ", error);
                     });
+
+                dep_id++;
                     } else {
                         r.stack = null; 
                     }
@@ -85,7 +89,7 @@ router.route('/refresh').get((req, res) => {
                     for(var j = 0; j < recipes.length; j++)
                     {
                         var d = {};
-                        d.dep_id = dep_id++;
+                        d.dep_id = dep_id;
                         d.id = i;
                         d.value = recipes[j].name + " (" + recipes[j].typ + ")";
                         db.none('insert into cloudbreak_cuisine.whoville_bundles_dependencies (id, bundle_id, dep_type, dep_desc) values($1,$2,$3,$4) on conflict(id) DO UPDATE set id=$1, bundle_id=$2, dep_type=$3, dep_desc=$4', [d.dep_id, d.id, 'RECIPE',d.value])
@@ -96,6 +100,7 @@ router.route('/refresh').get((req, res) => {
                             console.log("DB Error: ", error);
                         });
                         
+                dep_id++;
                     }
                 }
 
@@ -108,6 +113,8 @@ router.route('/refresh').get((req, res) => {
                     console.log("DB Error: ", error);
                 });
             //results.push(r);
+
+      i++;
         });
         db.any('select * from cloudbreak_cuisine.whoville_bundles')
         .then(data => {
@@ -116,12 +123,13 @@ router.route('/refresh').get((req, res) => {
         .catch(error => {
             console.log('ERROR:', error)
         })
+        
       });
 });
 
 
 router.route('/').get((req, res) => {
-        db.any('select * from cloudbreak_cuisine.whoville_bundles')
+        db.any('select * from cloudbreak_cuisine.whoville_bundles order by id asc')
         .then(data => {
             res.json(data);
         })
