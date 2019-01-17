@@ -29,7 +29,7 @@ function ProgressClassName(state) {
   if(state.toString()=="AVAILABLE"){
     class_name = "progress-xs my-3 bg-info"
   } else if ((state.toString()=="UPDATE_IN_PROGRESS") || (state.toString()=="CREATE_IN_PROGRESS") || (state.toString()=="START_IN_PROGRESS") || (state.toString()=="DELETE_IN_PROGRESS")) {
-    class_name = "progress-xs my-3 bg-secondary"
+    class_name = "progress-xs my-3 bg-light-blue"
   } else if (state.toString()=="UPDATE_IN_PROGRESS") {
     class_name = "progress-xs my-3 bg-red"
   }
@@ -45,7 +45,7 @@ function DashboardClassName(state) {
   if(state.toString()=="AVAILABLE"){
     class_name = "text-white bg-success border-success"
   } else if ((state.toString()=="UPDATE_IN_PROGRESS") || (state.toString()=="CREATE_IN_PROGRESS") || (state.toString()=="START_IN_PROGRESS") || (state.toString()=="DELETE_IN_PROGRESS")) {
-    class_name = "text-white bg-gray-600 border-gray-600"
+    class_name = "text-white bg-blue border-blue"
   } else if ((state.toString()=="CREATE_FAILED") || (state.toString()=="UPDATE_FAILED")) {
     class_name = "text-white bg-danger border-danger"
   }
@@ -73,14 +73,12 @@ function DashboardItemText(props) {
 
 
   if(state.toString()=="AVAILABLE"){
-    const date = new Date(dashboardItem.cluster.creationFinished);
-    widget_text = "Creation finished " + date.toLocaleDateString() + " "+ date.toLocaleTimeString();
+    widget_text = "Status: " + state;
   } else if ((state.toString()=="UPDATE_IN_PROGRESS") || (state.toString()=="CREATE_IN_PROGRESS") || (state.toString()=="START_IN_PROGRESS") || (state.toString()=="DELETE_IN_PROGRESS")) {
-    const date = new Date(parseInt(dashboardItem.defaultTags["cb-creation-timestamp"]));
-    widget_text = "Creation started " + date.toLocaleDateString()  + " "+ date.toLocaleTimeString();
+    widget_text = "Status: " + state;
   } else if ((state.toString()=="CREATE_FAILED") || (state.toString()=="UPDATE_FAILED")) {
     //const date = dashboardItem.fail_date
-    widget_text = "Failed" 
+    widget_text = "Status: " + state;
   }
   
   return (
@@ -230,7 +228,7 @@ componentDidMount() {
           </Col>
                           <Col align="right" > 
                           <div >
-                          <Button size="lg" color="primary" onClick={this.refreshPage.bind(this)}>
+                          <Button size="lg" color="warning" onClick={this.refreshPage.bind(this)}>
                                           <i className="fa fa-refresh"></i>&nbsp;Refresh
                               </Button>
                               &nbsp;

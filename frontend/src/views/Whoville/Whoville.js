@@ -60,7 +60,7 @@ class Whoville extends Component {
           </Col>
                           <Col align="right" > 
                           <div >
-                          <Button size="lg" color="primary" onClick={this.refreshPage.bind(this)}>
+                          <Button size="lg" color="warning" onClick={this.refreshPage.bind(this)}>
                                           <i className="fa fa-refresh"></i>&nbsp;Refresh
                               </Button>
                               &nbsp;
