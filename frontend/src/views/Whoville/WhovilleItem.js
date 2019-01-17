@@ -85,7 +85,8 @@ loadBundleContent() {
       fetch('http://localhost:4000/api/whoville/deploy/' + e.target.id)
           .then(response => response.json())
           .catch(err => console.error(this.props.url, err.toString()))
-          this.props.history.push('dashboard')
+          
+          this.props.history.push('whoville')
     }
             
 
@@ -130,7 +131,7 @@ loadBundleContent() {
                     </Button>
                     </td>
                     <td align="center" width="25%"> 
-                    <Button color="primary" onClick={this.deployWhoville.bind(this)} disabled>
+                    <Button id={this.state.bundleId} color="primary" onClick={this.deployWhoville.bind(this)}>
                       <i className="fa fa-upload"></i>&nbsp;Deploy
                     </Button>
                     </td>

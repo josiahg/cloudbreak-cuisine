@@ -190,7 +190,7 @@ router.route('/item/:id/contents').get((req, res) => {
 });
 
 router.route('/deploy/:id').get((req,res) => {
-    db.one('select name from cloudbreak_cuisine.whoville where id = ' + req.params.id)
+    db.one('select name from cloudbreak_cuisine.whoville_bundles where id = ' + req.params.id)
         .then(data => {
             request('http://whoville:5000/api/whoville/v1/deployPackage?clusterType='+data.name, function(error,response,body) {
                 res.json(body)
