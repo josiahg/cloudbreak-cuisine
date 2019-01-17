@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Row } from 'reactstrap';
+import { Col, Row, Button } from 'reactstrap';
 import Widget02 from './Widget02';
 
 //import libraryData from './LibraryData'
@@ -47,11 +47,29 @@ class Whoville extends Component {
         this.initData()
         this.loadData()
     }
+    refreshPage(){
+        window.location.reload();
+      }
 
   render() {
     return (
-      <div className="animated fadeIn">
-      <h1>Whoville Library</h1>
+        <div className="animated fadeIn">
+        <Row>
+          <Col>
+          <h1>Whoville Library</h1>
+          </Col>
+                          <Col align="right" > 
+                          <div >
+                          <Button size="lg" color="primary" onClick={this.refreshPage.bind(this)}>
+                                          <i className="fa fa-refresh"></i>&nbsp;Refresh
+                              </Button>
+                              &nbsp;
+                              <Button size="lg" color="danger">
+                                          <i className="fa fa-bomb"></i>&nbsp;Nuke
+                              </Button>
+                          </div>
+                          </Col>
+          </Row>
         <Row>
           &nbsp;
         </Row>

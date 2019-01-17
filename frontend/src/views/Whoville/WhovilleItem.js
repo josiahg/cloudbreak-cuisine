@@ -86,7 +86,7 @@ loadBundleContent() {
           .then(response => response.json())
           .catch(err => console.error(this.props.url, err.toString()))
           
-          this.props.history.push('whoville')
+          this.props.history.push('dashboard')
     }
             
 

@@ -7,5 +7,6 @@ router.use('/profiles', require('./profiles'));
 router.use('/users', require('./users'));
 router.use('/whoville', require('./whoville'));
 router.use('/clusters', require('./clusters'));
+router.use('/dashboard', require('./dashboard'));
 
 module.exports = router;
