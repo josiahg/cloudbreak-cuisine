@@ -5,8 +5,47 @@ var db = getDb();
 var request = require('request');
 var encode = require('nodejs-base64-encode');
 
+router.route('/deletestack/:name').get((req, res) => {
+    var stackId = 0;
+
+    console.log("STACK ID = " + stackId)
+    request('http://whoville:5000/api/whoville/v1/getStacks', function (error, response, body) {
+        if (body) {
+        var message = JSON.parse(body)
+        for(var key in message){
+            if (message[key].name.toString() === req.params.name.toString()) {
+                stackId = message[key].id;
+            }
+        }
+
+        console.log("STACK ID = " + stackId)
+        request('http://whoville:5000/api/whoville/v1/deleteStack?clusterId='+stackId, function (error, response, body) {
+        if (body) {
+            res.json("Stack " + stackId + " was deleted!");
+        }
+
+        
+
+    })
+
+    } else {
+        res.json("No Stack found")
+    }
+})
+
+    
+
+    
+   
+      
+
+});
+
+
+
 router.route('/refresh').get((req, res) => {
     request('http://whoville:5000/api/whoville/v1/getMenu', function (error, response, body) {
+        if(body){
         //console.log('error:', error); // Print the error if one occurre
         var message = JSON.parse(body)
         var keys = Object.keys(message)
@@ -123,8 +162,13 @@ router.route('/refresh').get((req, res) => {
         .catch(error => {
             console.log('ERROR:', error)
         })
-        
+    } else {
+
+        res.json(JSON.parse("['no data']"));
+    }
+
       });
+      
 });
 
 

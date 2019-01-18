@@ -1,4 +1,4 @@
-# Cloudbreak Cuisine - v0.01
+# Cloudbreak Cuisine - v0.1
 <div align="center">
 <img src="https://github.com/paulvid/cloudbreak-cuisine-frontend/raw/master/src/assets/img/brand/small_logo.png" width="500" height="500" align="middle">
 </div>

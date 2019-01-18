@@ -64,7 +64,7 @@ class Whoville extends Component {
                                           <i className="fa fa-refresh"></i>&nbsp;Refresh
                               </Button>
                               &nbsp;
-                              <Button size="lg" color="danger">
+                              <Button size="lg" color="danger" disabled>
                                           <i className="fa fa-bomb"></i>&nbsp;Nuke
                               </Button>
                           </div>

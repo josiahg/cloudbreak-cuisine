@@ -28,10 +28,12 @@ function ProgressClassName(state) {
   
   if(state.toString()=="AVAILABLE"){
     class_name = "progress-xs my-3 bg-info"
-  } else if ((state.toString()=="UPDATE_IN_PROGRESS") || (state.toString()=="CREATE_IN_PROGRESS") || (state.toString()=="START_IN_PROGRESS") || (state.toString()=="DELETE_IN_PROGRESS")) {
+  } else if ((state.toString()=="UPDATE_IN_PROGRESS") || (state.toString()=="CREATE_IN_PROGRESS") || (state.toString()=="START_IN_PROGRESS")) {
     class_name = "progress-xs my-3 bg-light-blue"
-  } else if (state.toString()=="UPDATE_IN_PROGRESS") {
+  } else if ((state.toString()=="CREATE_FAILED") || (state.toString()=="UPDATE_FAILED")) {
     class_name = "progress-xs my-3 bg-red"
+  } else if ((state.toString()=="DELETE_IN_PROGRESS")) {
+    class_name = "progress-xs my-3 bg-yellow"
   }
 
   
@@ -44,11 +46,13 @@ function DashboardClassName(state) {
   
   if(state.toString()=="AVAILABLE"){
     class_name = "text-white bg-success border-success"
-  } else if ((state.toString()=="UPDATE_IN_PROGRESS") || (state.toString()=="CREATE_IN_PROGRESS") || (state.toString()=="START_IN_PROGRESS") || (state.toString()=="DELETE_IN_PROGRESS")) {
+  } else if ((state.toString()=="UPDATE_IN_PROGRESS") || (state.toString()=="CREATE_IN_PROGRESS") || (state.toString()=="START_IN_PROGRESS")) {
     class_name = "text-white bg-blue border-blue"
   } else if ((state.toString()=="CREATE_FAILED") || (state.toString()=="UPDATE_FAILED")) {
     class_name = "text-white bg-danger border-danger"
-  }
+  } else if ((state.toString()=="DELETE_IN_PROGRESS")) {
+  class_name = "text-white bg-warning border-warning"
+}
 
   
   return (
@@ -93,7 +97,7 @@ function ProgressValue(state) {
   
   if(state.toString()=="AVAILABLE"){
     value = '100'
-  } else if (state.toString()=="UPDATE_IN_PROGRESS") {
+  } else if ((state.toString()=="UPDATE_IN_PROGRESS") || (state.toString()=="DELETE_IN_PROGRESS")) {
     value = '50'
   } else if (state.toString()=="failed") {
     value = '0'
@@ -120,9 +124,28 @@ class Dashboard extends Component {
     };
   }
 
+  deleteStack = (e) => {
+    
+    if(e.target.id.toString() === 'AVAILABLE') {
+      if (window.confirm('Are you sure you wish to delete this item?')) {
+        fetch('http://localhost:4000/api/whoville/deletestack/' + e.target.name)
+            .then(response => response.json())
+            .catch(err => console.error(this.props.url, err.toString()))
+        
+      }
+    } else {
+      alert("You can only delete stacks when they are in status AVAILABLE")
+
+    }
+
+
+
+}
+
+
   goToBundle = (e) => {
     var nameArray=e.target.id.split("-")
-
+    //for (i )
     fetch('http://localhost:4000/api/dashboard/getbundleid', {
       method: 'POST',
       headers: {
@@ -138,10 +161,6 @@ class Dashboard extends Component {
 
     })
     .catch(err => console.error(this.props.url, err.toString()))
-      
-  
-  
- 
 
 }
 
@@ -232,7 +251,7 @@ componentDidMount() {
                                           <i className="fa fa-refresh"></i>&nbsp;Refresh
                               </Button>
                               &nbsp;
-                              <Button size="lg" color="danger">
+                              <Button size="lg" color="danger" disabled>
                                           <i className="fa fa-bomb"></i>&nbsp;Nuke
                               </Button>
                           </div>
@@ -256,7 +275,7 @@ componentDidMount() {
                          {/* <DropdownItem><i className="icon-eyeglass"></i>&nbsp;Details</DropdownItem> */}
                          <DropdownItem id={dashboardItem.name} onClick={this.goToBundle.bind(this)}><i className="fa fa-building-o"></i>&nbsp;Whoville Bundle</DropdownItem>
                          <DropdownItem href={dashboardItem.cluster.ambariServerUrl} target="_blank"><i className="fa fa-external-link"></i>&nbsp;Go to Ambari</DropdownItem>
-                         <DropdownItem><i className="fa fa-remove"></i>&nbsp;Destroy</DropdownItem>
+                         <DropdownItem name={dashboardItem.name} id={dashboardItem.status} onClick={this.deleteStack.bind(this)}><i className="fa fa-remove"></i>&nbsp;Destroy</DropdownItem>
                        </DropdownMenu>
                      </Dropdown>
                    </ButtonGroup>

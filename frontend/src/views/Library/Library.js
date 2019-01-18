@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Row } from 'reactstrap';
+import { Col, Row, Button } from 'reactstrap';
 import Widget02 from './Widget02';
 
 //import libraryData from './LibraryData'
@@ -40,11 +40,29 @@ class Library extends Component {
     componentDidMount() {
         this.loadData()
     }
+    refreshPage(){
+        window.location.reload();
+      }
 
   render() {
     return (
       <div className="animated fadeIn">
-      <h1>Cuisine Library</h1>
+      <Row>
+          <Col>
+          <h1>Cuisine Library</h1>
+          </Col>
+                          <Col align="right" > 
+                          <div >
+                          <Button size="lg" color="warning" onClick={this.refreshPage.bind(this)}>
+                                          <i className="fa fa-refresh"></i>&nbsp;Refresh
+                              </Button>
+                              &nbsp;
+                              <Button size="lg" color="danger" disabled>
+                                          <i className="fa fa-bomb"></i>&nbsp;Nuke
+                              </Button>
+                          </div>
+                          </Col>
+          </Row>
         <Row>
           &nbsp;
         </Row>
