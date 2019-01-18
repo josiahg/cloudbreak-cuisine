@@ -21,6 +21,15 @@ Until then...
 * Docker
 * npm (can be installed via homebrew)
 
+Important: For whoville, follow the setup instructions [here](https://github.com/Chaffelson/whoville).
+
+You must have a PROFILE environment variable containing the path to your whoville `profile.yml`.
+
+In addition, for Cuisine add the following option in `profile.yml`:
+
+```
+user_mode: UI
+```
 
 ### Clone this repository
 
@@ -45,12 +54,6 @@ docker-compose -f dev-docker-compose.yml up
 When startup is complete, find the Swagger API UI at [http://localhost:4000/api-docs](http://localhost:4000/api-docs).
 
 
-Important: you must have a whoville PROFILE environment variable containing the path to your profile.yml
-In the file, add the following option:
-```
-user_mode: UI
-```
-
 ### Start the frontend
 
 In a new terminal:
@@ -64,6 +67,24 @@ npm start
 When startup completes, the default browser will open to the UI. Or, visit [http://localhost:3000/](http://localhost:3000/).
 
 
+## Troubleshooting
+
+Something didn't work? 
+
+Ensure you are on the latest version of whoville, we are using their latest and greatest APIs:
+
+```
+docker pull chaffelson/whoville:latest
+```
+
+To restart the backend, ensure you use the following to ensure all components are cleaned up before starting again:
+
+```
+docker-compose -f dev-docker-compose.yml down
+```
+
+Questions? Cloudera employees can join us in `#proj_whoville` on Slack.
+
 
 # Basic usage
 
@@ -73,3 +94,7 @@ When startup completes, the default browser will open to the UI. Or, visit [http
 **Josiah Goodson** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/josiahgoodson/)
 
 **Paul Vidal** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/paulvid/)
+
+# Thanks
+
+**Jeff Kibler** - *Beta Tester*
