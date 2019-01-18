@@ -38,6 +38,13 @@ docker-compose -f dev-docker-compose.yml up
 
 When startup is complete, find the Swagger API UI at [http://localhost:4000/api-docs](http://localhost:4000/api-docs).
 
+
+Important: you must have a whoville PROFILE environment variable containing the path to your profile.yml
+In the file, add the following option:
+```
+user_mode: UI
+```
+
 ### Start the frontend
 
 In a new terminal:
@@ -49,6 +56,7 @@ npm start
 ```
 
 When startup completes, the default browser will open to the UI. Or, visit [http://localhost:3000/](http://localhost:3000/).
+
 
 
 # Basic usage
