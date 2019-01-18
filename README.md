@@ -16,6 +16,12 @@ This project is under rapid development. Stay tuned for an "easy button" to get 
 
 Until then...
 
+### Pre-requisites
+
+* Docker
+* npm (can be installed via homebrew)
+
+
 ### Clone this repository
 
 ```
