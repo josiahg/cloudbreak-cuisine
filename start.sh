@@ -11,7 +11,7 @@ then
 fi
 
 # Ensure we cleanly exited last time
-docker-compose -f dev-docker-compose.yml down
+docker-compose -f docker/dev-docker-compose.yml down
 docker-compose -f docker/test-docker-compose.yml down
 
 # Ensure containers are up to date
