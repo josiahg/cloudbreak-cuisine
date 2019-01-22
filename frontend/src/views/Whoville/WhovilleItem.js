@@ -7,7 +7,7 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  Label, Button, Nav, NavItem, NavLink, Row, TabContent, TabPane
+  Label, Button, Nav, NavItem, NavLink, Row, TabContent, TabPane, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 
 //import libraryData from './LibraryData'
@@ -17,6 +17,7 @@ class WhovilleItem extends Component {
   constructor(props) {
     super(props)
     this.toggle = this.toggle.bind(this);
+    this.togglePrimary = this.togglePrimary.bind(this);
     this.state = {
       libraryItem: {},
       libraryItemStack: [],
@@ -24,8 +25,14 @@ class WhovilleItem extends Component {
       libraryItemRecipes: [],
       libraryItemContent: [],
       activeTab: new Array(4).fill('1'),
-      bundleId: ''
+      bundleId: '',
+      primary: false
     }
+  }
+  togglePrimary() {
+    this.setState({
+      primary: !this.state.primary,
+    });
   }
 
   loadData() {
@@ -84,12 +91,14 @@ class WhovilleItem extends Component {
   }
 
   deployWhoville = (e) => {
+    this.setState({
+      primary: !this.state.primary,
+    });
+     fetch('http://localhost:4000/api/whoville/deploy/' + e.target.id)
+       .then(response => response.json())
+       .catch(err => console.error(this.props.url, err.toString()))
 
-    fetch('http://localhost:4000/api/whoville/deploy/' + e.target.id)
-      .then(response => response.json())
-      .catch(err => console.error(this.props.url, err.toString()))
-
-    this.props.history.push('dashboard')
+   
   }
 
 
@@ -114,11 +123,23 @@ class WhovilleItem extends Component {
             <Col xs={6} md={4}>
               <Card className="card-accent-primary">
                 <CardBody >
+                <Modal isOpen={this.state.primary} toggle={this.togglePrimary}
+                       className={'modal-primary ' + this.props.className}>
+                  {/* <ModalHeader toggle={this.togglePrimary}>Deploying to Cloudbreak</ModalHeader> */}
+                  <ModalBody>
+                  <h3>{this.state.libraryItem.name} is being deployed ... <i className='fa fa-spinner fa-spin'></i></h3>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="primary" href="#/dashboard">Go to Dashboard <i className="fa fa-long-arrow-right"></i></Button>
+                  </ModalFooter>
+                </Modal>
+
                   <div className="chart-wrapper" align="center" >
                     <p><img alt='' src={this.state.libraryItem.image} height="400px" width="400px" /></p>
                     <h2>{this.state.libraryItem.name}</h2>
                   </div>
                 </CardBody>
+
                 <CardFooter className="bg-white">
                   <table width="100%">
                     <tbody>
