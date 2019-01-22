@@ -12,10 +12,6 @@ Cloudbreak Cuisine is a React application allowing easier use of Hortonworks Clo
 
 # Installation
 
-This project is under rapid development. Stay tuned for an "easy button" to get this up and running.
-
-Until then...
-
 ### Pre-requisites
 
 * Docker
@@ -37,50 +33,32 @@ user_mode: UI
 git clone https://github.com/josiahg/cloudbreak-cuisine
 ```
 
-### Start the backend
+### Start Cuisine
 
-The following will start the backend database and API server.
-
-```
-cd cloudbreak-cuisine/backend
-npm install
-```
+The following will download all dependencies using NPM, and start the various components:
 
 ```
-cd .. # back to cloudbreak-cuisine directory
-docker-compose -f dev-docker-compose.yml up
+cd cloudbreak-cuisine/
+chmod +x start.sh
+./start.sh
 ```
 
-When startup is complete, find the Swagger API UI at [http://localhost:4000/api-docs](http://localhost:4000/api-docs).
+Go have a cup of coffee!
 
+When startup completes, point a browser to [http://localhost:3000/](http://localhost:3000/).
 
-### Start the frontend
+The Swagger API  UI for the Cuisine Backend can be found at [http://localhost:4000/api-docs](http://localhost:4000/api-docs).
 
-In a new terminal:
-
-```
-cd cloudbreak-cuisine/frontend
-npm install
-npm start
-```
-
-When startup completes, the default browser will open to the UI. Or, visit [http://localhost:3000/](http://localhost:3000/).
 
 
 ## Troubleshooting
 
 Something didn't work? 
 
-Ensure you are on the latest version of whoville, we are using their latest and greatest APIs:
+Restart the application. Restarting ensures the latest version is running.
 
 ```
-docker pull chaffelson/whoville:latest
-```
-
-To restart the backend, ensure you use the following to ensure all components are cleaned up before starting again:
-
-```
-docker-compose -f dev-docker-compose.yml down
+./start.sh
 ```
 
 Questions? Cloudera employees can join us in `#proj_whoville` on Slack.

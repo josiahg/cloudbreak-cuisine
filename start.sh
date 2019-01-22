@@ -2,7 +2,7 @@
 
 # Ensure we cleanly exited last time
 docker-compose -f dev-docker-compose.yml down
-docker-compose -f test-docker-compose.yml down
+docker-compose -f docker/test-docker-compose.yml down
 
 # Ensure containers are up to date
 docker pull chaffelson/whoville:latest
@@ -23,4 +23,4 @@ then
 fi
 
 # Spin up the containers
-docker-compose -f test-docker-compose.yml up
+docker-compose -f docker/test-docker-compose.yml up
