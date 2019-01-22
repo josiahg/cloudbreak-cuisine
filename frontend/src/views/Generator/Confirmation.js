@@ -21,9 +21,9 @@ class Confirmation extends Component{
 
     render(){
         const {values: { clusterType, clusterVersion, clusterId, services, recipes, dataPlaneApplications }} = this.props;
-        const serviceList = services.filter((service) => (service.display == 1));
+        const serviceList = services.filter((service) => (service.display === 1));
         const recipesList = recipes.filter((recipe) => recipe.id);
-        const applicationList = dataPlaneApplications.filter((application) => application.id);
+        //const applicationList = dataPlaneApplications.filter((application) => application.id);
 
         return(
             <div className="animated fadeIn align-items-center">

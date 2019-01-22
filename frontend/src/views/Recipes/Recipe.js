@@ -190,7 +190,7 @@ class Recipe extends Component {
                           </InputGroupAddon>
                           <Input type="select" name="service" id="service" disabled>
 
-                            <option>{this.state.servicesData.filter((service) => (service.id == recipe.serviceid)).map((service) => {
+                            <option>{this.state.servicesData.filter((service) => (service.id === recipe.serviceid)).map((service) => {
                               return service.service_description
                             }
                             )}</option>
@@ -210,8 +210,8 @@ class Recipe extends Component {
                             <InputGroupText><i className="fa fa-server"></i></InputGroupText>
                           </InputGroupAddon>
                           <Input type="select" name="clusterType" id="clusterType" disabled>
-                            <option>{this.state.servicesData.filter((service) => (service.id == recipe.serviceid)).map((service) => {
-                              return this.state.clustersData.filter((cluster) => (cluster.id == service.cluster_id)).map((cluster) => {
+                            <option>{this.state.servicesData.filter((service) => (service.id === recipe.serviceid)).map((service) => {
+                              return this.state.clustersData.filter((cluster) => (cluster.id === service.cluster_id)).map((cluster) => {
                                 return cluster.cluster_type
                               }
                               )
@@ -233,8 +233,8 @@ class Recipe extends Component {
                             <InputGroupText><i className="fa fa-code-fork"></i></InputGroupText>
                           </InputGroupAddon>
                           <Input type="select" name="clusterType" id="clusterType" disabled>
-                            <option>{this.state.servicesData.filter((service) => (service.id == recipe.serviceid)).map((service) => {
-                              return this.state.clustersData.filter((cluster) => (cluster.id == service.cluster_id)).map((cluster) => {
+                            <option>{this.state.servicesData.filter((service) => (service.id === recipe.serviceid)).map((service) => {
+                              return this.state.clustersData.filter((cluster) => (cluster.id === service.cluster_id)).map((cluster) => {
                                 return cluster.version
                               }
                               )

@@ -104,7 +104,7 @@ class LibraryItem extends Component {
               <Card className="card-accent-success">
                 <CardBody >
                   <div className="chart-wrapper" align="center" >
-                    <p><img src={this.state.libraryItem.image} height="400px" width="400px" /></p>
+                    <p><img alt='' src={this.state.libraryItem.image} height="400px" width="400px" /></p>
                     <h2>{this.state.libraryItem.name}</h2>
                   </div>
                 </CardBody>

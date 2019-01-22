@@ -9,7 +9,6 @@ import {
   Label,
   Nav, NavItem, NavLink, TabContent, TabPane
 } from 'reactstrap';
-import servicesListData from './ServicesListData'
 
 class AddSQLScript extends Component {
   constructor(props) {

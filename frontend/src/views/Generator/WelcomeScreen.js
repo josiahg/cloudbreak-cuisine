@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Form } from 'semantic-ui-react';
 import { Card, CardBody, CardHeader, Col, Row, Button, ListGroup, ListGroupItem } from 'reactstrap';
 
 class WelcomeScreen extends Component{
@@ -10,14 +9,14 @@ class WelcomeScreen extends Component{
     }
 
     render(){
-        const { values } = this.props;
+        //const { values } = this.props;
         return(
             
             <div className="animated fadeIn">
             <Row>
             <Col xs={6} md={4}>
             <div className="chart-wrapper" align="center">
-                <img src='../../assets/img/cuisine/generator.png' height="350" width="350"/>
+                <img alt='' src='../../assets/img/cuisine/generator.png' height="350" width="350"/>
                 </div>
                 </Col>
                 <Col xs={12} md={8}>

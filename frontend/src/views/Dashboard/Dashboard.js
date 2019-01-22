@@ -12,19 +12,17 @@ import {
   Progress,
   Row,
 } from 'reactstrap';
-import dashboardData from './DashboardData'
 
-// Brand Card Chart
 function ProgressClassName(state) {
   var class_name = "progress-xs my-3 bg-info"
 
-  if (state.toString() == "AVAILABLE") {
+  if (state.toString() === "AVAILABLE") {
     class_name = "progress-xs my-3 bg-info"
-  } else if ((state.toString() == "UPDATE_IN_PROGRESS") || (state.toString() == "CREATE_IN_PROGRESS") || (state.toString() == "START_IN_PROGRESS")) {
+  } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "CREATE_IN_PROGRESS") || (state.toString() === "START_IN_PROGRESS")) {
     class_name = "progress-xs my-3 bg-light-blue"
-  } else if ((state.toString() == "CREATE_FAILED") || (state.toString() == "UPDATE_FAILED")) {
+  } else if ((state.toString() === "CREATE_FAILED") || (state.toString() === "UPDATE_FAILED")) {
     class_name = "progress-xs my-3 bg-red"
-  } else if ((state.toString() == "DELETE_IN_PROGRESS")) {
+  } else if ((state.toString() === "DELETE_IN_PROGRESS")) {
     class_name = "progress-xs my-3 bg-yellow"
   }
 
@@ -36,13 +34,13 @@ function ProgressClassName(state) {
 function DashboardClassName(state) {
   var class_name = "text-white bg-primary border-primary"
 
-  if (state.toString() == "AVAILABLE") {
+  if (state.toString() === "AVAILABLE") {
     class_name = "text-white bg-success border-success"
-  } else if ((state.toString() == "UPDATE_IN_PROGRESS") || (state.toString() == "CREATE_IN_PROGRESS") || (state.toString() == "START_IN_PROGRESS")) {
+  } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "CREATE_IN_PROGRESS") || (state.toString() === "START_IN_PROGRESS")) {
     class_name = "text-white bg-blue border-blue"
-  } else if ((state.toString() == "CREATE_FAILED") || (state.toString() == "UPDATE_FAILED")) {
+  } else if ((state.toString() === "CREATE_FAILED") || (state.toString() === "UPDATE_FAILED")) {
     class_name = "text-white bg-danger border-danger"
-  } else if ((state.toString() == "DELETE_IN_PROGRESS")) {
+  } else if ((state.toString() === "DELETE_IN_PROGRESS")) {
     class_name = "text-white bg-warning border-warning"
   }
 
@@ -52,25 +50,23 @@ function DashboardClassName(state) {
   )
 }
 
-function LibraryLink(bundle_id) {
+/*function LibraryLink(bundle_id) {
   var link = '#/library/' + bundle_id
   return (
     link
   )
-}
-
-
+}*/
 
 function DashboardItemText(props) {
   const dashboardItem = props.dashboardItem
   const state = dashboardItem.status
   var widget_text = "No creation info"
 
-  if (state.toString() == "AVAILABLE") {
+  if (state.toString() === "AVAILABLE") {
     widget_text = "Status: " + state;
-  } else if ((state.toString() == "UPDATE_IN_PROGRESS") || (state.toString() == "CREATE_IN_PROGRESS") || (state.toString() == "START_IN_PROGRESS") || (state.toString() == "DELETE_IN_PROGRESS")) {
+  } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "CREATE_IN_PROGRESS") || (state.toString() === "START_IN_PROGRESS") || (state.toString() === "DELETE_IN_PROGRESS")) {
     widget_text = "Status: " + state;
-  } else if ((state.toString() == "CREATE_FAILED") || (state.toString() == "UPDATE_FAILED")) {
+  } else if ((state.toString() === "CREATE_FAILED") || (state.toString() === "UPDATE_FAILED")) {
     //const date = dashboardItem.fail_date
     widget_text = "Status: " + state;
   }
@@ -85,11 +81,11 @@ function DashboardItemText(props) {
 function ProgressValue(state) {
   var value = '0'
 
-  if (state.toString() == "AVAILABLE") {
+  if (state.toString() === "AVAILABLE") {
     value = '100'
-  } else if ((state.toString() == "UPDATE_IN_PROGRESS") || (state.toString() == "DELETE_IN_PROGRESS")) {
+  } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "DELETE_IN_PROGRESS")) {
     value = '50'
-  } else if (state.toString() == "failed") {
+  } else if (state.toString() === "failed") {
     value = '0'
   }
 
@@ -220,7 +216,7 @@ class Dashboard extends Component {
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
   render() {
-    const dashboardItemList = dashboardData.filter((dashboardItem) => dashboardItem.id)
+    //const dashboardItemList = dashboardData.filter((dashboardItem) => dashboardItem.id)
     const bundleList = this.state.clusterData.filter((bundle) => bundle.name);
 
     return (

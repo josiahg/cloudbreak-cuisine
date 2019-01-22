@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 
 class Login extends Component {
@@ -9,23 +8,23 @@ class Login extends Component {
         <Container className="mw-100 p-0 border-0 ">
           <Row >
             <Col>
-            <CardGroup>
-              <Card className="text-white bg-img py-5 d-md-down-none border-0 rounded-0" width="30%">
+              <CardGroup>
+                <Card className="text-white bg-img py-5 d-md-down-none border-0 rounded-0" width="30%">
                   <CardBody className="text-center">
-                 
-                      <div border-left="1px solid white">
-                            <img src="../../assets/img/cuisine/hwx_logo_white.png" height="232px" width="300px"/>
-                    
-                            <span ><img className="img-border-left" src="../../assets/img/brand/long_logo.png" height="75px" width="340px" border-left="1px solid white"/></span>
-                            </div>
-           
+
+                    <div border-left="1px solid white">
+                      <img alt=''src="../../assets/img/cuisine/hwx_logo_white.png" height="232px" width="300px" />
+
+                      <span ><img alt='' className="img-border-left" src="../../assets/img/brand/long_logo.png" height="75px" width="340px" border-left="1px solid white" /></span>
+                    </div>
+
                   </CardBody>
                 </Card>
                 <Card className="text-white bg-gray-700 py-5 d-md-down-none border-0 rounded-0" width="70%">
                   <CardBody>
                     <Form>
                       <h4>Sign In</h4>
-                   
+
                       <InputGroup className="mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
@@ -50,8 +49,8 @@ class Login extends Component {
                     </Form>
                   </CardBody>
                 </Card>
-                
-                </CardGroup>
+
+              </CardGroup>
             </Col>
           </Row>
         </Container>

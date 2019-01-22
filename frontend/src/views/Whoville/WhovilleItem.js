@@ -104,7 +104,7 @@ class WhovilleItem extends Component {
 
   render() {
     // Wait to render until data has been loaded
-    if (this.state.libraryItem.name == undefined) {
+    if (this.state.libraryItem.name === undefined) {
       return (null)
     }
     else {
@@ -115,7 +115,7 @@ class WhovilleItem extends Component {
               <Card className="card-accent-primary">
                 <CardBody >
                   <div className="chart-wrapper" align="center" >
-                    <p><img src={this.state.libraryItem.image} height="400px" width="400px" /></p>
+                    <p><img alt='' src={this.state.libraryItem.image} height="400px" width="400px" /></p>
                     <h2>{this.state.libraryItem.name}</h2>
                   </div>
                 </CardBody>
