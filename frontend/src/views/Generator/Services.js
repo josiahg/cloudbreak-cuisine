@@ -1,24 +1,15 @@
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Progress, Row, Col, Button, Form,
-    FormGroup,
-    FormText,
-    FormFeedback,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    InputGroupText,
-    Label,
-    Table, } from 'reactstrap';
+import {
+    Card, CardBody, CardHeader, Progress, Row, Col, Button,
+} from 'reactstrap';
 import { AppSwitch } from '@coreui/react'
-import { throws } from 'assert';
 
 //import servicesData from './ServicesData'
 
-class Services extends Component{
+class Services extends Component {
     constructor(props) {
         super(props);
         this.changeSwitch = this.changeSwitch.bind(this);
-
         this.state = { firstLoad: true, servicesData: [] }
     }
 
@@ -26,7 +17,7 @@ class Services extends Component{
         fetch('http://localhost:4000/api/services')
             .then(response => response.json())
             .then(data => {
-                this.setState({servicesData: data})
+                this.setState({ servicesData: data })
             })
             .catch(err => console.error(this.props.url, err.toString()))
     }
@@ -37,21 +28,21 @@ class Services extends Component{
 
     saveAndContinue = (e) => {
         var servicesData = this.state.servicesData; // DEBUG
-        const {values: { clusterType, clusterVersion, clusterId }} = this.props;
-     
-        var services= [];
+        const { values: { clusterType, clusterVersion, clusterId } } = this.props;
+
+        var services = [];
 
         // Mandatory Services
-        const mandatoryServiceList = servicesData.filter((service) => ((service.cluster_id == clusterId) && (service.mandatory == 1))); 
+        const mandatoryServiceList = servicesData.filter((service) => ((service.cluster_id === clusterId) && (service.mandatory === 1)));
         mandatoryServiceList.map((service) => {
-            services.push(JSON.parse(JSON.stringify({id: service.id, name: service.service_description, img: service.img, display: service.display}))); 
+            services.push(JSON.parse(JSON.stringify({ id: service.id, name: service.service_description, img: service.img, display: service.display })));
         })
 
         // Selected Services
-        const serviceList = servicesData.filter((service) => ((service.cluster_id == clusterId) && (service.display == 1))); 
+        const serviceList = servicesData.filter((service) => ((service.cluster_id === clusterId) && (service.display === 1)));
         serviceList.map((service) => {
-            if(this.state[service.id]){
-                services.push(JSON.parse(JSON.stringify({id: service.id, name: service.service_description, img: service.img, display: service.display})));  
+            if (this.state[service.id]) {
+                services.push(JSON.parse(JSON.stringify({ id: service.id, name: service.service_description, img: service.img, display: service.display })));
             }
         })
 
@@ -60,7 +51,7 @@ class Services extends Component{
         this.props.nextStep();
     }
 
-    back  = (e) => {
+    back = (e) => {
         e.preventDefault();
         this.props.prevStep();
     }
@@ -70,57 +61,57 @@ class Services extends Component{
         const serviceId = e.target.id;
         const isChecked = this.state[serviceId];
 
-        if(!isChecked){
+        if (!isChecked) {
             // If we are enabling a service, we check for dependencies
-            const currentService = servicesData.filter((service) => (service.id == serviceId)); 
-            var dependencies='';
+            const currentService = servicesData.filter((service) => (service.id === serviceId));
+            var dependencies = '';
             currentService.map((service) => {
-                    dependencies=service.dependency;
-                }
+                dependencies = service.dependency;
+            }
             )
-            if(dependencies != ''){
+            if (dependencies !== '') {
                 this.setState({
-                    [dependencies]: true, 
-                    ["cardHeaderClass"+dependencies]: 'text-white bg-success',
-                    ["cardClass"+dependencies]: 'border-success'
+                    [dependencies]: true,
+                    ["cardHeaderClass" + dependencies]: 'text-white bg-success',
+                    ["cardClass" + dependencies]: 'border-success'
                 });
             }
             this.setState({
-                [serviceId]: !this.state[serviceId], 
-                ["cardHeaderClass"+serviceId]: 'text-white bg-success',
-                ["cardClass"+serviceId]: 'border-success'
-            }); 
+                [serviceId]: !this.state[serviceId],
+                ["cardHeaderClass" + serviceId]: 'text-white bg-success',
+                ["cardClass" + serviceId]: 'border-success'
+            });
         } else {
             this.setState({
-                [serviceId]: !this.state[serviceId], 
-                ["cardHeaderClass"+serviceId]: 'bg-white',
-                ["cardClass"+serviceId]: ''
-            }); 
+                [serviceId]: !this.state[serviceId],
+                ["cardHeaderClass" + serviceId]: 'bg-white',
+                ["cardClass" + serviceId]: ''
+            });
         }
     }
-    
+
     loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
-    
-    render(){
+
+    render() {
         var servicesData = this.state.servicesData; // DEBUG
 
-        const {values: { clusterType, clusterVersion, clusterId }} = this.props;
-     
-        const serviceList = servicesData.filter((service) => ((service.cluster_id == clusterId) && (service.display == 1))); 
+        const { values: { clusterType, clusterVersion, clusterId } } = this.props;
 
-        if(this.state.firstLoad){
+        const serviceList = servicesData.filter((service) => ((service.cluster_id === clusterId) && (service.display === 1)));
+
+        if (this.state.firstLoad) {
             serviceList.map((service) => {
                 this.setState({
-                    ["cardClass"+service.id]: '',
-                    ["cardHeaderClass"+service.id]: 'bg-white', 
+                    ["cardClass" + service.id]: '',
+                    ["cardHeaderClass" + service.id]: 'bg-white',
                     [service.id]: false
-                }) 
+                })
             }
             )
-            this.setState({firstLoad: false})
+            this.setState({ firstLoad: false })
         }
-    
-        return(           
+
+        return (
             <div className="animated fadeIn align-items-center">
                 <Row>
                     <Col>
@@ -129,7 +120,7 @@ class Services extends Component{
                 </Row>
                 <Row>
                     <Col>
-                        &nbsp; 
+                        &nbsp;
                     </Col>
                 </Row>
                 <Row>
@@ -139,52 +130,52 @@ class Services extends Component{
                 </Row>
                 <Row>
                     <Col>
-                        &nbsp; 
+                        &nbsp;
                     </Col>
                 </Row>
                 <Row>
                 </Row>
                 <Row>
                     {serviceList.map((service) => {
-                        if(service.mandatory == 1) 
-                            
-                            return  <Col md="2">
-                                        <Card className='border-success'>
-                                            <CardHeader className='text-white bg-success'>
-                                                {service.service_description}
-                                                <div className="card-header-actions">
-                                                    <AppSwitch id={service.id} className={'mx-1'} variant={'pill'} color={'success'} outline={'alt'} checked disabled/>
-                                                </div>
-                                            </CardHeader>
-                                            <CardBody className="align-items-center">
-                                                <div align="center"><img src={service.img} height="75px" width="75px"/></div> 
-                                            </CardBody>
-                                        </Card>
-                                    </Col>
+                        if (service.mandatory === 1)
+
                             return <Col md="2">
-                                        <Card className={this.state["cardClass"+service.id]}>
-                                            <CardHeader className={this.state["cardHeaderClass"+service.id]}>
-                                                {service.service_description}
-                                                <div className="card-header-actions">
-                                                    <AppSwitch id={service.id} className={'mx-1'} variant={'pill'} color={'success'} outline={'alt'} checked={this.state[service.id]} onChange={this.changeSwitch}/>
-                                                </div>
-                                            </CardHeader>
-                                            <CardBody className="align-items-center">
-                                                <div align="center"><img src={service.img} height="75px" width="75px"/></div> 
-                                            </CardBody>
-                                        </Card>
-                                    </Col>
-                        
-                                
-                            }
-                        )
+                                <Card className='border-success'>
+                                    <CardHeader className='text-white bg-success'>
+                                        {service.service_description}
+                                        <div className="card-header-actions">
+                                            <AppSwitch id={service.id} className={'mx-1'} variant={'pill'} color={'success'} outline={'alt'} checked disabled />
+                                        </div>
+                                    </CardHeader>
+                                    <CardBody className="align-items-center">
+                                        <div align="center"><img alt='' src={service.img} height="75px" width="75px" /></div>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        return <Col md="2">
+                            <Card className={this.state["cardClass" + service.id]}>
+                                <CardHeader className={this.state["cardHeaderClass" + service.id]}>
+                                    {service.service_description}
+                                    <div className="card-header-actions">
+                                        <AppSwitch id={service.id} className={'mx-1'} variant={'pill'} color={'success'} outline={'alt'} checked={this.state[service.id]} onChange={this.changeSwitch} />
+                                    </div>
+                                </CardHeader>
+                                <CardBody className="align-items-center">
+                                    <div align="center"><img alt='' src={service.img} height="75px" width="75px" /></div>
+                                </CardBody>
+                            </Card>
+                        </Col>
+
+
+                    }
+                    )
                     }
                 </Row>
                 <Row>
                     <Col>
                         <div className="chart-wrapper" align="left">
-                            <Button size="lg" outline color="primary"  onClick={this.back}>
-                                <i className="fa fa-long-arrow-left"></i> Back  
+                            <Button size="lg" outline color="primary" onClick={this.back}>
+                                <i className="fa fa-long-arrow-left"></i> Back
                             </Button>
                         </div>
                     </Col>
@@ -196,7 +187,7 @@ class Services extends Component{
                         </div>
                     </Col>
                 </Row>
-            </div>     
+            </div>
         )
     }
 }
