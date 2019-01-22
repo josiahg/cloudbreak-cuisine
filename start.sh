@@ -20,11 +20,6 @@ then
     docker exec cuisine_frontend npm rebuild node-sass
     docker stop cuisine_frontend
     docker rm cuisine_frontend
-
-    # Ensure containers are up to date
-    docker pull chaffelson/whoville:latest
-    josiahgoodson/cloudbreak-cuisine-frontend:latest
-    josiahgoodson/cloudbreak-cuisine-backend:latest
 fi
 
 # Spin up the containers
