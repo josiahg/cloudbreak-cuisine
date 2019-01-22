@@ -81,8 +81,8 @@ class Profile extends Component {
     const profileList = this.state.profilesData.filter((profile) => (profile.id.toString() === this.props.match.params.id));
     const whovilleProfile = this.state.whovilleData.filter((whoville) => (whoville.profile_id.toString() === this.props.match.params.id))
     const whovilleProfileID = whovilleProfile.map((whoville) => whoville.id);
-    const tagData = this.state.profilesTagsData.filter((tags) => (tags.whoville_profile_id === whovilleProfileID));
-    const credentialData = this.state.profilesCredentialsData.filter((credentials) => (credentials.whoville_profile_id === whovilleProfileID));
+    const tagData = this.state.profilesTagsData.filter((tags) => (tags.whoville_profile_id.toString() === whovilleProfileID.toString()));
+    const credentialData = this.state.profilesCredentialsData.filter((credentials) => (credentials.whoville_profile_id.toString() === whovilleProfileID.toString()));
 
     return (
       <div className="animated fadeIn">
