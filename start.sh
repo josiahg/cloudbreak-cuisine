@@ -10,8 +10,8 @@ npm i frontend --prefix ./frontend/
 
 # Ensure containers are up to date
 docker pull chaffelson/whoville:latest
-josiahgoodson/cloudbreak-cuisine-frontend:latest
-josiahgoodson/cloudbreak-cuisine-backend:latest
+docker pull josiahgoodson/cloudbreak-cuisine-frontend:latest
+docker pull josiahgoodson/cloudbreak-cuisine-backend:latest
 
 # Fix missing Linux package
 docker run -d --name cuisine_frontend -v ${PWD}/frontend:/usr/src/app -t josiahgoodson/cloudbreak-cuisine-frontend:latest
