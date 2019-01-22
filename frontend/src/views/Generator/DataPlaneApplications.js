@@ -1,40 +1,27 @@
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Progress, Row, Col, Button, Form,
-    FormGroup,
-    FormText,
-    FormFeedback,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    InputGroupText,
-    Label,
-    Table, } from 'reactstrap';
+import {
+    Card, CardBody, CardHeader, Progress, Row, Col, Button, 
+} from 'reactstrap';
 import { AppSwitch } from '@coreui/react'
-import { throws } from 'assert';
 
 import dataPlaneApplicationsData from './DataPlaneApplicationsData'
 
 
-class DataPlaneApplications extends Component{
+class DataPlaneApplications extends Component {
     constructor(props) {
         super(props);
         this.changeSwitch = this.changeSwitch.bind(this);
-
-        this.state = {firstLoad: true}
-
+        this.state = { firstLoad: true }
     }
-    
-
 
     saveAndContinue = (e) => {
-    
-        var applications= [];
+        var applications = [];
 
         // Selected Services
-        const applicationList = dataPlaneApplicationsData.filter((application) => application.id);  
+        const applicationList = dataPlaneApplicationsData.filter((application) => application.id);
         applicationList.map((application) => {
-            if(this.state[application.id]){
-                applications.push(JSON.parse(JSON.stringify({id: application.id, name: application.description, img: application.img})));  
+            if (this.state[application.id]) {
+                applications.push(JSON.parse(JSON.stringify({ id: application.id, name: application.description, img: application.img })));
             }
         })
 
@@ -43,7 +30,7 @@ class DataPlaneApplications extends Component{
         this.props.nextStep();
     }
 
-    back  = (e) => {
+    back = (e) => {
         e.preventDefault();
         this.props.prevStep();
     }
@@ -52,40 +39,39 @@ class DataPlaneApplications extends Component{
         const applicationId = e.target.id;
         const isChecked = this.state[applicationId];
 
-        if(!isChecked){
+        if (!isChecked) {
             this.setState({
-                [applicationId]: !this.state[applicationId], 
-                ["cardHeaderClass"+applicationId]: 'text-white bg-success',
-                ["cardClass"+applicationId]: 'border-success'
-            }); 
+                [applicationId]: !this.state[applicationId],
+                ["cardHeaderClass" + applicationId]: 'text-white bg-success',
+                ["cardClass" + applicationId]: 'border-success'
+            });
         } else {
             this.setState({
-                [applicationId]: !this.state[applicationId], 
-                ["cardHeaderClass"+applicationId]: 'bg-white',
-                ["cardClass"+applicationId]: ''
-            }); 
+                [applicationId]: !this.state[applicationId],
+                ["cardHeaderClass" + applicationId]: 'bg-white',
+                ["cardClass" + applicationId]: ''
+            });
         }
     }
-    
-    loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
-    
-    render(){
-             
-        const applicationList = dataPlaneApplicationsData.filter((application) => application.id); 
 
-        if(this.state.firstLoad){
+    loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
+
+    render() {
+        const applicationList = dataPlaneApplicationsData.filter((application) => application.id);
+
+        if (this.state.firstLoad) {
             applicationList.map((application) => {
                 this.setState({
-                    ["cardClass"+application.id]: '',
-                    ["cardHeaderClass"+application.id]: 'bg-white', 
+                    ["cardClass" + application.id]: '',
+                    ["cardHeaderClass" + application.id]: 'bg-white',
                     [application.id]: false
-                }) 
+                })
             }
             )
-            this.setState({firstLoad: false})
+            this.setState({ firstLoad: false })
         }
-    
-        return(           
+
+        return (
             <div className="animated fadeIn align-items-center">
                 <Row>
                     <Col>
@@ -94,7 +80,7 @@ class DataPlaneApplications extends Component{
                 </Row>
                 <Row>
                     <Col>
-                        &nbsp; 
+                        &nbsp;
                     </Col>
                 </Row>
                 <Row>
@@ -104,37 +90,37 @@ class DataPlaneApplications extends Component{
                 </Row>
                 <Row>
                     <Col>
-                        &nbsp; 
+                        &nbsp;
                     </Col>
                 </Row>
                 <Row>
                 </Row>
                 <Row>
                     {applicationList.map((application) => {
-                            return <Col md="3">
-                                        <Card className={this.state["cardClass"+application.id]}>
-                                            <CardHeader className={this.state["cardHeaderClass"+application.id]}>
-                                                {application.description}
-                                                <div className="card-header-actions">
-                                                    <AppSwitch id={application.id} className={'mx-1'} variant={'pill'} color={'success'} outline={'alt'} checked={this.state[application.id]} onChange={this.changeSwitch}/>
-                                                </div>
-                                            </CardHeader>
-                                            <CardBody className="align-items-center">
-                                                <div align="center"><img src={application.img} height="150px" width="150px"/></div> 
-                                            </CardBody>
-                                        </Card>
-                                    </Col>
-                        
-                                
-                            }
-                        )
+                        return <Col md="3">
+                            <Card className={this.state["cardClass" + application.id]}>
+                                <CardHeader className={this.state["cardHeaderClass" + application.id]}>
+                                    {application.description}
+                                    <div className="card-header-actions">
+                                        <AppSwitch id={application.id} className={'mx-1'} variant={'pill'} color={'success'} outline={'alt'} checked={this.state[application.id]} onChange={this.changeSwitch} />
+                                    </div>
+                                </CardHeader>
+                                <CardBody className="align-items-center">
+                                    <div align="center"><img alt='' src={application.img} height="150px" width="150px" /></div>
+                                </CardBody>
+                            </Card>
+                        </Col>
+
+
+                    }
+                    )
                     }
                 </Row>
                 <Row>
                     <Col>
                         <div className="chart-wrapper" align="left">
-                            <Button size="lg" outline color="primary"  onClick={this.back}>
-                                <i className="fa fa-long-arrow-left"></i> Back  
+                            <Button size="lg" outline color="primary" onClick={this.back}>
+                                <i className="fa fa-long-arrow-left"></i> Back
                             </Button>
                         </div>
                     </Col>
@@ -146,7 +132,7 @@ class DataPlaneApplications extends Component{
                         </div>
                     </Col>
                 </Row>
-            </div>     
+            </div>
         )
     }
 }
