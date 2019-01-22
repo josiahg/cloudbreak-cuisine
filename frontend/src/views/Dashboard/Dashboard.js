@@ -105,7 +105,8 @@ class Dashboard extends Component {
       dropdownOpen: false,
       radioSelected: 2,
       token: '',
-      clusterData: []
+      clusterData: [],
+      loading: true
     };
   }
 
@@ -193,10 +194,51 @@ class Dashboard extends Component {
       .catch(err => console.error(this.props.url, err.toString()))
   }
 
-  componentDidMount() {
-    this.initData()
-    this.initProfileData()
-    this.getClusterData()
+  async componentDidMount(){
+    const initWhoville = await fetch('http://localhost:4000/api/whoville/refresh')
+    const resWhoville = await initWhoville.json()
+    const initProfile = await fetch('http://localhost:4000/api/whoville/refreshprofile')
+    const resProfile = await initProfile.json()
+    fetch('http://localhost:4000/api/profiles/whoville')
+    .then(response => response.json())
+    .then(profileData => {
+      fetch('http://localhost:4000/api/dashboard/gettoken', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user: profileData[0].default_email.toString(),
+          password: profileData[0].default_pwd.toString(),
+          cb_url: profileData[0].cb_url.toString()
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          fetch('http://localhost:4000/api/dashboard/getclusters', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              token: data,
+              cb_url: profileData[0].cb_url.toString()
+            })
+          })
+            .then(response => response.json())
+            .then(data => {
+              this.setState({ clusterData: data })
+            }).then(this.setState({loading: false}))
+            .catch(err => console.error(this.props.url, err.toString()))
+        })
+        .catch(err => console.error(this.props.url, err.toString()))
+    })
+    .catch(err => console.error(this.props.url, err.toString()))
+    
+  
+    
   }
 
   toggle() {
@@ -216,19 +258,20 @@ class Dashboard extends Component {
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
   render() {
+    const isLoading = this.state.loading;
     //const dashboardItemList = dashboardData.filter((dashboardItem) => dashboardItem.id)
     const bundleList = this.state.clusterData.filter((bundle) => bundle.name);
 
     return (
-      <div className="animated fadeIn">
+      <div >
         <Row>
           <Col>
-            <h1>Deployed Bundles</h1>
+          <h1>Deployed Bundles </h1>
           </Col>
           <Col align="right" >
             <div >
               <Button size="lg" color="warning" onClick={this.refreshPage.bind(this)}>
-                <i className="fa fa-refresh"></i>&nbsp;Refresh
+                <i className={isLoading ? 'fa fa-refresh fa-spin' : 'fa fa-refresh'}></i>&nbsp;Refresh
                               </Button>
               &nbsp;
                               <Button size="lg" color="danger" disabled>
@@ -238,10 +281,12 @@ class Dashboard extends Component {
           </Col>
         </Row>
         <Row>
-          &nbsp;
+          <Col>
+          <h1><i className={isLoading ? 'fa fa-spinner fa-spin' : ''}></i></h1>
+          </Col>
         </Row>
         <Row>
-
+          
           {bundleList.map((dashboardItem, index) =>
             <Col xs="12" sm="6" lg="3">
               <Card className={DashboardClassName(dashboardItem.status)}>
@@ -306,6 +351,7 @@ class Dashboard extends Component {
       </div>
     );
   }
+
 }
 
 export default Dashboard;
