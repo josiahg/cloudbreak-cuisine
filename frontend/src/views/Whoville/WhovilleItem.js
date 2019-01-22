@@ -144,22 +144,17 @@ class WhovilleItem extends Component {
                   <table width="100%">
                     <tbody>
                       <tr>
-                        <td align="center" width="25%">
+                        <td align="center" width="33%">
                           <Button outline color="primary" href="#/whoville">
                             <i className="fa fa-long-arrow-left" ></i>&nbsp;Back
                     </Button>
                         </td>
-                        <td>
-                          <Button color="primary">
-                            <i className="fa fa-download"></i>&nbsp;Download
-                    </Button>
-                        </td>
-                        <td align="center" width="25%">
+                        <td align="center" width="33%">
                           <Button id={this.state.bundleId} color="primary" onClick={this.deployWhoville.bind(this)}>
                             <i className="fa fa-upload"></i>&nbsp;Deploy
                     </Button>
                         </td>
-                        <td align="center" width="25%">
+                        <td align="center" width="33%">
                           <Button color="danger" disabled>
                             <i className="fa fa-remove"></i>&nbsp;Delete
                     </Button>

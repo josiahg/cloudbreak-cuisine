@@ -72,6 +72,11 @@ class LibraryItem extends Component {
       .catch(err => console.error(this.props.url, err.toString()))
   }
 
+  downloadBundle = (e) => {
+    fetch('http://localhost:4000/api/library/item/' + e.target.id + '/download')
+      .then(response => response.json())
+      .catch(err => console.error(this.props.url, err.toString()))
+  }
 
   componentDidMount() {
     this.loadData()
@@ -112,23 +117,19 @@ class LibraryItem extends Component {
                   <table width="100%">
                     <tbody>
                       <tr>
-                        <td align="center" width="25%">
+                        <td align="center" width="33%">
                           <Button outline color="success" href="#/library">
                             <i className="fa fa-long-arrow-left" ></i>&nbsp;Back
                     </Button>
                         </td>
-                        <td>
-                          <Button color="success">
+                        <td align="center">
+                          <Button id={this.state.libraryItem.id} color="success" width="33%" href={'http://localhost:4000/api/library/item/' + this.state.libraryItem.id + '/download'}>
                             <i className="fa fa-download"></i>&nbsp;Download
                     </Button>
                         </td>
-                        <td align="center" width="25%">
-                          <Button color="success" disabled>
-                            <i className="fa fa-upload"></i>&nbsp;Whoville
-                    </Button>
-                        </td>
-                        <td align="center" width="25%">
-                          <Button color="danger" disabled>
+   
+                        <td align="center" width="33%">
+                          <Button  color="danger" disabled>
                             <i className="fa fa-remove"></i>&nbsp;Delete
                     </Button>
                         </td>
