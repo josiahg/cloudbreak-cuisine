@@ -174,31 +174,40 @@ router.route('/refresh').get((req, res) => {
 
 
 router.route('/refreshProfile').get((req, res) => {
-
-
-    // Profile Overview
-    var whoville_profile_id = 1;
+    request('http://whoville:5000/api/whoville/v1/getProfile', function (error, response, body) {
+        if(body){
+            var message = JSON.parse(body);
+            var whoville_profile_id = 1;
+    request('http://whoville:5000/api/whoville/v1/getCB', function (error2, response2, body2) {
+        if(body2){
+            // Profile Overview
+    
     var profile_id = 1;
-    var namespace = 'pvi-';
-    var user_mode = 'UI';
-    var cb_url = '100.25.208.250';
-    var default_user = 'admin';
-    var default_email = 'admin@example.com';
-    var default_pwd = 'admin-password1';
-
-    db.none('insert into cloudbreak_cuisine.whoville_profile (id, profile_id, namespace, user_mode, cb_url, default_user, default_email, default_pwd) '+
-            'values($1,$2,$3,$4,$5,$6,$7,$8) on conflict(id) DO UPDATE '+
-            'set id=$1, profile_id=$2, namespace=$3, user_mode=$4, cb_url=$5, default_user=$6, default_email=$7, default_pwd=$8', 
-            [whoville_profile_id, profile_id, namespace, user_mode, cb_url, default_user, default_email, default_pwd])
-    .then(() => {
-        // success;
-    })
-    .catch(error => {
-        console.log("DB Error: ", error);
+    var namespace = message.namespace;
+    var user_mode = message.user_mode;
+          var  cb_url = JSON.parse(body2)[0];
+            
+            var default_user = message.username;
+            var default_email = message.email;
+            var default_pwd = message.password;
+        
+            db.none('insert into cloudbreak_cuisine.whoville_profile (id, profile_id, namespace, user_mode, cb_url, default_user, default_email, default_pwd) '+
+                    'values($1,$2,$3,$4,$5,$6,$7,$8) on conflict(id) DO UPDATE '+
+                    'set id=$1, profile_id=$2, namespace=$3, user_mode=$4, cb_url=$5, default_user=$6, default_email=$7, default_pwd=$8', 
+                    [whoville_profile_id, profile_id, namespace, user_mode, cb_url, default_user, default_email, default_pwd])
+            .then(() => {
+                // success;
+            })
+            .catch(error => {
+                console.log("DB Error: ", error);
+            });
+        }
     });
+    
 
     // Profile Tags
-    var tagTable = JSON.parse('{"deployer": "pvidal", "service": "whovilleephemeralcluster", "businessunit": "se"}');
+    console.log(JSON.stringify(message['tags']));
+    var tagTable = message['tags'];
     var tag_id = 1;
     for(var key in tagTable){
         db.none('insert into cloudbreak_cuisine.whoville_profile_tags (id, whoville_profile_id, tag_name, tag_value) '+
@@ -219,10 +228,10 @@ router.route('/refreshProfile').get((req, res) => {
     var credential_id = 1;
     var type = 'aws';
     var type_img = '../../assets/img/cuisine/aws.png';
-    var provider = 'EC-2';
-    var region = 'us-east-1';
-    var bucket = 'shared-warehouse';
-    var bucketrole = 'arn:aws:iam::081339556850:instance-profile/shared-services-s3-access';
+    var provider = message['platform'].provider;
+    var region = message['platform'].region;
+    var bucket = message.bucket;
+    var bucketrole = message.bucketrole;
 
 
         db.none('insert into cloudbreak_cuisine.whoville_profile_credentials (id, whoville_profile_id, type, type_img, provider, region, bucket, bucket_role) '+
@@ -236,10 +245,15 @@ router.route('/refreshProfile').get((req, res) => {
             console.log("DB Error: ", error);
         });
   
+        res.json("refresh successful");
+    }else {
+
+        res.json("no data");
+    }
+
+      });
     
-
-    res.json("Successful Refresh");
-
+    
 
 });
 
