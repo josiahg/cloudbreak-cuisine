@@ -255,7 +255,7 @@ class Dashboard extends Component {
                         {/* <DropdownItem><i className="icon-eyeglass"></i>&nbsp;Details</DropdownItem> */}
                         <DropdownItem id={dashboardItem.name} onClick={this.goToBundle.bind(this)}><i className="fa fa-building-o"></i>&nbsp;Whoville Bundle</DropdownItem>
                         <DropdownItem href={dashboardItem.cluster.ambariServerUrl} target="_blank"><i className="fa fa-external-link"></i>&nbsp;Go to Ambari</DropdownItem>
-                        <DropdownItem name={dashboardItem.name} id={dashboardItem.status} onClick={this.deleteStack.bind(this)}><i className="fa fa-remove"></i>&nbsp;Destroy</DropdownItem>
+                        <DropdownItem name={dashboardItem.name} id={dashboardItem.status} onClick={this.deleteStack.bind(this)}><i className="fa fa-remove"></i>&nbsp;Terminate</DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
                   </ButtonGroup>

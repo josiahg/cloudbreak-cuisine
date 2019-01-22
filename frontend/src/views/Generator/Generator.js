@@ -26,8 +26,6 @@ class Generator extends Component {
         clusterId: ''
     }
 
-
-
     nextStep = () => {
         const { step } = this.state
         this.setState({
