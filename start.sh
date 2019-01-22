@@ -4,17 +4,17 @@
 docker-compose -f dev-docker-compose.yml down
 docker-compose -f test-docker-compose.yml down
 
+# Ensure containers are up to date
+docker pull chaffelson/whoville:latest
+docker pull josiahgoodson/cloudbreak-cuisine-frontend:latest
+docker pull josiahgoodson/cloudbreak-cuisine-backend:latest
+
 if [ "$1" != "skipInit" ]
 then
     # Install NPM components
     npm i backend --prefix ./backend/
     npm i frontend --prefix ./frontend/
-
-    # Ensure containers are up to date
-    docker pull chaffelson/whoville:latest
-    docker pull josiahgoodson/cloudbreak-cuisine-frontend:latest
-    docker pull josiahgoodson/cloudbreak-cuisine-backend:latest
-
+ 
     # Fix missing Linux package
     docker run -d --name cuisine_frontend -v ${PWD}/frontend:/usr/src/app -t josiahgoodson/cloudbreak-cuisine-frontend:latest
     docker exec cuisine_frontend npm rebuild node-sass
