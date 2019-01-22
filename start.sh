@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Ensure that $PROFILE has been set
+if [ -z $PROFILE ]
+then
+    echo "ERROR: Please set PROFILE environment variable."
+    echo "NOTE: PROFILE should point to Whoville profile.yml"
+    echo ""
+    echo "EXITING"
+    exit 1;
+fi
+
 # Ensure we cleanly exited last time
 docker-compose -f dev-docker-compose.yml down
 docker-compose -f docker/test-docker-compose.yml down
