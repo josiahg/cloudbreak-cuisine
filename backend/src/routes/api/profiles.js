@@ -12,6 +12,37 @@ router.route('/').get((req, res) => {
         })
 });
 
+router.route('/whoville').get((req, res) => {
+    db.any('select * from cloudbreak_cuisine.whoville_profile')
+        .then(data => {
+            res.json(data);
+        })
+        .catch(error => {
+            console.log('ERROR:', error)
+        })
+});
+
+
+router.route('/tags').get((req, res) => {
+    db.any('select * from cloudbreak_cuisine.whoville_profile_tags')
+        .then(data => {
+            res.json(data);
+        })
+        .catch(error => {
+            console.log('ERROR:', error)
+        })
+});
+
+router.route('/credentials').get((req, res) => {
+    db.any('select * from cloudbreak_cuisine.whoville_profile_credentials')
+        .then(data => {
+            res.json(data);
+        })
+        .catch(error => {
+            console.log('ERROR:', error)
+        })
+});
+
 router.route('/nextid').get((req, res) => {
     db.any('select nextval(pg_get_serial_sequence(\'cloudbreak_cuisine.profiles\',\'id\')) as id')
         .then(data => {

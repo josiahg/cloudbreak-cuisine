@@ -18,6 +18,11 @@ class Profiles extends Component {
       }).then(this.loadData())
       
  }
+ refreshData() {
+  fetch('http://localhost:4000/api/whoville/refreshprofile')
+      .then(response => response.json())
+      .catch(err => console.error(this.props.url, err.toString()))
+}
   loadData() {
       fetch('http://localhost:4000/api/profiles')
           .then(response => response.json())
@@ -28,6 +33,7 @@ class Profiles extends Component {
   }
 
   componentDidMount() {
+     this.refreshData()
       this.loadData()
   }
 
@@ -44,7 +50,7 @@ class Profiles extends Component {
                         </Col>
                         <Col align="right" > 
                         <div >
-                            <Button size="lg" color="success" href="#/AddProfile">
+                            <Button size="lg" color="success" href="#/AddProfile" disabled>
                                         <i className="fa fa-plus"></i>&nbsp;Add New
                             </Button>
                         </div>
@@ -68,10 +74,6 @@ class Profiles extends Component {
                       <th scope="col">Type</th>
                       <th scope="col">Name</th>
                       <th scope="col">Associated User</th>
-                      <th scope="col">Base URL</th>
-                      <th scope="col">Cloud Type</th>
-                      <th scope="col">Registered</th>
-                      <th scope="col">Status</th>
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
@@ -80,13 +82,8 @@ class Profiles extends Component {
                       const profileLink = `/profiles/${profile.id}`
                       const editProfileLink = `/editprofiles/${profile.id}`
                     
-                      const getBadge = (status) => {
-                        return status === 'Active' ? 'success' :
-                          status === 'Inactive' ? 'secondary' :
-                            status === 'Pending' ? 'warning' :
-                              status === 'Banned' ? 'danger' :
-                                'primary'
-                      }
+             
+                      
                       
                       
                       return (
@@ -95,10 +92,7 @@ class Profiles extends Component {
                           <td>{profile.profile_type}</td>
                           <td>{profile.name}</td>
                           <td>{profile.user_name}</td>
-                          <td>{profile.base_url}</td>
-                          <td><img src={profile.cloud_type_img} height="50px"/></td>
-                          <td>{profile.registered}</td>
-                          <td><Badge color={getBadge(profile.status)}>{profile.status}</Badge></td>
+                  
                           <td><Link to={profileLink}><Button size="sm" color="primary">
                                                             <i className="icon-eyeglass"></i>&nbsp;View
                                                         </Button></Link>

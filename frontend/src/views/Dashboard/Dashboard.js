@@ -165,9 +165,9 @@ class Dashboard extends Component {
 }
 
 getClusterData() {
-  fetch('http://localhost:4000/api/dashboard/getCB')
+  fetch('http://localhost:4000/api/profiles/whoville')
             .then(response => response.json())
-            .then(cbData => {
+            .then(profileData => {
               fetch('http://localhost:4000/api/dashboard/gettoken', {
                 method: 'POST',
                 headers: {
@@ -175,9 +175,9 @@ getClusterData() {
                   'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                  user: 'admin@example.com',
-                  password: 'admin-password1',
-                  cb_url: cbData
+                  user: profileData[0].default_email.toString(),
+                  password: profileData[0].default_pwd.toString(),
+                  cb_url: profileData[0].cb_url.toString()
                 })
               })
                   .then(response => response.json())
@@ -190,7 +190,7 @@ getClusterData() {
                       },
                       body: JSON.stringify({
                         token: data,
-                        cb_url: cbData
+                        cb_url: profileData[0].cb_url.toString()
                       })
                     })
                         .then(response => response.json())
@@ -211,9 +211,15 @@ initData() {
       .then(response => response.json())
       .catch(err => console.error(this.props.url, err.toString()))
 }
+initProfileData() {
+  fetch('http://localhost:4000/api/whoville/refreshprofile')
+      .then(response => response.json())
+      .catch(err => console.error(this.props.url, err.toString()))
+}
 
 componentDidMount() {
     this.initData()
+    this.initProfileData()
     this.getClusterData()
 }
 

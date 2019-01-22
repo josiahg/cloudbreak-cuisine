@@ -63,23 +63,23 @@ export default {
         // },
       ],
     },
-    // {
-    //   name: 'Manage',
-    //   icon: 'icon-settings',
-    //   children: [
+    {
+      name: 'Manage',
+      icon: 'icon-settings',
+      children: [
         
-    //     {
-    //       name: 'Profiles',
-    //       url: '/profiles',
-    //       icon: 'fa fa-cloud',
-    //     },
-    //     {
-    //       name: 'Users',
-    //       url: '/users',
-    //       icon: 'icon-people',
-    //     }
-    //   ],
-    // },
+        {
+          name: 'Profiles',
+          url: '/profiles',
+          icon: 'fa fa-cloud',
+        },
+        {
+          name: 'Users',
+          url: '/users',
+          icon: 'icon-people',
+        }
+      ],
+    },
     
   ],
 };

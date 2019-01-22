@@ -22,8 +22,6 @@ router.route('/getCB').get((req2, res) => {
 });
 
 router.route('/gettoken').post((req2, res) => {
-
-
     process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
     var request = require("request");
@@ -66,8 +64,6 @@ router.route('/getbundleid').post((req2, res) => {
 
 
 router.route('/getclusters').post((req2, res) => {
-
-
     process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
     var request = require("request");

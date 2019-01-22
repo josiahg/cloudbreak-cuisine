@@ -67,9 +67,7 @@ componentDidMount() {
                       <th scope="col">Name</th>
                       <th scope="col">Username</th>
                       <th scope="col">e-mail</th>
-                      <th scope="col">Registered</th>
                       <th scope="col">Role</th>
-                      <th scope="col">Status</th>
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
@@ -78,21 +76,12 @@ componentDidMount() {
                       {
                         const userLink = `/users/${user.id}`
 
-                        const getBadge = (status) => {
-                          return status === 'Active' ? 'success' :
-                            status === 'Inactive' ? 'secondary' :
-                              status === 'Pending' ? 'warning' :
-                                status === 'Banned' ? 'danger' :
-                                  'primary'
-                        }
                       return <tr key={user.id.toString()}>
                       <td>{user.id}</td>
                       <td>{user.name}</td>
                       <td>{user.username}</td>
                       <td>{user.email}</td>
-                      <td>{user.registered}</td>
                       <td>{user.role}</td>
-                      <td><Badge color={getBadge(user.status)}>{user.status}</Badge></td>
                       <td><Link to={userLink}><Button size="sm" color="primary">
                                                         <i className="icon-eyeglass"></i>&nbsp;View
                                                     </Button></Link>

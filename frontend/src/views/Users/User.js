@@ -9,153 +9,19 @@ import { Card, CardBody, CardHeader, Progress, Row, Col, Button, Form,
   InputGroupAddon,
   InputGroupText,
   Label,
-  Table, Badge, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+  Table, Badge, Nav, NavItem, NavLink, TabContent, TabPane, CardFooter } from 'reactstrap';
 
 import { pathToFileURL } from 'url';
 
-function UserDetails(props) {
-  const user = props.user
 
-  return (
-    <CardBody>
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="name">User ID</Label>
-        </Col>   
-        <Col xs="12" md="9">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-bullseye"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="text" id="userID" name="userID" value={user.id} disabled/>
-          </InputGroup>
-        </Col>     
-      </FormGroup>
-
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="name">Name</Label>
-        </Col>   
-        <Col xs="12" md="9">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="text" id="name" name="name" value={user.name} disabled/>
-          </InputGroup>
-        </Col>     
-      </FormGroup>
-
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="name">Username</Label>
-        </Col>   
-        <Col xs="12" md="9">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-user"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="text" id="username" name="username" value={user.username} disabled/>
-          </InputGroup>
-        </Col>     
-      </FormGroup>
-
-
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="name">Password</Label>
-        </Col>   
-        <Col xs="12" md="9">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="icon-lock"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="password" id="password" name="password" value={user.password} disabled/>
-          </InputGroup>
-        </Col>     
-      </FormGroup>
-
-
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="name">e-mail</Label>
-        </Col>   
-        <Col xs="12" md="9">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-envelope"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="text" id="email" name="email" value={user.email} disabled/>
-          </InputGroup>
-        </Col>     
-      </FormGroup>
-
-
-
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="name">Role</Label>
-        </Col>   
-        <Col xs="12" md="9">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="icon-wrench"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="select" id="role" name="role" disabled>
-                  <option>{user.role}</option>
-              </Input>
-          </InputGroup>
-        </Col>     
-      </FormGroup>
-
-
-
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="name">Status</Label>
-        </Col>   
-        <Col xs="12" md="9">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-times"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="select" id="status" name="status" disabled>
-                  <option>{user.status}</option>
-              </Input>
-          </InputGroup>
-        </Col>     
-      </FormGroup>
-      
-
-      <FormGroup row>
-                    
-                    <Col md="3">
-                      &nbsp;
-                      </Col>
-                      <Col xs="12" md="9" align="right">
-                     
-                      <Button size="lg" color="warning" href ={"#/editusers/"+user.id} disabled>
-                                        <i className="icon-note" ></i>&nbsp;Edit
-                                    </Button>
-                                    &nbsp;
-                                   <Button size="lg" color="danger" href ="#/users">
-                                        <i className="fa fa-ban" ></i>&nbsp;Back
-                                    </Button>
-                      
-                    </Col>
-                   </FormGroup>
-
-    </CardBody>
-  )
-  
-}
 
 
 
 class User extends Component {
   constructor(props) {
     super(props)
-      this.state = { usersData: [] }
+      this.state = { activeTab: new Array(4).fill('1'),
+      usersData: [] }
   }
 
   loadData() {
@@ -178,18 +44,160 @@ componentDidMount() {
 
     return (
       <div className="animated fadeIn">
-        <Row>
-          <Col>
-          <Card className="border-primary">
-            <CardHeader className="text-white bg-primary">
-              <h2>View User</h2>
-            </CardHeader>
-              {userList.map((user) =>
-                  <UserDetails user={user}/>
-              )}
-            </Card>
-          </Col>
-        </Row>
+
+              {userList.map((user) => (
+
+                   <Row>
+                   <Col xs={6} md={4}>
+                     <Card className="card-accent-secondary">
+                     <CardBody >
+                         <div className="chart-wrapper" align="center" >
+                         <p><img src={user.img} height="300px" width="300px"/></p>
+                       </div>
+                     </CardBody>
+                     <CardFooter className="bg-white">
+                     <table width="100%">
+                         <tbody>
+                         <tr>
+                         <td align="center" width="33%">
+                         <Button  outline color="secondary" href="#/users">
+                             <i className="fa fa-long-arrow-left" ></i>&nbsp;Back
+                           </Button>
+                           </td>
+                           <td align="center" width="33%">
+                       <Button color="warning" disabled>
+                             <i className="icon-note"></i>&nbsp;Edit
+                           </Button>
+                           </td>
+                           <td align="center" width="33%">
+                           <Button color="danger" disabled>
+                             <i className="fa fa-remove"></i>&nbsp;Delete
+                           </Button>
+                           </td>
+                           </tr>
+                           </tbody>
+                           </table>
+                     </CardFooter>
+                     </Card>
+                       
+                   </Col>
+                   <Col xs={12} md={8}>
+                   <Nav tabs>
+                     <NavItem>
+                       <NavLink
+                         active
+                         
+                       ><h3>User Details</h3></NavLink>
+                     </NavItem>
+        
+                   </Nav>
+                   <TabContent activeTab={this.state.activeTab[1]}>
+                     <TabPane tabId="1">
+                     <br/>
+  
+             <FormGroup row>
+               <Col md="3">
+                 <Label htmlFor="name">User ID</Label>
+               </Col>   
+               <Col xs="12" md="9">
+                 <InputGroup>
+                   <InputGroupAddon addonType="prepend">
+                     <InputGroupText><i className="fa fa-bullseye"></i></InputGroupText>
+                   </InputGroupAddon>
+                   <Input type="text" id="userID" name="userID" value={user.id} />
+                 </InputGroup>
+               </Col>     
+             </FormGroup>
+       
+             <FormGroup row>
+               <Col md="3">
+                 <Label htmlFor="name">Name</Label>
+               </Col>   
+               <Col xs="12" md="9">
+                 <InputGroup>
+                   <InputGroupAddon addonType="prepend">
+                     <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
+                   </InputGroupAddon>
+                   <Input type="text" id="name" name="name" value={user.name} />
+                 </InputGroup>
+               </Col>     
+             </FormGroup>
+       
+             <FormGroup row>
+               <Col md="3">
+                 <Label htmlFor="name">Username</Label>
+               </Col>   
+               <Col xs="12" md="9">
+                 <InputGroup>
+                   <InputGroupAddon addonType="prepend">
+                     <InputGroupText><i className="fa fa-user"></i></InputGroupText>
+                   </InputGroupAddon>
+                   <Input type="text" id="username" name="username" value={user.username} />
+                 </InputGroup>
+               </Col>     
+             </FormGroup>
+       
+       
+             <FormGroup row>
+               <Col md="3">
+                 <Label htmlFor="name">Password</Label>
+               </Col>   
+               <Col xs="12" md="9">
+                 <InputGroup>
+                   <InputGroupAddon addonType="prepend">
+                     <InputGroupText><i className="icon-lock"></i></InputGroupText>
+                   </InputGroupAddon>
+                   <Input type="password" id="password" name="password" value={user.password} />
+                 </InputGroup>
+               </Col>     
+             </FormGroup>
+       
+       
+             <FormGroup row>
+               <Col md="3">
+                 <Label htmlFor="name">e-mail</Label>
+               </Col>   
+               <Col xs="12" md="9">
+                 <InputGroup>
+                   <InputGroupAddon addonType="prepend">
+                     <InputGroupText><i className="fa fa-envelope"></i></InputGroupText>
+                   </InputGroupAddon>
+                   <Input type="text" id="email" name="email" value={user.email} />
+                 </InputGroup>
+               </Col>     
+             </FormGroup>
+       
+       
+       
+             <FormGroup row>
+               <Col md="3">
+                 <Label htmlFor="name">Role</Label>
+               </Col>   
+               <Col xs="12" md="9">
+                 <InputGroup>
+                   <InputGroupAddon addonType="prepend">
+                     <InputGroupText><i className="icon-wrench"></i></InputGroupText>
+                   </InputGroupAddon>
+                   <Input type="select" id="role" name="role" >
+                         <option>{user.role}</option>
+                     </Input>
+                 </InputGroup>
+               </Col>     
+             </FormGroup>
+       
+       
+       
+       
+             </TabPane>
+            </TabContent>
+       
+   
+           </Col>
+                   </Row>
+
+              )
+        )}
+
       </div>
     )
   }

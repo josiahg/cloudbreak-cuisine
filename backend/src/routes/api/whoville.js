@@ -164,11 +164,83 @@ router.route('/refresh').get((req, res) => {
         })
     } else {
 
-        res.json(JSON.parse("['no data']"));
+        res.json("no data");
     }
 
       });
       
+});
+
+
+
+router.route('/refreshProfile').get((req, res) => {
+
+
+    // Profile Overview
+    var whoville_profile_id = 1;
+    var profile_id = 1;
+    var namespace = 'pvi-';
+    var user_mode = 'UI';
+    var cb_url = '100.25.208.250';
+    var default_user = 'admin';
+    var default_email = 'admin@example.com';
+    var default_pwd = 'admin-password1';
+
+    db.none('insert into cloudbreak_cuisine.whoville_profile (id, profile_id, namespace, user_mode, cb_url, default_user, default_email, default_pwd) '+
+            'values($1,$2,$3,$4,$5,$6,$7,$8) on conflict(id) DO UPDATE '+
+            'set id=$1, profile_id=$2, namespace=$3, user_mode=$4, cb_url=$5, default_user=$6, default_email=$7, default_pwd=$8', 
+            [whoville_profile_id, profile_id, namespace, user_mode, cb_url, default_user, default_email, default_pwd])
+    .then(() => {
+        // success;
+    })
+    .catch(error => {
+        console.log("DB Error: ", error);
+    });
+
+    // Profile Tags
+    var tagTable = JSON.parse('{"deployer": "pvidal", "service": "whovilleephemeralcluster", "businessunit": "se"}');
+    var tag_id = 1;
+    for(var key in tagTable){
+        db.none('insert into cloudbreak_cuisine.whoville_profile_tags (id, whoville_profile_id, tag_name, tag_value) '+
+            'values($1,$2,$3,$4) on conflict(id) DO UPDATE '+
+            'set id=$1, whoville_profile_id=$2, tag_name=$3, tag_value=$4', 
+            [tag_id, whoville_profile_id, key, tagTable[key]])
+        .then(() => {
+            // success;
+        })
+        .catch(error => {
+            console.log("DB Error: ", error);
+        });
+        tag_id++;
+    }
+
+
+    // Profile credentials
+    var credential_id = 1;
+    var type = 'aws';
+    var type_img = '../../assets/img/cuisine/aws.png';
+    var provider = 'EC-2';
+    var region = 'us-east-1';
+    var bucket = 'shared-warehouse';
+    var bucketrole = 'arn:aws:iam::081339556850:instance-profile/shared-services-s3-access';
+
+
+        db.none('insert into cloudbreak_cuisine.whoville_profile_credentials (id, whoville_profile_id, type, type_img, provider, region, bucket, bucket_role) '+
+            'values($1,$2,$3,$4,$5,$6,$7,$8) on conflict(id) DO UPDATE '+
+            'set id=$1, whoville_profile_id=$2, type=$3, type_img=$4, provider=$5, region=$6, bucket=$7, bucket_role=$8', 
+            [credential_id, whoville_profile_id, type, type_img, provider, region, bucket, bucketrole])
+        .then(() => {
+            // success;
+        })
+        .catch(error => {
+            console.log("DB Error: ", error);
+        });
+  
+    
+
+    res.json("Successful Refresh");
+
+
 });
 
 
