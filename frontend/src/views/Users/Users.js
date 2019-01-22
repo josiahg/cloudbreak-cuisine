@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Badge, Card, CardBody, CardHeader, Col, Row, Table, Button } from 'reactstrap';
+import {  Card, CardBody, Col, Row, Table, Button } from 'reactstrap';
 
 
 class Users extends Component {
