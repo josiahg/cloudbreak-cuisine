@@ -206,7 +206,6 @@ router.route('/refreshProfile').get((req, res) => {
     
 
     // Profile Tags
-    console.log(JSON.stringify(message['tags']));
     var tagTable = message['tags'];
     var tag_id = 1;
     for(var key in tagTable){
