@@ -4,8 +4,6 @@ import { Container, Row } from 'reactstrap';
 
 import {
   AppAside,
-  AppBreadcrumb,
-  AppFooter,
   AppHeader,
   AppSidebar,
   AppSidebarFooter,
@@ -20,7 +18,6 @@ import navigation from '../../_nav';
 import routes from '../../routes';
 
 const DefaultAside = React.lazy(() => import('./DefaultAside'));
-const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
 const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 
 class DefaultLayout extends Component {
@@ -36,8 +33,8 @@ class DefaultLayout extends Component {
     return (
       <div className="app">
         <AppHeader fixed >
-          <Suspense  fallback={this.loading()}>
-            <DefaultHeader onLogout={e=>this.signOut(e)}/>
+          <Suspense fallback={this.loading()}>
+            <DefaultHeader onLogout={e => this.signOut(e)} />
           </Suspense>
         </AppHeader>
         <div className="app-body">
@@ -45,14 +42,14 @@ class DefaultLayout extends Component {
             <AppSidebarHeader />
             <AppSidebarForm />
             <Suspense>
-            <AppSidebarNav navConfig={navigation} {...this.props} />
+              <AppSidebarNav navConfig={navigation} {...this.props} />
             </Suspense>
             <AppSidebarFooter />
             <AppSidebarMinimizer />
           </AppSidebar>
           <main className="main">
             <Container fluid>
-            <Row>&nbsp;</Row>
+              <Row>&nbsp;</Row>
               <Suspense fallback={this.loading()}>
                 <Switch>
                   {routes.map((route, idx) => {
@@ -78,7 +75,7 @@ class DefaultLayout extends Component {
             </Suspense>
           </AppAside>
         </div>
- 
+
       </div>
     );
   }

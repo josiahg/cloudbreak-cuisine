@@ -31,95 +31,96 @@ class Generator extends Component {
     nextStep = () => {
         const { step } = this.state
         this.setState({
-            step : step + 1
+            step: step + 1
         })
     }
 
     prevStep = () => {
         const { step } = this.state
         this.setState({
-            step : step - 1
+            step: step - 1
         })
     }
 
     handleChange = input => event => {
-        this.setState({ [input] : event.target.value })
+        this.setState({ [input]: event.target.value })
     }
 
-    changeClusterVersion = (data) =>  {
-        this.setState({ clusterVersion : data })
-   }
-
-   changeClusterId = (data) =>  {
-    this.setState({ clusterId : data })
-}
-
-setServiceList = (data) =>  {
-    this.setState({ services : data })
-}
-
-setDataPlaneApplicationList = (data) =>  {
-    this.setState({ dataPlaneApplications : data })
-}
-setRecipeList = (data) =>  {
-    this.setState({ recipes : data })
-}
-    changeClusterType = (data) =>  {
-         this.setState({ clusterType : data })
+    changeClusterVersion = (data) => {
+        this.setState({ clusterVersion: data })
     }
 
-    render(){
-        const {step} = this.state;
+    changeClusterId = (data) => {
+        this.setState({ clusterId: data })
+    }
+
+    setServiceList = (data) => {
+        this.setState({ services: data })
+    }
+
+    setDataPlaneApplicationList = (data) => {
+        this.setState({ dataPlaneApplications: data })
+    }
+    setRecipeList = (data) => {
+        this.setState({ recipes: data })
+    }
+    changeClusterType = (data) => {
+        this.setState({ clusterType: data })
+    }
+
+    render() {
+        const { step } = this.state;
         const { clusterVersion, clusterType, clusterId, services, recipes, dataPlaneApplications } = this.state;
         const values = { clusterVersion, clusterType, clusterId, services, recipes, dataPlaneApplications };
-        switch(step) {
-        case 1:
-            return <WelcomeScreen 
-                    nextStep={this.nextStep} 
-                    handleChange = {this.handleChange}
+        switch (step) {
+            case 1:
+                return <WelcomeScreen
+                    nextStep={this.nextStep}
+                    handleChange={this.handleChange}
                     values={values}
-                    />
-        case 2:
-            return <ClusterType 
+                />
+            case 2:
+                return <ClusterType
                     nextStep={this.nextStep}
                     prevStep={this.prevStep}
-                    changeClusterType = {this.changeClusterType}
-                    changeClusterVersion = {this.changeClusterVersion}
-                    changeClusterId = {this.changeClusterId}
-                    handleChange = {this.handleChange}
+                    changeClusterType={this.changeClusterType}
+                    changeClusterVersion={this.changeClusterVersion}
+                    changeClusterId={this.changeClusterId}
+                    handleChange={this.handleChange}
                     values={values}
-                    />
-        case 3:
-            return <Services 
+                />
+            case 3:
+                return <Services
                     setServiceList={this.setServiceList}
                     nextStep={this.nextStep}
                     prevStep={this.prevStep}
                     values={values}
-                    />
-    
-        case 4:
-            return <Recipes 
+                />
+
+            case 4:
+                return <Recipes
                     setRecipeList={this.setRecipeList}
                     nextStep={this.nextStep}
                     prevStep={this.prevStep}
                     values={values}
-                    />
-        case 5:
-            return <DataPlaneApplications  
+                />
+            case 5:
+                return <DataPlaneApplications
                     setDataPlaneApplicationList={this.setDataPlaneApplicationList}
                     nextStep={this.nextStep}
                     prevStep={this.prevStep}
                     values={values}
-                    />
-
-        case 6:
-            return <Confirmation  
+                />
+            case 6:
+                return <Confirmation
                     nextStep={this.nextStep}
                     prevStep={this.prevStep}
                     values={values}
-                    />
+                />
+            default:
+                return null;
         }
     }
 }
 
-   export default Generator;
+export default Generator;

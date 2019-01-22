@@ -16,7 +16,7 @@ class DefaultFooter extends Component {
     return (
       <React.Fragment>
         <span>Cloudbreak Cuisine - <a href="http://hortonworks.com">Hortonworks</a> &copy; 2018</span>
-        <span className="ml-auto"><img src='../../assets/img/cuisine/hwx_logo_30.png'/></span>
+        <span className="ml-auto"><img alt='' src='../../assets/img/cuisine/hwx_logo_30.png' /></span>
       </React.Fragment>
     );
   }
