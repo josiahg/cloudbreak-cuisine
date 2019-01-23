@@ -13,7 +13,7 @@ router.route('/').get((req, res) => {
 });
 
 router.route('/distinctnames').get((req, res) => {
-    db.any('select distinct service_description from cloudbreak_cuisine.services where display = 1 union all select \'NO ASSOCIATED SERVICE\' ')
+    db.any('select distinct service_description from cloudbreak_cuisine.services where display = 1')
         .then(data => {
             res.json(data);
         })

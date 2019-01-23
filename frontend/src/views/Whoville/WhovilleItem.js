@@ -201,7 +201,7 @@ class WhovilleItem extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-bullseye"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="text" id="bundleID" name="bundleID" value={this.state.libraryItem.id} />
+                          <Input type="text" id="bundleID" name="bundleID" value={this.state.libraryItem.id} className="bg-white" disabled/>
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -216,7 +216,7 @@ class WhovilleItem extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="text" id="bundleName" name="recipebundleNameName" value={this.state.libraryItem.name} />
+                          <Input type="text" id="bundleName" name="recipebundleNameName" value={this.state.libraryItem.name} className="bg-white" disabled/>
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -231,7 +231,7 @@ class WhovilleItem extends Component {
                             <InputGroupText><i className="fa fa-comment"></i></InputGroupText>
                           </InputGroupAddon>
 
-                          <Input type="textarea" rows="1" id="bundleDescription" name="bundleDescription" value={this.state.libraryItem.description} />
+                          <Input type="textarea" rows="1" id="bundleDescription" name="bundleDescription" value={this.state.libraryItem.description} className="bg-white" disabled/>
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -251,7 +251,7 @@ class WhovilleItem extends Component {
 
                           <Input type="textarea" rows={this.state.libraryItemRecipes ? "2" : "1"} id="bundleRecipes" name="bundleRecipes" value={this.state.libraryItemRecipes ? this.state.libraryItemRecipes.map((recipe) => {
                             return " " + recipe.dep_desc
-                          }) : "N/A"} />
+                          }) : "N/A"} className="bg-white" disabled/>
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -264,7 +264,7 @@ class WhovilleItem extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-server"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="textarea" rows={this.state.libraryItemStack.dep_desc ? "4" : "1"} id="bundleCluster" name="bundleCluster" value={this.state.libraryItemStack.dep_desc ? Base64.decode(this.state.libraryItemStack.dep_desc) : "N/A"} />
+                          <Input type="textarea" rows={this.state.libraryItemStack.dep_desc ? "4" : "1"} id="bundleCluster" name="bundleCluster" value={this.state.libraryItemStack.dep_desc ? Base64.decode(this.state.libraryItemStack.dep_desc) : "N/A"} className="bg-white" disabled/>
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -280,7 +280,7 @@ class WhovilleItem extends Component {
                             <InputGroupText><i className="fa fa-pencil"></i></InputGroupText>
                           </InputGroupAddon>
 
-                          <Input type="textarea" rows={this.state.libraryItemInput.dep_desc ? "5" : "1"} id="bundleInput" name="bundleInput" value={this.state.libraryItemInput.dep_desc ? Base64.decode(this.state.libraryItemInput.dep_desc) : "N/A"} />
+                          <Input type="textarea" rows={this.state.libraryItemInput.dep_desc ? "5" : "1"} id="bundleInput" name="bundleInput" value={this.state.libraryItemInput.dep_desc ? Base64.decode(this.state.libraryItemInput.dep_desc) : "N/A"} className="bg-white" disabled/>
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -302,7 +302,7 @@ class WhovilleItem extends Component {
                               .map((content) => {
                                 return content.content
                               })
-                          } />
+                          } className="bg-white" disabled/>
                         </InputGroup>
 
                       </Col>
@@ -323,7 +323,7 @@ class WhovilleItem extends Component {
                               .map((content) => {
                                 return content.content
                               })
-                          } />
+                          } className="bg-white" disabled/>
                         </InputGroup>
 
                       </Col>

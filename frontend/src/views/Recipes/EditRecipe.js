@@ -8,12 +8,12 @@ import {
   InputGroupAddon,
   InputGroupText,
   Label,
-  Nav, NavItem, NavLink, TabContent, TabPane
+  Nav, NavItem, NavLink, TabContent, TabPane, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 import recipesData from './RecipesData'
 import servicesListData from './ServicesListData'
 
-class AddRecipe extends Component {
+class EditRecipe extends Component {
   constructor(props) {
     super(props);
 
@@ -34,8 +34,24 @@ class AddRecipe extends Component {
       content: '',
       service_description: '',
       cluster_type: '',
-      cluster_version: ''
+      cluster_version: '',
+      modal: false,
+      confirm: false,
+      confirmed: false,
+      mandatory: '',
+      display: '',
+      delete: false,
+      deleted: false
     };
+  }
+
+  deleteRecipe = (e) => {
+    
+    fetch('http://localhost:4000/api/recipes/delete/' + this.state.recipeid)
+    .then(response => response.json).then(
+      this.setState({ delete: !this.state.delete,
+        deleted: !this.state.deleted}));
+
   }
 
   saveRecipe = (e) => {
@@ -54,15 +70,42 @@ class AddRecipe extends Component {
     .then(data => {
       
        if(data.serviceid) {
-        alert('Saving...');
+
+        this.setState({ serviceid: data.serviceid,
+          confirm: !this.state.confirm});
        } else {
-        alert('Incompatible service/cluster/version combination!' )
+        this.setState({ modal: !this.state.modal});
        }
     })
     .catch(err => console.error(this.props.url, err.toString()) )
+  }
 
-    
-    
+  insertRecipe = (e) => {
+    fetch('http://localhost:4000/api/recipes/update_recipe', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: this.state.recipeid,
+        serviceid: this.state.serviceid,
+        clusterid: this.state.clusterid,
+        recipeid: this.state.recipeid,
+        recipename: this.state.recipename,
+        recipedescription: this.state.recipedescription,
+        addon_type: this.state.addon_type,
+        recipe_type: this.state.recipe_type,
+        content: this.state.content,
+        service_description: this.state.service_description,
+        cluster_type: this.state.cluster_type,
+        cluster_version: this.state.cluster_version,
+        mandatory: this.state.mandatory,
+        display: this.state.display
+      })
+    }).then(response => response.json()).then(
+    this.setState({ confirm: !this.state.confirm,
+      confirmed: !this.state.confirmed}));
   }
 
 
@@ -106,7 +149,9 @@ class AddRecipe extends Component {
                         content: data.content,
                         service_description: data.service_description,
                         cluster_type: data.cluster_type,
-                        cluster_version: data.version
+                        cluster_version: data.version,
+                        mandatory: data.mandatory,
+                        display: data.display
 
                                 })
       })
@@ -171,6 +216,58 @@ class AddRecipe extends Component {
         <Row>
           <Col>
             <Card className="border-warning">
+            <Modal isOpen={this.state.delete} toggle={() => { this.setState({ delete: !this.state.delete }); }}
+                       className={'modal-danger ' + this.props.className}>
+                  <ModalHeader toggle={() => { this.setState({ delete: !this.state.delete}); }}>Delete Confirmation</ModalHeader>
+                  <ModalBody>
+                  <h3>Are you sure you want to delete this recipe?</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='secondary' onClick={() => { this.setState({ delete: !this.state.delete}); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
+                  <Button color='danger' name={this.state.recipeid} onClick={this.deleteRecipe.bind(this)}><i className="fa fa-remove"></i>&nbsp; Delete</Button>
+                   </ModalFooter>
+                </Modal>
+            <Modal isOpen={this.state.modal} toggle={() => { this.setState({ modal: !this.state.modal }); }}
+                       className={'modal-warning ' + this.props.className}>
+                  <ModalHeader toggle={() => { this.setState({ modal: !this.state.modal}); }}>Warning</ModalHeader>
+                  <ModalBody>
+                  <h3>Incompatible service/cluster/version combination!</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='secondary' onClick={() => { this.setState({ modal: !this.state.modal}); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
+                   </ModalFooter>
+                </Modal>
+                <Modal isOpen={this.state.confirm} toggle={() => { this.setState({ confirm: !this.state.confirm }); }}
+                       className={'modal-primary ' + this.props.className}>
+                  <ModalHeader toggle={() => { this.setState({ confirm: !this.state.confirm}); }}>Confirmation</ModalHeader>
+                  <ModalBody>
+                  <h3>Are you sure you want to save?</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='secondary' onClick={() => { this.setState({ confirm: !this.state.confirm}); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
+                  <Button color='primary' onClick={this.insertRecipe.bind(this)}><i className="fa fa-check"></i>&nbsp; Yes</Button>
+                   </ModalFooter>
+                </Modal>
+                <Modal isOpen={this.state.deleted} toggle={() => { this.setState({ deleted: !this.state.deleted }); }}
+                       className={'modal-sucess ' + this.props.className}>
+                  
+                  <ModalBody>
+                  <h3>Recipe deleted!</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='success' href="#/recipes">OK <i className="fa fa-long-arrow-right"></i></Button>
+                   </ModalFooter>
+                </Modal>
+                <Modal isOpen={this.state.confirmed} toggle={() => { this.setState({ confirmed: !this.state.confirmed }); }}
+                       className={'modal-sucess ' + this.props.className}>
+                  
+                  <ModalBody>
+                  <h3>Recipe saved!</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='success' href="#/recipes">OK <i className="fa fa-long-arrow-right"></i></Button>
+                   </ModalFooter>
+                </Modal>
               <CardHeader className="text-white bg-warning">
                 <h2>Edit Recipe</h2>
               </CardHeader>
@@ -202,7 +299,7 @@ class AddRecipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="text" id="recipeName" name="recipeName" value={this.state.recipename} onChange={this.handleNameChange}/>
+                          <Input type="text" id="recipeName" name="recipeName" value={this.state.recipename} onChange={this.handleNameChange.bind(this)}/>
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -217,7 +314,7 @@ class AddRecipe extends Component {
                             <InputGroupText><i className="fa fa-comment"></i></InputGroupText>
                           </InputGroupAddon>
 
-                          <Input type="textarea" id="recipeDescription" name="recipeDescription" value={this.state.recipedescription} onChange={this.handleDescriptionChange}/>
+                          <Input type="textarea" id="recipeDescription" name="recipeDescription" value={this.state.recipedescription} onChange={this.handleDescriptionChange.bind(this)}/>
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -232,7 +329,7 @@ class AddRecipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-clock-o"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" name="recipeType" id="recipeType" onChange={this.handleRecipeTypeChange}>
+                          <Input type="select" name="recipeType" id="recipeType" onChange={this.handleRecipeTypeChange.bind(this)}>
                             <option selected={this.state.recipe_type.toString() === 'Pre Ambari Start'}>Pre Ambari Start</option>
                             <option selected={this.state.recipe_type.toString() === 'Post Ambari Start'}>Post Ambari Start</option>
                             <option selected={this.state.recipe_type.toString() === 'Post Cluster Install'}>Post Cluster Install</option>
@@ -253,7 +350,7 @@ class AddRecipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-cog"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" name="service" id="service" onChange={this.handleServiceChange}>
+                          <Input type="select" name="service" id="service" onChange={this.handleServiceChange.bind(this)}>
                             {serviceList.map((service) =>
                               <option selected={this.state.service_description.toString() === service.service_description.toString()}>{service.service_description}</option>
                             )}
@@ -272,7 +369,7 @@ class AddRecipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-server"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" name="clusterType" id="clusterType" onChange={this.handleClusterTypeChange}>
+                          <Input type="select" name="clusterType" id="clusterType" onChange={this.handleClusterTypeChange.bind(this)}>
                           {clusterList.map((cluster) =>
                               <option selected={this.state.cluster_type.toString() === cluster.cluster_type.toString()}>{cluster.cluster_type}</option>
                             )}
@@ -290,7 +387,7 @@ class AddRecipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-code-fork"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" name="clusterVersion" id="clusterVersion" onChange={this.handleClusterVersionChange}>
+                          <Input type="select" name="clusterVersion" id="clusterVersion" onChange={this.handleClusterVersionChange.bind(this)}>
                           {versionList.map((version) =>
                               <option selected={this.state.cluster_version.toString() === version.version.toString()}>{version.version}</option>
                             )}
@@ -349,7 +446,7 @@ class AddRecipe extends Component {
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-code"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="textarea" rows="20" id="recipeCode" name="recipeCode" value={Base64.decode(this.state.content)} onChange={this.handleContentChange}/>
+            <Input type="textarea" rows="20" id="recipeCode" name="recipeCode" value={Base64.decode(this.state.content)} onChange={this.handleContentChange.bind(this)}/>
           </InputGroup>
         </TabPane>
                         </TabContent>
@@ -367,6 +464,10 @@ class AddRecipe extends Component {
                         &nbsp;
                       <Button size="lg" color="primary" onClick={this.saveRecipe.bind(this)}>
                           <i className="fa fa-save"></i>&nbsp;Save
+                                    </Button>
+                        &nbsp;
+                      <Button size="lg" color="danger" onClick={() => { this.setState({ delete: !this.state.delete}); }}>
+                          <i className="fa fa-remove"></i>&nbsp;Delete
                                     </Button>
 
                       </Col>
@@ -390,4 +491,4 @@ class AddRecipe extends Component {
   }
 }
 
-export default AddRecipe;
+export default EditRecipe;

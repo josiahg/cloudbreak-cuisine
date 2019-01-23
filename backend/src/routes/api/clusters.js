@@ -13,7 +13,7 @@ router.route('/').get((req, res) => {
 });
 
 router.route('/distincttypes').get((req, res) => {
-    db.any('select distinct cluster_type from cloudbreak_cuisine.clusters union all select \'NO ASSOCIATED CLUSTER\'')
+    db.any('select distinct cluster_type from cloudbreak_cuisine.clusters')
         .then(data => {
             res.json(data);
         })
@@ -23,7 +23,7 @@ router.route('/distincttypes').get((req, res) => {
 });
 
 router.route('/distinctversions').get((req, res) => {
-    db.any('select distinct version from cloudbreak_cuisine.clusters union all select \'NO ASSOCIATED VERSION\'')
+    db.any('select distinct version from cloudbreak_cuisine.clusters')
         .then(data => {
             res.json(data);
         })

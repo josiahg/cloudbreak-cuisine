@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Base64 from 'base-64';
 import {
   Card, CardBody, CardHeader, Row, Col, Button, Form,
   FormGroup,
@@ -7,9 +8,9 @@ import {
   InputGroupAddon,
   InputGroupText,
   Label,
-  Nav, NavItem, NavLink, TabContent, TabPane
+  Nav, NavItem, NavLink, TabContent, TabPane, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
-
+import recipesData from './RecipesData'
 import servicesListData from './ServicesListData'
 
 class AddRecipe extends Component {
@@ -18,11 +19,141 @@ class AddRecipe extends Component {
 
     this.toggle = this.toggle.bind(this);
     this.state = {
-      activeTab: new Array(4).fill('1'),
+      activeTab: new Array(4).fill('3'),
       distinctServices: [],
       distinctClusters: [],
-      distinctVersions: []
+      distinctVersions: [],
+      recipesDetailedData: [],
+      serviceid: '',
+      clusterid: '',
+      recipeid: '',
+      recipename: '',
+      recipedescription: '',
+      addon_type: 'Recipe',
+      recipe_type: 'Pre Ambari Start',
+      content: '',
+      service_description: 'HDFS',
+      cluster_type: 'HDP',
+      cluster_version: '3.0',
+      modal: false,
+      confirm: false,
+      confirmed: false,
+      mandatory: 0,
+      display: 1
     };
+  }
+
+  saveRecipe = (e) => {
+    fetch('http://localhost:4000/api/recipes/checkcompatibility', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cluster_type: this.state.cluster_type,
+        cluster_version: this.state.cluster_version,
+        service_description: this.state.service_description
+      })
+    }).then(response => response.json())
+    .then(data => {
+      
+       if(data.serviceid) {
+
+        this.setState({ serviceid: data.serviceid,
+          confirm: !this.state.confirm});
+       } else {
+        this.setState({ modal: !this.state.modal});
+       }
+    })
+    .catch(err => console.error(this.props.url, err.toString()) )
+  }
+
+  insertRecipe = (e) => {
+    fetch('http://localhost:4000/api/recipes/insert_recipe', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: this.state.recipeid,
+        serviceid: this.state.serviceid,
+        clusterid: this.state.clusterid,
+        recipeid: this.state.recipeid,
+        recipename: this.state.recipename,
+        recipedescription: this.state.recipedescription,
+        addon_type: this.state.addon_type,
+        recipe_type: this.state.recipe_type,
+        content: this.state.content,
+        service_description: this.state.service_description,
+        cluster_type: this.state.cluster_type,
+        cluster_version: this.state.cluster_version,
+        mandatory: this.state.mandatory,
+        display: this.state.display
+      })
+    }).then(response => response.json()).then(
+    this.setState({ confirm: !this.state.confirm,
+      confirmed: !this.state.confirmed}));
+  }
+
+
+  handleContentChange = (e) => {
+    this.setState({ content: Base64.encode(e.target.value) });
+  }
+
+  handleNameChange = (e) => {
+    this.setState({ recipename: e.target.value });
+  }
+
+  handleDescriptionChange = (e) => {
+    this.setState({ recipedescription: e.target.value });
+  }
+
+  handleRecipeTypeChange = (e) => {
+    this.setState({ recipe_type: e.target.value });
+  }
+  handleServiceChange = (e) => {
+    this.setState({ service_description: e.target.value });
+  }
+  handleClusterTypeChange = (e) => {
+    this.setState({ cluster_type: e.target.value });
+  }
+
+  handleClusterVersionChange = (e) => {
+    this.setState({ cluster_version: e.target.value });
+  }
+
+  loadIdData() {
+    fetch('http://localhost:4000/api/recipes/nextid')
+      .then(response => response.json())
+      .then(data => {
+        data.map((id) => this.setState({ recipeid: id.id }))
+
+      })
+      .catch(err => console.error(this.props.url, err.toString()))
+  }
+
+  loadRecipeData() {
+    fetch('http://localhost:4000/api/recipes/'+this.props.match.params.id+'/details')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ recipeid: data.id,
+                        serviceId: data.serviceid,
+                        recipename: data.recipename,
+                        recipedescription: data.recipedescription,
+                        addon_type: data.addon_type,
+                        recipe_type: data.recipe_type,
+                        content: data.content,
+                        service_description: data.service_description,
+                        cluster_type: data.cluster_type,
+                        cluster_version: data.version,
+                        mandatory: data.mandatory,
+                        display: data.display
+
+                                })
+      })
+      .catch(err => console.error(this.props.url, err.toString()))
   }
 
   loadDistinctServices() {
@@ -52,10 +183,6 @@ class AddRecipe extends Component {
       .catch(err => console.error(this.props.url, err.toString()))
   }
 
-  lorem() {
-    return 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.'
-  }
-
   toggle(tabPane, tab) {
     const newArray = this.state.activeTab.slice()
     newArray[tabPane] = tab
@@ -64,41 +191,21 @@ class AddRecipe extends Component {
     });
   }
 
-  tabPane() {
-    return (
-      <>
-        <TabPane tabId="1">
-          <Button size="lg" color="success">
-            <i className="fa fa-upload"></i>&nbsp;Upload
-                                    </Button>
-        </TabPane>
-        <TabPane tabId="2">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-link"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="text" id="recipeURL" name="recipeURL" placeholder="Enter URL" />
-          </InputGroup>
-        </TabPane>
-        <TabPane tabId="3">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-code"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="textarea" id="recipeCode" name="recipeCode" placeholder="// Enter recipe code" />
-          </InputGroup>
-        </TabPane>
-      </>
-    );
+
+  componentDidMount() {
+    this.loadIdData()
+    this.loadDistinctServices()
+    this.loadDistinctClusters()
+    this.loadDistinctVersions()
   }
-
-
-
 
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
   render() {
-    const serviceList = servicesListData.filter((service) => ((service.name)))
+    const serviceList = this.state.distinctServices.filter((service) => ((service.service_description)))
+    const clusterList = this.state.distinctClusters.filter((cluster) => ((cluster.cluster_type)))
+    const versionList = this.state.distinctVersions.filter((version) => ((version.version)))
+
 
     return (
 
@@ -107,179 +214,245 @@ class AddRecipe extends Component {
         <Row>
           <Col>
             <Card className="border-success">
+            <Modal isOpen={this.state.modal} toggle={() => { this.setState({ modal: !this.state.modal }); }}
+                       className={'modal-warning ' + this.props.className}>
+                  <ModalHeader toggle={() => { this.setState({ modal: !this.state.modal}); }}>Warning</ModalHeader>
+                  <ModalBody>
+                  <h3>Incompatible service/cluster/version combination!</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='secondary' onClick={() => { this.setState({ modal: !this.state.modal}); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
+                   </ModalFooter>
+                </Modal>
+                <Modal isOpen={this.state.confirm} toggle={() => { this.setState({ confirm: !this.state.confirm }); }}
+                       className={'modal-primary ' + this.props.className}>
+                  <ModalHeader toggle={() => { this.setState({ confirm: !this.state.confirm}); }}>Confirmation</ModalHeader>
+                  <ModalBody>
+                  <h3>Are you sure you want to save?</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='secondary' onClick={() => { this.setState({ confirm: !this.state.confirm}); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
+                  <Button color='primary' onClick={this.insertRecipe.bind(this)}><i className="fa fa-check"></i>&nbsp; Yes</Button>
+                   </ModalFooter>
+                </Modal>
+                <Modal isOpen={this.state.confirmed} toggle={() => { this.setState({ confirmed: !this.state.confirmed }); }}
+                       className={'modal-sucess ' + this.props.className}>
+                  
+                  <ModalBody>
+                  <h3>Recipe saved!</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='success' href="#/recipes">OK <i className="fa fa-long-arrow-right"></i></Button>
+                   </ModalFooter>
+                </Modal>
               <CardHeader className="text-white bg-success">
                 <h2>Add Recipe</h2>
               </CardHeader>
-              <CardBody>
-                <Form>
+              
+                <CardBody>
+                  <Form>
 
-
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="name">Recipe ID</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <InputGroup>
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText><i className="fa fa-bullseye"></i></InputGroupText>
-                        </InputGroupAddon>
-                        <Input type="text" id="recipeID" name="recipeID" value='24' disabled />
-                      </InputGroup>
-                    </Col>
-                  </FormGroup>
-
-                  <FormGroup row>
-
-                    <Col md="3">
-                      <Label htmlFor="name">Recipe Name</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <InputGroup>
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
-                        </InputGroupAddon>
-                        <Input type="text" id="recipeName" name="recipeName" placeholder="Enter recipe name" autoComplete="name" />
-                      </InputGroup>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-
-                    <Col md="3">
-                      <Label htmlFor="description">Recipe Description</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <InputGroup>
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText><i className="fa fa-comment"></i></InputGroupText>
-                        </InputGroupAddon>
-
-                        <Input type="textarea" id="recipeDescription" name="recipeDescription" placeholder="Enter recipe description" />
-                      </InputGroup>
-                    </Col>
-                  </FormGroup>
-
-                  <FormGroup row>
-
-                    <Col md="3">
-                      <Label htmlFor="name">Recipe Type</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <InputGroup>
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText><i className="fa fa-clock-o"></i></InputGroupText>
-                        </InputGroupAddon>
-                        <Input type="select" name="recipeType" id="recipeType">
-                          <option>Pre Ambari Start</option>
-                          <option>Post Ambari Start</option>
-                          <option>Post Cluster Install</option>
-                          <option>Pre Termination</option>
-                        </Input>
-                      </InputGroup>
-                    </Col>
-                  </FormGroup>
-
-
-                  <FormGroup row>
-
-                    <Col md="3">
-                      <Label htmlFor="name">Associated Service</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <InputGroup>
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText><i className="fa fa-cog"></i></InputGroupText>
-                        </InputGroupAddon>
-                        <Input type="select" name="service" id="service">
-                          {serviceList.map((service) =>
-                            <option>{service.name}</option>
-                          )}
-                        </Input>
-                      </InputGroup>
-                    </Col>
-                  </FormGroup>
-
-                  <FormGroup row>
-
-                    <Col md="3">
-                      <Label htmlFor="name">Associated Cluster</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <InputGroup>
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText><i className="fa fa-server"></i></InputGroupText>
-                        </InputGroupAddon>
-                        <Input type="select" name="clusterType" id="clusterType">
-                          <option>HDP</option>
-                          <option>HDF</option>
-                          <option>HDP + HDF</option>
-                        </Input>
-                      </InputGroup>
-                    </Col>
-                  </FormGroup>
-
-
-
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="content">Recipe Content</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Nav tabs>
-                        <NavItem>
-                          <NavLink
-                            active={this.state.activeTab[0] === '1'}
-                            onClick={() => { this.toggle(0, '1'); }}
-                          >
-                            File
-                </NavLink>
-                        </NavItem>
-                        <NavItem>
-                          <NavLink
-                            active={this.state.activeTab[0] === '2'}
-                            onClick={() => { this.toggle(0, '2'); }}
-                          >
-                            URL
-                </NavLink>
-                        </NavItem>
-                        <NavItem>
-                          <NavLink
-                            active={this.state.activeTab[0] === '3'}
-                            onClick={() => { this.toggle(0, '3'); }}
-                          >
-                            Type
-                </NavLink>
-                        </NavItem>
-                      </Nav>
-                      <TabContent activeTab={this.state.activeTab[0]}>
-                        {this.tabPane()}
-                      </TabContent>
-
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-
-                    <Col md="3">
-                      &nbsp;
+                    <FormGroup row>
+                      <Col md="3">
+                        <Label htmlFor="name">Recipe ID</Label>
                       </Col>
-                    <Col xs="12" md="9" align="right">
-                      <Button size="lg" outline color="primary" href="#/recipes">
-                        <i className="fa fa-long-arrow-left"></i> Back
+                      <Col xs="12" md="9">
+                        <InputGroup>
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText><i className="fa fa-bullseye"></i></InputGroupText>
+                          </InputGroupAddon>
+                          <Input type="text" id="recipeID" name="recipeID" value={this.state.recipeid} disabled />
+                        </InputGroup>
+                      </Col>
+                    </FormGroup>
+
+                    <FormGroup row>
+
+                      <Col md="3">
+                        <Label htmlFor="name">Recipe Name</Label>
+                      </Col>
+                      <Col xs="12" md="9">
+                        <InputGroup>
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
+                          </InputGroupAddon>
+                          <Input type="text" id="recipeName" name="recipeName" value={this.state.recipename} onChange={this.handleNameChange.bind(this)}/>
+                        </InputGroup>
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+
+                      <Col md="3">
+                        <Label htmlFor="description">Recipe Description</Label>
+                      </Col>
+                      <Col xs="12" md="9">
+                        <InputGroup>
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText><i className="fa fa-comment"></i></InputGroupText>
+                          </InputGroupAddon>
+
+                          <Input type="textarea" id="recipeDescription" name="recipeDescription" value={this.state.recipedescription} onChange={this.handleDescriptionChange.bind(this)}/>
+                        </InputGroup>
+                      </Col>
+                    </FormGroup>
+
+                    <FormGroup row>
+
+                      <Col md="3">
+                        <Label htmlFor="name">Recipe Type</Label>
+                      </Col>
+                      <Col xs="12" md="9">
+                        <InputGroup>
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText><i className="fa fa-clock-o"></i></InputGroupText>
+                          </InputGroupAddon>
+                          <Input type="select" name="recipeType" id="recipeType" onChange={this.handleRecipeTypeChange.bind(this)}>
+                            <option selected={this.state.recipe_type.toString() === 'Pre Ambari Start'}>Pre Ambari Start</option>
+                            <option selected={this.state.recipe_type.toString() === 'Post Ambari Start'}>Post Ambari Start</option>
+                            <option selected={this.state.recipe_type.toString() === 'Post Cluster Install'}>Post Cluster Install</option>
+                            <option selected={this.state.recipe_type.toString() === 'Pre Termination'}>Pre Termination</option>
+                          </Input>
+                        </InputGroup>
+                      </Col>
+                    </FormGroup>
+
+
+                    <FormGroup row>
+
+                      <Col md="3">
+                        <Label htmlFor="name">Associated Service</Label>
+                      </Col>
+                      <Col xs="12" md="9">
+                        <InputGroup>
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText><i className="fa fa-cog"></i></InputGroupText>
+                          </InputGroupAddon>
+                          <Input type="select" name="service" id="service" onChange={this.handleServiceChange.bind(this)}>
+                            {serviceList.map((service) =>
+                              <option selected={this.state.service_description.toString() === service.service_description.toString()}>{service.service_description}</option>
+                            )}
+                          </Input>
+                        </InputGroup>
+                      </Col>
+                    </FormGroup>
+
+                    <FormGroup row>
+
+                      <Col md="3">
+                        <Label htmlFor="name">Associated Cluster</Label>
+                      </Col>
+                      <Col xs="12" md="9">
+                        <InputGroup>
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText><i className="fa fa-server"></i></InputGroupText>
+                          </InputGroupAddon>
+                          <Input type="select" name="clusterType" id="clusterType" onChange={this.handleClusterTypeChange.bind(this)}>
+                          {clusterList.map((cluster) =>
+                              <option selected={this.state.cluster_type.toString() === cluster.cluster_type.toString()}>{cluster.cluster_type}</option>
+                            )}
+                          </Input>
+                        </InputGroup>
+                      </Col>
+                    </FormGroup>
+
+                    <FormGroup row>
+                    <Col md="3">
+                        <Label htmlFor="name">Cluster Version</Label>
+                      </Col>
+                      <Col xs="12" md="9">
+                        <InputGroup>
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText><i className="fa fa-code-fork"></i></InputGroupText>
+                          </InputGroupAddon>
+                          <Input type="select" name="clusterVersion" id="clusterVersion" onChange={this.handleClusterVersionChange.bind(this)}>
+                          {versionList.map((version) =>
+                              <option selected={this.state.cluster_version.toString() === version.version.toString()}>{version.version}</option>
+                            )}
+                          </Input>
+                        </InputGroup>
+                      </Col>
+                    </FormGroup>
+
+                    <FormGroup row>
+                      <Col md="3">
+                        <Label htmlFor="content">Recipe Content</Label>
+                      </Col>
+                      <Col xs="12" md="9">
+                        <Nav tabs>
+                          <NavItem>
+                            <NavLink
+                              active={this.state.activeTab[0] === '1'}
+                              onClick={() => { this.toggle(0, '1'); }}
+                            >
+                              File
+                </NavLink>
+                          </NavItem>
+                          <NavItem>
+                            <NavLink
+                              active={this.state.activeTab[0] === '2'}
+                              onClick={() => { this.toggle(0, '2'); }}
+                            >
+                              URL
+                </NavLink>
+                          </NavItem>
+                          <NavItem>
+                            <NavLink
+                              active={this.state.activeTab[0] === '3'}
+                              onClick={() => { this.toggle(0, '3'); }}
+                            >
+                              Type
+                </NavLink>
+                          </NavItem>
+                        </Nav>
+                        <TabContent activeTab={this.state.activeTab[0]}>
+                        <TabPane tabId="1">
+          <Button size="lg" color="success" disabled>
+            <i className="fa fa-upload"></i>&nbsp;Upload
+                                    </Button>
+        </TabPane>
+        <TabPane tabId="2">
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText ><i className="fa fa-link"></i></InputGroupText>
+            </InputGroupAddon>
+            <Input type="text" id="recipeURL" name="recipeURL" placeholder="Enter URL" disabled />
+          </InputGroup>
+        </TabPane>
+        <TabPane tabId="3">
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText><i className="fa fa-code"></i></InputGroupText>
+            </InputGroupAddon>
+            <Input type="textarea" rows="20" id="recipeCode" name="recipeCode" value={Base64.decode(this.state.content)} onChange={this.handleContentChange.bind(this)}/>
+          </InputGroup>
+        </TabPane>
+                        </TabContent>
+
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="3">
+                        &nbsp;
+                      </Col>
+                      <Col xs="12" md="9" align="right">
+                        <Button size="lg" outline color="primary" href="#/recipes">
+                          <i className="fa fa-long-arrow-left"></i> Back
                             </Button>
-                      &nbsp;
-                      <Button size="lg" color="primary">
-                        <i className="fa fa-save"></i>&nbsp;Save
+                        &nbsp;
+                      <Button size="lg" color="primary" onClick={this.saveRecipe.bind(this)}>
+                          <i className="fa fa-save"></i>&nbsp;Save
                                     </Button>
 
-
-                    </Col>
-                  </FormGroup>
-
+                      </Col>
+                    </FormGroup>
 
 
 
 
-                </Form>
-              </CardBody>
+
+                  </Form>
+                </CardBody>
+              
             </Card>
 
 

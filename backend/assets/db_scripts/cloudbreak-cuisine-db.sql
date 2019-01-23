@@ -228,10 +228,12 @@ CREATE TABLE cloudbreak_cuisine.whoville_profile_credentials
 
 -- LOAD TABLES
 
+insert into cloudbreak_cuisine.clusters values(0,'NO ASSOCIATED VERSION','NO ASSOCIATED CLUSTER','');
 insert into cloudbreak_cuisine.clusters values(1,'3.0','HDP','');
 insert into cloudbreak_cuisine.clusters values(2,'3.2','HDF','');
 insert into cloudbreak_cuisine.clusters values(3,'3.0 | 3.2','HDP+HDF','');
 
+insert into cloudbreak_cuisine.services values(0, 'NO ASSOCIATED SERVICE', 0, 0, 0, 1, '../../assets/img/cuisine/no-entry.png', '[]');
 insert into cloudbreak_cuisine.services values(1, 'UTILITIES', 1, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
 insert into cloudbreak_cuisine.services values(2, 'UTILITIES', 2, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
 insert into cloudbreak_cuisine.services values(3, 'UTILITIES', 3, 1, 0, 0, '../../assets/img/cuisine/default_service.png', '[]');
