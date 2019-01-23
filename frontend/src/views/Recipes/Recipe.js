@@ -120,7 +120,7 @@ class Recipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-bullseye"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="text" id="recipeID" name="recipeID" value={recipe.id} disabled />
+                          <Input type="text" id="recipeID" name="recipeID" value={recipe.id} />
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -137,7 +137,7 @@ class Recipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="text" id="recipeName" name="recipeName" value={recipe.recipename} autoComplete="name" disabled />
+                          <Input type="text" id="recipeName" name="recipeName" value={recipe.recipename} autoComplete="name" />
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -152,7 +152,7 @@ class Recipe extends Component {
                             <InputGroupText><i className="fa fa-comment"></i></InputGroupText>
                           </InputGroupAddon>
 
-                          <Input type="textarea" id="recipeDescription" name="recipeDescription" value={recipe.recipedescription} disabled />
+                          <Input type="textarea" id="recipeDescription" name="recipeDescription" value={recipe.recipedescription} />
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -167,7 +167,7 @@ class Recipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-clock-o"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" name="recipeType" id="recipeType" disabled>
+                          <Input type="select" name="recipeType" id="recipeType" >
                             <option selected={recipe.recipe_type.toString() === 'Pre Ambari Start'}>Pre Ambari Start</option>
                             <option selected={recipe.recipe_type.toString() === 'Post Ambari Start'}>Post Ambari Start</option>
                             <option selected={recipe.recipe_type.toString() === 'Post Cluster Install'}>Post Cluster Install</option>
@@ -188,7 +188,7 @@ class Recipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-cog"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" name="service" id="service" disabled>
+                          <Input type="select" name="service" id="service" >
 
                             <option>{this.state.servicesData.filter((service) => (service.id === recipe.serviceid)).map((service) => {
                               return service.service_description
@@ -209,7 +209,7 @@ class Recipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-server"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" name="clusterType" id="clusterType" disabled>
+                          <Input type="select" name="clusterType" id="clusterType" >
                             <option>{this.state.servicesData.filter((service) => (service.id === recipe.serviceid)).map((service) => {
                               return this.state.clustersData.filter((cluster) => (cluster.id === service.cluster_id)).map((cluster) => {
                                 return cluster.cluster_type
@@ -232,7 +232,7 @@ class Recipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-code-fork"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" name="clusterType" id="clusterType" disabled>
+                          <Input type="select" name="clusterType" id="clusterType" >
                             <option>{this.state.servicesData.filter((service) => (service.id === recipe.serviceid)).map((service) => {
                               return this.state.clustersData.filter((cluster) => (cluster.id === service.cluster_id)).map((cluster) => {
                                 return cluster.version
@@ -256,7 +256,7 @@ class Recipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-code"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="textarea" rows="20" id="recipeContent" name="recipeContent" value={Base64.decode(recipe.content)} disabled />
+                          <Input type="textarea" rows="20" id="recipeContent" name="recipeContent" value={Base64.decode(recipe.content)}  />
                         </InputGroup>
 
                       </Col>

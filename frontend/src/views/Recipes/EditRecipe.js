@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Base64 from 'base-64';
 import {
   Card, CardBody, CardHeader, Row, Col, Button, Form,
   FormGroup,
@@ -19,11 +20,56 @@ class AddRecipe extends Component {
     this.toggle = this.toggle.bind(this);
     this.state = {
       activeTab: new Array(4).fill('3'),
+      distinctServices: [],
+      distinctClusters: [],
+      distinctVersions: [],
+      recipesDetailedData: [],
+      serviceId: '',
+      clusterId: '',
+      recipeName: '',
+      recipeDescription: '',
+      recipeType: '',
+      serviceName: '',
+      clusterName: '',
+      clusterVersion: ''
     };
   }
 
-  lorem() {
-    return 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.'
+ 
+  loadRecipeData() {
+    fetch('http://localhost:4000/api/recipes/'+this.props.match.params.id+'/details')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ recipesDetailedData: data })
+      })
+      .catch(err => console.error(this.props.url, err.toString()))
+  }
+
+  loadDistinctServices() {
+    fetch('http://localhost:4000/api/services/distinctnames')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ distinctServices: data })
+      })
+      .catch(err => console.error(this.props.url, err.toString()))
+  }
+
+  loadDistinctClusters() {
+    fetch('http://localhost:4000/api/clusters/distincttypes')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ distinctClusters: data })
+      })
+      .catch(err => console.error(this.props.url, err.toString()))
+  }
+
+  loadDistinctVersions() {
+    fetch('http://localhost:4000/api/clusters/distinctversions')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ distinctVersions: data })
+      })
+      .catch(err => console.error(this.props.url, err.toString()))
   }
 
   toggle(tabPane, tab) {
@@ -34,42 +80,22 @@ class AddRecipe extends Component {
     });
   }
 
-  tabPane() {
-    return (
-      <>
-        <TabPane tabId="1">
-          <Button size="lg" color="success">
-            <i className="fa fa-upload"></i>&nbsp;Upload
-                                    </Button>
-        </TabPane>
-        <TabPane tabId="2">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-link"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="text" id="recipeURL" name="recipeURL" placeholder="Enter URL" />
-          </InputGroup>
-        </TabPane>
-        <TabPane tabId="3">
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText><i className="fa fa-code"></i></InputGroupText>
-            </InputGroupAddon>
-            <Input type="textarea" id="recipeCode" name="recipeCode" value={this.lorem()} />
-          </InputGroup>
-        </TabPane>
-      </>
-    );
+
+  componentDidMount() {
+    this.loadDistinctServices()
+    this.loadDistinctClusters()
+    this.loadDistinctVersions()
+    this.loadRecipeData()
   }
-
-
-
 
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
   render() {
-    const serviceList = servicesListData.filter((service) => ((service.name)))
-    const recipeList = recipesData.filter((recipe) => (recipe.id.toString() === this.props.match.params.id));
+    const serviceList = this.state.distinctServices.filter((service) => ((service.service_description)))
+    const clusterList = this.state.distinctClusters.filter((cluster) => ((cluster.cluster_type)))
+    const versionList = this.state.distinctVersions.filter((version) => ((version.version)))
+    const recipeList = this.state.recipesDetailedData.filter((recipe) => (recipe.id.toString() === this.props.match.params.id));
+
 
     return (
 
@@ -109,7 +135,7 @@ class AddRecipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="text" id="recipeName" name="recipeName" value={recipe.recipeDescription} autoComplete="name" />
+                          <Input type="text" id="recipeName" name="recipeName" value={recipe.recipename} autoComplete="name" />
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -124,7 +150,7 @@ class AddRecipe extends Component {
                             <InputGroupText><i className="fa fa-comment"></i></InputGroupText>
                           </InputGroupAddon>
 
-                          <Input type="textarea" id="recipeDescription" name="recipeDescription" value={recipe.recipeDescription} />
+                          <Input type="textarea" id="recipeDescription" name="recipeDescription" value={recipe.recipedescription} />
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -162,7 +188,7 @@ class AddRecipe extends Component {
                           </InputGroupAddon>
                           <Input type="select" name="service" id="service">
                             {serviceList.map((service) =>
-                              <option>{service.name}</option>
+                              <option selected={recipe.service_description.toString() === service.service_description.toString()}>{service.service_description}</option>
                             )}
                           </Input>
                         </InputGroup>
@@ -180,15 +206,31 @@ class AddRecipe extends Component {
                             <InputGroupText><i className="fa fa-server"></i></InputGroupText>
                           </InputGroupAddon>
                           <Input type="select" name="clusterType" id="clusterType">
-                            <option>HDP</option>
-                            <option>HDF</option>
-                            <option>HDP + HDF</option>
+                          {clusterList.map((cluster) =>
+                              <option selected={recipe.cluster_type.toString() === cluster.cluster_type.toString()}>{cluster.cluster_type}</option>
+                            )}
                           </Input>
                         </InputGroup>
                       </Col>
                     </FormGroup>
 
-
+                    <FormGroup row>
+                    <Col md="3">
+                        <Label htmlFor="name">Cluster Version</Label>
+                      </Col>
+                      <Col xs="12" md="9">
+                        <InputGroup>
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText><i className="fa fa-code-fork"></i></InputGroupText>
+                          </InputGroupAddon>
+                          <Input type="select" name="clusterVersion" id="clusterVersion" >
+                          {versionList.map((version) =>
+                              <option selected={recipe.version.toString() === version.version.toString()}>{version.version}</option>
+                            )}
+                          </Input>
+                        </InputGroup>
+                      </Col>
+                    </FormGroup>
 
                     <FormGroup row>
                       <Col md="3">
@@ -222,13 +264,32 @@ class AddRecipe extends Component {
                           </NavItem>
                         </Nav>
                         <TabContent activeTab={this.state.activeTab[0]}>
-                          {this.tabPane()}
+                        <TabPane tabId="1">
+          <Button size="lg" color="success" disabled>
+            <i className="fa fa-upload"></i>&nbsp;Upload
+                                    </Button>
+        </TabPane>
+        <TabPane tabId="2">
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText ><i className="fa fa-link"></i></InputGroupText>
+            </InputGroupAddon>
+            <Input type="text" id="recipeURL" name="recipeURL" placeholder="Enter URL" disabled />
+          </InputGroup>
+        </TabPane>
+        <TabPane tabId="3">
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText><i className="fa fa-code"></i></InputGroupText>
+            </InputGroupAddon>
+            <Input type="textarea" rows="20" id="recipeCode" name="recipeCode" value={Base64.decode(recipe.content)} />
+          </InputGroup>
+        </TabPane>
                         </TabContent>
 
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-
                       <Col md="3">
                         &nbsp;
                       </Col>

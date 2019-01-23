@@ -12,6 +12,16 @@ router.route('/').get((req, res) => {
         })
 });
 
+router.route('/distinctnames').get((req, res) => {
+    db.any('select distinct service_description from cloudbreak_cuisine.services where display = 1 union all select \'NO ASSOCIATED SERVICE\' ')
+        .then(data => {
+            res.json(data);
+        })
+        .catch(error => {
+            console.log('ERROR:', error)
+        })
+});
+
 router.route('/:id').get((req, res) => {
     db.one('select * from cloudbreak_cuisine.services where id = ' + req.params.id)
         .then(data => {

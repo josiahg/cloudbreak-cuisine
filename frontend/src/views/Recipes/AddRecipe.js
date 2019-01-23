@@ -19,7 +19,37 @@ class AddRecipe extends Component {
     this.toggle = this.toggle.bind(this);
     this.state = {
       activeTab: new Array(4).fill('1'),
+      distinctServices: [],
+      distinctClusters: [],
+      distinctVersions: []
     };
+  }
+
+  loadDistinctServices() {
+    fetch('http://localhost:4000/api/services/distinctnames')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ distinctServices: data })
+      })
+      .catch(err => console.error(this.props.url, err.toString()))
+  }
+
+  loadDistinctClusters() {
+    fetch('http://localhost:4000/api/clusters/distincttypes')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ distinctClusters: data })
+      })
+      .catch(err => console.error(this.props.url, err.toString()))
+  }
+
+  loadDistinctVersions() {
+    fetch('http://localhost:4000/api/clusters/distinctversions')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ distinctVersions: data })
+      })
+      .catch(err => console.error(this.props.url, err.toString()))
   }
 
   lorem() {
