@@ -24,23 +24,91 @@ class AddRecipe extends Component {
       distinctClusters: [],
       distinctVersions: [],
       recipesDetailedData: [],
-      serviceId: '',
-      clusterId: '',
-      recipeName: '',
-      recipeDescription: '',
-      recipeType: '',
-      serviceName: '',
-      clusterName: '',
-      clusterVersion: ''
+      serviceid: '',
+      clusterid: '',
+      recipeid: '',
+      recipename: '',
+      recipedescription: '',
+      addon_type: '',
+      recipe_type: '',
+      content: '',
+      service_description: '',
+      cluster_type: '',
+      cluster_version: ''
     };
   }
 
- 
+  saveRecipe = (e) => {
+    fetch('http://localhost:4000/api/recipes/checkcompatibility', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cluster_type: this.state.cluster_type,
+        cluster_version: this.state.cluster_version,
+        service_description: this.state.service_description
+      })
+    }).then(response => response.json())
+    .then(data => {
+      
+       if(data.serviceid) {
+        alert('Saving...');
+       } else {
+        alert('Incompatible service/cluster/version combination!' )
+       }
+    })
+    .catch(err => console.error(this.props.url, err.toString()) )
+
+    
+    
+  }
+
+
+  handleContentChange = (e) => {
+    this.setState({ content: Base64.encode(e.target.value) });
+  }
+
+  handleNameChange = (e) => {
+    this.setState({ recipename: e.target.value });
+  }
+
+  handleDescriptionChange = (e) => {
+    this.setState({ recipedescription: e.target.value });
+  }
+
+  handleRecipeTypeChange = (e) => {
+    this.setState({ recipe_type: e.target.value });
+  }
+  handleServiceChange = (e) => {
+    this.setState({ service_description: e.target.value });
+  }
+  handleClusterTypeChange = (e) => {
+    this.setState({ cluster_type: e.target.value });
+  }
+
+  handleClusterVersionChange = (e) => {
+    this.setState({ cluster_version: e.target.value });
+  }
+
+
   loadRecipeData() {
     fetch('http://localhost:4000/api/recipes/'+this.props.match.params.id+'/details')
       .then(response => response.json())
       .then(data => {
-        this.setState({ recipesDetailedData: data })
+        this.setState({ recipeid: data.id,
+                        serviceId: data.serviceid,
+                        recipename: data.recipename,
+                        recipedescription: data.recipedescription,
+                        addon_type: data.addon_type,
+                        recipe_type: data.recipe_type,
+                        content: data.content,
+                        service_description: data.service_description,
+                        cluster_type: data.cluster_type,
+                        cluster_version: data.version
+
+                                })
       })
       .catch(err => console.error(this.props.url, err.toString()))
   }
@@ -94,7 +162,6 @@ class AddRecipe extends Component {
     const serviceList = this.state.distinctServices.filter((service) => ((service.service_description)))
     const clusterList = this.state.distinctClusters.filter((cluster) => ((cluster.cluster_type)))
     const versionList = this.state.distinctVersions.filter((version) => ((version.version)))
-    const recipeList = this.state.recipesDetailedData.filter((recipe) => (recipe.id.toString() === this.props.match.params.id));
 
 
     return (
@@ -107,7 +174,7 @@ class AddRecipe extends Component {
               <CardHeader className="text-white bg-warning">
                 <h2>Edit Recipe</h2>
               </CardHeader>
-              {recipeList.map((recipe) =>
+              
                 <CardBody>
                   <Form>
 
@@ -120,7 +187,7 @@ class AddRecipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-bullseye"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="text" id="recipeID" name="recipeID" value={recipe.id} disabled />
+                          <Input type="text" id="recipeID" name="recipeID" value={this.state.recipeid} disabled />
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -135,7 +202,7 @@ class AddRecipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-align-justify"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="text" id="recipeName" name="recipeName" value={recipe.recipename} autoComplete="name" />
+                          <Input type="text" id="recipeName" name="recipeName" value={this.state.recipename} onChange={this.handleNameChange}/>
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -150,7 +217,7 @@ class AddRecipe extends Component {
                             <InputGroupText><i className="fa fa-comment"></i></InputGroupText>
                           </InputGroupAddon>
 
-                          <Input type="textarea" id="recipeDescription" name="recipeDescription" value={recipe.recipedescription} />
+                          <Input type="textarea" id="recipeDescription" name="recipeDescription" value={this.state.recipedescription} onChange={this.handleDescriptionChange}/>
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -165,11 +232,11 @@ class AddRecipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-clock-o"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" name="recipeType" id="recipeType">
-                            <option selected={recipe.recipe_type.toString() === 'Pre Ambari Start'}>Pre Ambari Start</option>
-                            <option selected={recipe.recipe_type.toString() === 'Post Ambari Start'}>Post Ambari Start</option>
-                            <option selected={recipe.recipe_type.toString() === 'Post Cluster Install'}>Post Cluster Install</option>
-                            <option selected={recipe.recipe_type.toString() === 'Pre Termination'}>Pre Termination</option>
+                          <Input type="select" name="recipeType" id="recipeType" onChange={this.handleRecipeTypeChange}>
+                            <option selected={this.state.recipe_type.toString() === 'Pre Ambari Start'}>Pre Ambari Start</option>
+                            <option selected={this.state.recipe_type.toString() === 'Post Ambari Start'}>Post Ambari Start</option>
+                            <option selected={this.state.recipe_type.toString() === 'Post Cluster Install'}>Post Cluster Install</option>
+                            <option selected={this.state.recipe_type.toString() === 'Pre Termination'}>Pre Termination</option>
                           </Input>
                         </InputGroup>
                       </Col>
@@ -186,9 +253,9 @@ class AddRecipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-cog"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" name="service" id="service">
+                          <Input type="select" name="service" id="service" onChange={this.handleServiceChange}>
                             {serviceList.map((service) =>
-                              <option selected={recipe.service_description.toString() === service.service_description.toString()}>{service.service_description}</option>
+                              <option selected={this.state.service_description.toString() === service.service_description.toString()}>{service.service_description}</option>
                             )}
                           </Input>
                         </InputGroup>
@@ -205,9 +272,9 @@ class AddRecipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-server"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" name="clusterType" id="clusterType">
+                          <Input type="select" name="clusterType" id="clusterType" onChange={this.handleClusterTypeChange}>
                           {clusterList.map((cluster) =>
-                              <option selected={recipe.cluster_type.toString() === cluster.cluster_type.toString()}>{cluster.cluster_type}</option>
+                              <option selected={this.state.cluster_type.toString() === cluster.cluster_type.toString()}>{cluster.cluster_type}</option>
                             )}
                           </Input>
                         </InputGroup>
@@ -223,9 +290,9 @@ class AddRecipe extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-code-fork"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="select" name="clusterVersion" id="clusterVersion" >
+                          <Input type="select" name="clusterVersion" id="clusterVersion" onChange={this.handleClusterVersionChange}>
                           {versionList.map((version) =>
-                              <option selected={recipe.version.toString() === version.version.toString()}>{version.version}</option>
+                              <option selected={this.state.cluster_version.toString() === version.version.toString()}>{version.version}</option>
                             )}
                           </Input>
                         </InputGroup>
@@ -282,7 +349,7 @@ class AddRecipe extends Component {
             <InputGroupAddon addonType="prepend">
               <InputGroupText><i className="fa fa-code"></i></InputGroupText>
             </InputGroupAddon>
-            <Input type="textarea" rows="20" id="recipeCode" name="recipeCode" value={Base64.decode(recipe.content)} />
+            <Input type="textarea" rows="20" id="recipeCode" name="recipeCode" value={Base64.decode(this.state.content)} onChange={this.handleContentChange}/>
           </InputGroup>
         </TabPane>
                         </TabContent>
@@ -298,7 +365,7 @@ class AddRecipe extends Component {
                           <i className="fa fa-long-arrow-left"></i> Back
                             </Button>
                         &nbsp;
-                      <Button size="lg" color="primary">
+                      <Button size="lg" color="primary" onClick={this.saveRecipe.bind(this)}>
                           <i className="fa fa-save"></i>&nbsp;Save
                                     </Button>
 
@@ -311,7 +378,7 @@ class AddRecipe extends Component {
 
                   </Form>
                 </CardBody>
-              )}
+              
             </Card>
 
 

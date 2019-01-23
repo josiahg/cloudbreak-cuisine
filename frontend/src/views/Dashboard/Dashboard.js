@@ -10,7 +10,7 @@ import {
   DropdownMenu,
   DropdownToggle,
   Progress,
-  Row,
+  Row, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 
 function ProgressClassName(state) {
@@ -101,25 +101,23 @@ class Dashboard extends Component {
     this.toggle = this.toggle.bind(this);
     this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
 
+    this.toggleModal = this.toggleModal.bind(this);
     this.state = {
       dropdownOpen: false,
       radioSelected: 2,
       token: '',
       clusterData: [],
-      loading: true
+      loading: true,
+      modal: false
     };
   }
 
   deleteStack = (e) => {
-    if (e.target.id.toString() === 'AVAILABLE') {
-      if (window.confirm('Are you sure you wish to delete this item?')) {
-        fetch('http://localhost:4000/api/whoville/deletestack/' + e.target.name)
+
+      fetch('http://localhost:4000/api/whoville/deletestack/' + e.target.id)
           .then(response => response.json())
           .catch(err => console.error(this.props.url, err.toString()))
-      }
-    } else {
-      alert("You can only delete stacks when they are in status AVAILABLE")
-    }
+      
   }
 
   goToBundle = (e) => {
@@ -199,44 +197,75 @@ class Dashboard extends Component {
     const resWhoville = await initWhoville.json()
     const initProfile = await fetch('http://localhost:4000/api/whoville/refreshprofile')
     const resProfile = await initProfile.json()
-    fetch('http://localhost:4000/api/profiles/whoville')
-    .then(response => response.json())
-    .then(profileData => {
-      fetch('http://localhost:4000/api/dashboard/gettoken', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user: profileData[0].default_email.toString(),
-          password: profileData[0].default_pwd.toString(),
-          cb_url: profileData[0].cb_url.toString()
-        })
-      })
-        .then(response => response.json())
-        .then(data => {
-          fetch('http://localhost:4000/api/dashboard/getclusters', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              token: data,
-              cb_url: profileData[0].cb_url.toString()
-            })
-          })
-            .then(response => response.json())
-            .then(data => {
-              this.setState({ clusterData: data })
-            }).then(this.setState({loading: false}))
-            .catch(err => console.error(this.props.url, err.toString()))
-        })
-        .catch(err => console.error(this.props.url, err.toString()))
-    })
-    .catch(err => console.error(this.props.url, err.toString()))
     
+    const initWhovilleProfile = await fetch('http://localhost:4000/api/profiles/whoville');
+    const whovilleProfile = await initWhovilleProfile.json()
+
+    const initCBToken = await fetch('http://localhost:4000/api/dashboard/gettoken', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user: whovilleProfile[0].default_email.toString(),
+        password: whovilleProfile[0].default_pwd.toString(),
+        cb_url: whovilleProfile[0].cb_url.toString()
+      })
+    })
+    const CBToken = await initCBToken.json()
+   
+    const initClusterData = await fetch('http://localhost:4000/api/dashboard/getclusters', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: CBToken,
+        cb_url: whovilleProfile[0].cb_url.toString()
+      })
+    })
+    const fetchedClusterData = await initClusterData.json()
+    this.setState({ clusterData: fetchedClusterData, loading: false})
+
+    // fetch('http://localhost:4000/api/profiles/whoville')
+    // .then(response => response.json())
+    // .then(profileData => {
+    //   fetch('http://localhost:4000/api/dashboard/gettoken', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Accept': 'application/json',
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       user: profileData[0].default_email.toString(),
+    //       password: profileData[0].default_pwd.toString(),
+    //       cb_url: profileData[0].cb_url.toString()
+    //     })
+    //   })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       fetch('http://localhost:4000/api/dashboard/getclusters', {
+    //         method: 'POST',
+    //         headers: {
+    //           'Accept': 'application/json',
+    //           'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({
+    //           token: data,
+    //           cb_url: profileData[0].cb_url.toString()
+    //         })
+    //       })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //           this.setState({ clusterData: data })
+    //         })
+    //     })
+    // }).then( this.setState({loading: false}))
+    // .catch(err => console.error(this.props.url, err.toString()))
+    //const initCbData = await cbData.json()
+   
   
     
   }
@@ -257,6 +286,11 @@ class Dashboard extends Component {
   }
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
+  toggleModal() {
+    this.setState({
+      modal: !this.state.modal,
+    });
+  }
   render() {
     const isLoading = this.state.loading;
     //const dashboardItemList = dashboardData.filter((dashboardItem) => dashboardItem.id)
@@ -290,6 +324,7 @@ class Dashboard extends Component {
           {bundleList.map((dashboardItem, index) =>
             <Col xs="12" sm="6" lg="3">
               <Card className={DashboardClassName(dashboardItem.status)}>
+
                 <CardBody className="pb-0">
                   <ButtonGroup className="float-right">
                     <Dropdown id={dashboardItem.name} isOpen={this.state[dashboardItem.name]} toggle={() => { this.setState({ [dashboardItem.name]: !this.state[dashboardItem.name] }); }} >
@@ -300,12 +335,23 @@ class Dashboard extends Component {
                         {/* <DropdownItem><i className="icon-eyeglass"></i>&nbsp;Details</DropdownItem> */}
                         <DropdownItem id={dashboardItem.name} onClick={this.goToBundle.bind(this)}><i className="fa fa-building-o"></i>&nbsp;Whoville Bundle</DropdownItem>
                         <DropdownItem href={dashboardItem.cluster.ambariServerUrl} target="_blank"><i className="fa fa-external-link"></i>&nbsp;Go to Ambari</DropdownItem>
-                        <DropdownItem name={dashboardItem.name} id={dashboardItem.status} onClick={this.deleteStack.bind(this)}><i className="fa fa-remove"></i>&nbsp;Terminate</DropdownItem>
+                        <DropdownItem name={dashboardItem.name} id={dashboardItem.status} onClick={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}><i className="fa fa-remove"></i>&nbsp;Terminate</DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
                   </ButtonGroup>
                   <div className="text-value">{dashboardItem.name}</div>
                   <DashboardItemText key={index} dashboardItem={dashboardItem} />
+                  <Modal isOpen={this.state['modal'+dashboardItem.name]} toggle={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}
+                       className={'modal-'+(dashboardItem.status.toString() === 'AVAILABLE' ? 'danger ' : 'warning ')+' ' + this.props.className}>
+                  <ModalHeader toggle={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}>Deleting Stack</ModalHeader>
+                  <ModalBody>
+                  <h3>{dashboardItem.status.toString() === 'AVAILABLE' ? 'Are you sure you want to terminate this stack?' : "You can only delete stacks when they are in status AVAILABLE"} </h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='secondary' onClick={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
+                    <Button id={dashboardItem.id} color={dashboardItem.status.toString() === 'AVAILABLE' ? 'danger' : 'warning'} onClick={this.deleteStack.bind(this)} disabled={!(dashboardItem.status.toString() === 'AVAILABLE')}><i className="fa fa-remove"></i>&nbsp; Terminate Stack</Button>
+                  </ModalFooter>
+                </Modal>
                 </CardBody>
                 <div className="chart-wrapper" style={{ height: '20px', margin: '20px' }}>
                   <Progress className={ProgressClassName(dashboardItem.status)} color='white' value={dashboardItem.progress} value={ProgressValue(dashboardItem.status)} />
