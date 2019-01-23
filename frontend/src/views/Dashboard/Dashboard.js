@@ -113,9 +113,9 @@ class Dashboard extends Component {
   }
 
   deleteStack = (e) => {
-
+    
       fetch('http://localhost:4000/api/whoville/deletestack/' + e.target.id)
-          .then(response => response.json())
+          .then(response => response.json()).then(this.setState({modal : !this.state.modal}))
           .catch(err => console.error(this.props.url, err.toString()))
       
   }
@@ -349,7 +349,7 @@ class Dashboard extends Component {
                   </ModalBody>
                   <ModalFooter>
                   <Button color='secondary' onClick={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
-                    <Button id={dashboardItem.id} color={dashboardItem.status.toString() === 'AVAILABLE' ? 'danger' : 'warning'} onClick={this.deleteStack.bind(this)} disabled={!(dashboardItem.status.toString() === 'AVAILABLE')}><i className="fa fa-remove"></i>&nbsp; Terminate Stack</Button>
+                    <Button id={dashboardItem.name} color={dashboardItem.status.toString() === 'AVAILABLE' ? 'danger' : 'warning'} onClick={this.deleteStack.bind(this)} disabled={!(dashboardItem.status.toString() === 'AVAILABLE')}><i className="fa fa-remove"></i>&nbsp; Terminate Stack</Button>
                   </ModalFooter>
                 </Modal>
                 </CardBody>
