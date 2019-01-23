@@ -99,11 +99,7 @@ class Profiles extends Component {
                                                         &nbsp;
                                                         <Link to={editProfileLink}><Button size="sm" color="warning" disabled>
                                                             <i className="icon-note"></i>&nbsp;Edit
-                                                        </Button></Link>
-                                                        &nbsp;
-                                                        <Button id={profile.id} size="sm" color="danger" onClick={this.deleteProfile.bind(this)} disabled={profile.id < 2}>
-                                                            <i className="fa fa-remove"></i>&nbsp;Delete
-                                                        </Button></td>
+                                                        </Button></Link></td>
                         </tr>
                       )
                     }

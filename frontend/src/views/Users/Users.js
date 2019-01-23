@@ -89,10 +89,7 @@ componentDidMount() {
                                                     <Link to={userLink}><Button size="sm" color="warning" disabled>
                                                         <i className="icon-note"></i>&nbsp;Edit
                                                     </Button></Link>
-                                                    &nbsp;
-                                                    <Button size="sm" color="danger" disabled={user.id < 2}>
-                                                        <i className="fa fa-remove"></i>&nbsp;Delete
-                                                    </Button></td>
+                                                   </td>
                     </tr>}
                     )}
                   </tbody>
