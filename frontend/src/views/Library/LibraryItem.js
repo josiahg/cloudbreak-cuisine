@@ -25,14 +25,146 @@ class LibraryItem extends Component {
       libraryItemRecipes: [],
       libraryItemContent: [],
       delete: false,
-      deleted: false
+      deleted: false,
+      confirmPush: false,
+      saving: false,
+      saved: false,
+      destination: '',
+      cb_url: ''
     }
   }
+  confirmPushBundle() {
+    this.setState({confirmPush: !this.state.confirmPush})
 
+  }
   confirmDelete() {
     this.setState({delete: !this.state.delete})
 
   }
+
+  pushBundle = async event => {
+    this.setState({confirmPush: !this.state.confirmPush,
+                  saving: !this.state.saving,
+                  destination: event.target.name})
+                  if (event.target.name.toString() === 'Cloudbreak') {
+    const initWhoville = await fetch('http://localhost:4000/api/whoville/refresh')
+    const resWhoville = await initWhoville.json()
+    const initProfile = await fetch('http://localhost:4000/api/whoville/refreshprofile')
+    const resProfile = await initProfile.json()
+    
+    const initWhovilleProfile = await fetch('http://localhost:4000/api/profiles/whoville');
+    const whovilleProfile = await initWhovilleProfile.json()
+
+    this.setState({cb_url: 'http://'+whovilleProfile[0].cb_url.toString()})
+    const initCBToken = await fetch('http://localhost:4000/api/dashboard/gettoken', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user: whovilleProfile[0].default_email.toString(),
+        password: whovilleProfile[0].default_pwd.toString(),
+        cb_url: whovilleProfile[0].cb_url.toString()
+      })
+    })
+    const CBToken = await initCBToken.json()
+
+    // Pushing Blueprint
+    var content=this.state.libraryItemContent.filter((content) => (content.type.toString() === 'BLUEPRINT'))
+    .map((content) => {
+      return content.content
+    })
+    var base64BP=Base64.encode(Base64.decode(content))
+    const CBpushBundle = await fetch('http://localhost:4000/api/cloudbreak/push/bundle', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: CBToken,
+        cb_url: whovilleProfile[0].cb_url.toString(),
+        description: 'Blueprint for Cuisine Bundle ' + this.state.libraryItem.name,
+        name: 'bp-' + (this.state.libraryItem.name.toString()).replace(/ /g, "-").toLowerCase(),
+        blueprint: base64BP
+        
+      })
+    })
+    const pushCBBundle = await CBpushBundle.json()
+   
+
+    for(var key in this.state.libraryItemRecipes) {
+      
+      var currentRecipe=this.state.libraryItemRecipes[key];
+      var base64Recipe=Base64.encode(Base64.decode(currentRecipe.content))
+      var recipeType=''
+      var prefix=''
+     
+
+      if(currentRecipe.recipe_type === 'Pre Ambari Start') {
+        recipeType='PRE_AMBARI_START';
+        prefix='pras-';
+      } else if(currentRecipe.recipe_type === 'Post Ambari Start') {
+        recipeType='POST_AMBARI_START';
+        prefix='poas-';
+      } else if(currentRecipe.recipe_type === 'Post Cluster Install') {
+        recipeType='POST_CLUSTER_INSTALL';
+        prefix='poci-';
+      } else {
+        recipeType='PRE_TERMINATION';
+        prefix='prte-';
+      }
+     
+      var delRecipe = await fetch('http://localhost:4000/api/cloudbreak/delete/recipe', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: CBToken,
+        cb_url: whovilleProfile[0].cb_url.toString(),
+        name: prefix + currentRecipe.id + '-' + (currentRecipe.recipename).replace(/ /g, "-").toLowerCase()
+        
+      })
+    })
+    var delCBRecipe = await delRecipe.json()
+    
+
+      var CBpushRecipe = await fetch('http://localhost:4000/api/cloudbreak/push/recipe', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: CBToken,
+        cb_url: whovilleProfile[0].cb_url.toString(),
+        name: prefix + currentRecipe.id + '-' + (currentRecipe.recipename).replace(/ /g, "-").toLowerCase(),
+        description: currentRecipe.recipedescription + '(' + currentRecipe.recipe_type +')',
+        recipeType: recipeType,
+        content: base64Recipe
+        
+      })
+    })
+    var pushCBRecipe = await CBpushRecipe.json()
+   
+  }
+ 
+
+
+    
+    this.setState({saved: !this.state.saved})
+
+  } else {
+
+    this.setState({saved: !this.state.saved})
+
+  }
+  }
+
+
   deleteBundle = async event => {
     
 
@@ -154,6 +286,35 @@ class LibraryItem extends Component {
                   <Button color='success' href="#/library">OK <i className="fa fa-long-arrow-right"></i></Button>
                    </ModalFooter>
                 </Modal>
+
+
+                <Modal isOpen={this.state.confirmPush} toggle={() => { this.setState({ confirmPush: !this.state.confirmPush }); }}
+                       className={'modal-success ' + this.props.className}>
+                  <ModalHeader toggle={() => { this.setState({ confirmPush: !this.state.confirmPush}); }}>Push Confirmation</ModalHeader>
+                  <ModalBody>
+                  <h3>Where do you want to push your local bundle?</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='secondary' onClick={() => { this.setState({ confirmPush: !this.state.confirmPush}); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
+                  <Button color='success' id={this.state.libraryItem.id} name="Cloudbreak" onClick={this.pushBundle.bind(this)}><i className="fa fa-cloud"></i>&nbsp; Cloudbreak</Button>
+                  <Button color='success' id={this.state.libraryItem.id} name="Whoville" disabled><i className="fa fa-building-o"></i>&nbsp; Whoville</Button>
+                   </ModalFooter>
+                </Modal>
+
+                <Modal isOpen={this.state.saving} toggle={this.state.saved ?  () => { this.setState({ saving: !this.state.saving, saved: !this.state.saved }); } : ''}
+                       className={this.state.saved ? 'modal-success ' + this.props.className : 'modal-secondary ' + this.props.className}>
+                       <ModalHeader >{this.state.saved ? 'Bundle Pushed!' : 'Pushing bundle ... '} <i className={this.state.saved ? '':'fa fa-spinner fa-spin'}></i></ModalHeader>
+                  
+                  <ModalBody>
+                   <h3>Pushing to {this.state.destination} ... <i className={this.state.saved ? 'fa fa-check': 'fa fa-spinner fa-spin'}></i> </h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color={this.state.saved ? 'success' : 'secondary'} href={this.state.destination === "Cloudbreak" ? this.state.cb_url : "#/whoville"} target={this.state.destination === "Cloudbreak" ? "_blank" : ""} disabled={!this.state.saved}>Go to {this.state.destination} <i className="fa fa-long-arrow-right"></i></Button>
+                   </ModalFooter>
+                </Modal>
+
+
+
                   <div className="chart-wrapper" align="center" >
                     <p><img alt='' src={this.state.libraryItem.image} height="400px" width="400px" /></p>
                     <h2>{this.state.libraryItem.name}</h2>
@@ -163,18 +324,22 @@ class LibraryItem extends Component {
                   <table width="100%">
                     <tbody>
                       <tr>
-                        <td align="center" width="33%">
+                        <td align="center" width="25%">
                           <Button outline color="success" href="#/library">
                             <i className="fa fa-long-arrow-left" ></i>&nbsp;Back
                     </Button>
                         </td>
                         <td align="center">
-                          <Button id={this.state.libraryItem.id} color="success" width="33%" href={'http://localhost:4000/api/library/item/' + this.state.libraryItem.id + '/download'}>
+                          <Button id={this.state.libraryItem.id} color="success" width="25%" href={'http://localhost:4000/api/library/item/' + this.state.libraryItem.id + '/download'}>
                             <i className="fa fa-download"></i>&nbsp;Download
                     </Button>
                         </td>
-   
-                        <td align="center" width="33%">
+                        <td align="center" width="25%">
+                          <Button  id={this.state.libraryItem.id} color="success" onClick={this.confirmPushBundle.bind(this)}>
+                            <i className="fa fa-cloud-upload" ></i>&nbsp;Push
+                    </Button>
+                        </td>
+                        <td align="center" width="25%">
                           <Button  id={this.state.libraryItem.id} color="danger" disabled={this.state.libraryItem.id < 2} onClick={this.confirmDelete.bind(this)}>
                             <i className="fa fa-remove"></i>&nbsp;Delete
                     </Button>

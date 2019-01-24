@@ -26,7 +26,8 @@ class WhovilleItem extends Component {
       libraryItemContent: [],
       activeTab: new Array(4).fill('1'),
       bundleId: '',
-      primary: false
+      primary: false,
+      confirm: false
     }
   }
   togglePrimary() {
@@ -90,9 +91,18 @@ class WhovilleItem extends Component {
     this.loadBundleContent()
   }
 
+  confirmDeploy = (e) => {
+    this.setState({
+      confirm: !this.state.confirm,
+    });
+
+  }
+
+
   deployWhoville = (e) => {
     this.setState({
-      primary: !this.state.primary,
+      confirm: !this.state.confirm,
+      primary: !this.state.primary
     });
      fetch('http://localhost:4000/api/whoville/deploy/' + e.target.id)
        .then(response => response.json())
@@ -123,6 +133,17 @@ class WhovilleItem extends Component {
             <Col xs={6} md={4}>
               <Card className="card-accent-primary">
                 <CardBody >
+                <Modal isOpen={this.state.confirm} toggle={() => { this.setState({ confirm: !this.state.confirm }); }}
+                       className={'modal-primary ' + this.props.className}>
+                  <ModalHeader toggle={() => { this.setState({ confirm: !this.state.confirm}); }}>Deploy Confirmation</ModalHeader>
+                  <ModalBody>
+                  <h3>Are you sure you want to deploy this bundle?</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='secondary' onClick={() => { this.setState({ confirm: !this.state.confirm}); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
+                  <Button color='primary' id={this.state.bundleId}  onClick={this.deployWhoville.bind(this)}><i className="fa fa-upload"></i>&nbsp; Deploy</Button>
+                   </ModalFooter>
+                </Modal>
                 <Modal isOpen={this.state.primary} toggle={this.togglePrimary}
                        className={'modal-primary ' + this.props.className}>
                   {/* <ModalHeader toggle={this.togglePrimary}>Deploying to Cloudbreak</ModalHeader> */}
@@ -150,7 +171,7 @@ class WhovilleItem extends Component {
                     </Button>
                         </td>
                         <td align="center" width="33%">
-                          <Button id={this.state.bundleId} color="primary" onClick={this.deployWhoville.bind(this)}>
+                          <Button id={this.state.bundleId} color="primary" onClick={this.confirmDeploy.bind(this)}>
                             <i className="fa fa-upload"></i>&nbsp;Deploy
                     </Button>
                         </td>

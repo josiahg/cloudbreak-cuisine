@@ -108,15 +108,18 @@ class Dashboard extends Component {
       token: '',
       clusterData: [],
       loading: true,
-      modal: false
+      modal: false,
+      deletion: false
     };
   }
 
   deleteStack = (e) => {
     
+    this.setState({['modal'+e.target.id]: !this.state['modal'+e.target.id]})
       fetch('http://localhost:4000/api/whoville/deletestack/' + e.target.id)
-          .then(response => response.json()).then(this.setState({modal : !this.state.modal}))
+          .then(response => response.json())
           .catch(err => console.error(this.props.url, err.toString()))
+
       
   }
 
