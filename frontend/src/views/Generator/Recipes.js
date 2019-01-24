@@ -55,7 +55,7 @@ class Recipes extends Component {
         serviceList.map((service) => {
             const mandatoryRecipes = recipesData.filter((recipe) => ((recipe.serviceid === service.id) && (recipe.mandatory === 1)))
             mandatoryRecipes.map((recipe) => {
-                recipes.push(JSON.parse(JSON.stringify({ id: recipe.id, name: recipe.recipedescription, type: recipe.recipe_type, addon_type: recipe.addon_type, display: recipes.display })));
+                recipes.push(JSON.parse(JSON.stringify({ id: recipe.id, name: recipe.recipename, type: recipe.recipe_type, addon_type: recipe.addon_type, display: recipes.display })));
             })
         });
 
@@ -65,7 +65,7 @@ class Recipes extends Component {
             const otherRecipes = recipesData.filter((recipe) => ((recipe.serviceid === service.id) && (recipe.mandatory === 0)))
             otherRecipes.map((recipe) => {
                 if (this.state[recipe.id]) {
-                    recipes.push(JSON.parse(JSON.stringify({ id: recipe.id, name: recipe.recipedescription, type: recipe.recipe_type, addon_type: recipe.addon_type, display: recipes.display })));
+                    recipes.push(JSON.parse(JSON.stringify({ id: recipe.id, name: recipe.recipename, type: recipe.recipe_type, addon_type: recipe.addon_type, display: recipes.display })));
                 }
             })
         });
@@ -155,7 +155,7 @@ class Recipes extends Component {
                                                             <div>{recipe.addon_type}</div>
                                                         </td>
                                                         <td>
-                                                            <div>{recipe.recipedescription}</div>
+                                                            <div>{recipe.recipename}</div>
                                                         </td>
                                                         <td  >
                                                             <div>{recipe.recipe_type}</div>
@@ -179,7 +179,7 @@ class Recipes extends Component {
                                                         <div>{recipe.addon_type}</div>
                                                     </td>
                                                     <td>
-                                                        <div>{recipe.recipedescription}</div>
+                                                        <div>{recipe.recipename}</div>
                                                     </td>
                                                     <td  >
                                                         <div>{recipe.recipe_type}</div>

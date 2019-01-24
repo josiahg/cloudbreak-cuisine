@@ -365,11 +365,11 @@ insert into cloudbreak_cuisine.components_blueprints values(14,6,'YARN_NODEMANAG
 insert into cloudbreak_cuisine.components_blueprints values(15,6,'YARN_RESOURCEMANAGER','','{"name":"RESOURCEMANAGER"}','','');
 insert into cloudbreak_cuisine.components_blueprints values(16,6,'YARN_TIMELINE_SERVER','','{"name":"APP_TIMELINE_SERVER"}','','');
 insert into cloudbreak_cuisine.components_blueprints values(17,6,'YARN_CLIENT','','{"name":"YARN_CLIENT"}','{"name":"YARN_CLIENT"}','{"name":"YARN_CLIENT"}');
-insert into cloudbreak_cuisine.components_blueprints values(18,6,'YARN_GENERAL','{"yarn-site":{"properties":{"yarn.nodemanager.resource.cpu-vcores":"6","yarn.nodemanager.resource.memory-mb":"23296","yarn.scheduler.maximum-allocation-mb":"23296"}}},{"capacity-scheduler":{"properties":{"yarn.scheduler.capacity.root.queues":"default","yarn.scheduler.capacity.root.capacity":"100","yarn.scheduler.capacity.root.maximum-capacity":"100","yarn.scheduler.capacity.root.default.capacity":"100","yarn.scheduler.capacity.root.default.maximum-capacity":"100"}}}','','','');
-insert into cloudbreak_cuisine.components_blueprints values(19,6,'YARN_NODEMANAGER','','{"name":"NODEMANAGER"}','{"name":"NODEMANAGER"}','{"name":"NODEMANAGER"}');
-insert into cloudbreak_cuisine.components_blueprints values(20,6,'YARN_RESOURCEMANAGER','','{"name":"RESOURCEMANAGER"}','','');
-insert into cloudbreak_cuisine.components_blueprints values(21,6,'YARN_TIMELINE_SERVER','','{"name":"APP_TIMELINE_SERVER"}','','');
-insert into cloudbreak_cuisine.components_blueprints values(22,6,'YARN_CLIENT','','{"name":"YARN_CLIENT"}','{"name":"YARN_CLIENT"}','{"name":"YARN_CLIENT"}');
+insert into cloudbreak_cuisine.components_blueprints values(18,7,'YARN_GENERAL','{"yarn-site":{"properties":{"yarn.nodemanager.resource.cpu-vcores":"6","yarn.nodemanager.resource.memory-mb":"23296","yarn.scheduler.maximum-allocation-mb":"23296"}}},{"capacity-scheduler":{"properties":{"yarn.scheduler.capacity.root.queues":"default","yarn.scheduler.capacity.root.capacity":"100","yarn.scheduler.capacity.root.maximum-capacity":"100","yarn.scheduler.capacity.root.default.capacity":"100","yarn.scheduler.capacity.root.default.maximum-capacity":"100"}}}','','','');
+insert into cloudbreak_cuisine.components_blueprints values(19,7,'YARN_NODEMANAGER','','{"name":"NODEMANAGER"}','{"name":"NODEMANAGER"}','{"name":"NODEMANAGER"}');
+insert into cloudbreak_cuisine.components_blueprints values(20,7,'YARN_RESOURCEMANAGER','','{"name":"RESOURCEMANAGER"}','','');
+insert into cloudbreak_cuisine.components_blueprints values(21,7,'YARN_TIMELINE_SERVER','','{"name":"APP_TIMELINE_SERVER"}','','');
+insert into cloudbreak_cuisine.components_blueprints values(22,7,'YARN_CLIENT','','{"name":"YARN_CLIENT"}','{"name":"YARN_CLIENT"}','{"name":"YARN_CLIENT"}');
 insert into cloudbreak_cuisine.components_blueprints values(23,41,'ZOOKEEPER_SERVER','','{"name":"ZOOKEEPER_SERVER"}','','');
 insert into cloudbreak_cuisine.components_blueprints values(24,41,'ZOOKEEPER_CLIENT','','{"name":"ZOOKEEPER_CLIENT"}','{"name":"ZOOKEEPER_CLIENT"}','{"name":"ZOOKEEPER_CLIENT"}');
 insert into cloudbreak_cuisine.components_blueprints values(25,41,'ZOOKEEPER_SERVER','','{"name":"ZOOKEEPER_SERVER"}','','');

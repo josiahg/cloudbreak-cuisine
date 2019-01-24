@@ -7,7 +7,7 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  Label, Button, Nav, NavItem, NavLink, Row, TabContent, TabPane
+  Label, Button, Nav, NavItem, NavLink, Row, TabContent, TabPane, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 
 //import libraryData from './LibraryData'
@@ -23,8 +23,33 @@ class LibraryItem extends Component {
       libraryItemServices: [],
       libraryItemCluster: [],
       libraryItemRecipes: [],
-      libraryItemContent: []
+      libraryItemContent: [],
+      delete: false,
+      deleted: false
     }
+  }
+
+  confirmDelete() {
+    this.setState({delete: !this.state.delete})
+
+  }
+  deleteBundle = async event => {
+    
+
+    var id=event.target.id;
+    var delContent = await fetch('http://localhost:4000/api/generator/delete/bundle_contents/' + id)
+    var confirmC = await delContent.json()
+    
+    var delDeps = await fetch('http://localhost:4000/api/generator/delete/bundle_dependencies/' + id)
+    var confirmD = await delDeps.json()
+
+
+    var delB = await fetch('http://localhost:4000/api/generator/delete/bundle/' +id)
+    var confirmB = await delB.json()
+
+    this.setState({delete: !this.state.delete,
+      deleted: !this.state.deleted})
+
   }
 
   loadData() {
@@ -108,6 +133,27 @@ class LibraryItem extends Component {
             <Col xs={6} md={4}>
               <Card className="card-accent-success">
                 <CardBody >
+                <Modal isOpen={this.state.delete} toggle={() => { this.setState({ delete: !this.state.delete }); }}
+                       className={'modal-danger ' + this.props.className}>
+                  <ModalHeader toggle={() => { this.setState({ delete: !this.state.delete}); }}>Delete Confirmation</ModalHeader>
+                  <ModalBody>
+                  <h3>Are you sure you want to delete this bundle?</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='secondary' onClick={() => { this.setState({ delete: !this.state.delete}); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
+                  <Button color='danger' id={this.state.libraryItem.id} onClick={this.deleteBundle.bind(this)}><i className="fa fa-remove"></i>&nbsp; Delete</Button>
+                   </ModalFooter>
+                </Modal>
+                <Modal isOpen={this.state.deleted} toggle={() => { this.setState({ deleted: !this.state.deleted }); }}
+                       className={'modal-sucess ' + this.props.className}>
+                  
+                  <ModalBody>
+                  <h3>Bundle deleted!</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='success' href="#/library">OK <i className="fa fa-long-arrow-right"></i></Button>
+                   </ModalFooter>
+                </Modal>
                   <div className="chart-wrapper" align="center" >
                     <p><img alt='' src={this.state.libraryItem.image} height="400px" width="400px" /></p>
                     <h2>{this.state.libraryItem.name}</h2>
@@ -129,7 +175,7 @@ class LibraryItem extends Component {
                         </td>
    
                         <td align="center" width="33%">
-                          <Button  color="danger" disabled>
+                          <Button  id={this.state.libraryItem.id} color="danger" disabled={this.state.libraryItem.id < 2} onClick={this.confirmDelete.bind(this)}>
                             <i className="fa fa-remove"></i>&nbsp;Delete
                     </Button>
                         </td>

@@ -9,5 +9,6 @@ router.use('/whoville', require('./whoville'));
 router.use('/clusters', require('./clusters'));
 router.use('/dashboard', require('./dashboard'));
 router.use('/components', require('./components'));
+router.use('/generator', require('./generator'));
 
 module.exports = router;

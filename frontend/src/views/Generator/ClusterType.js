@@ -205,7 +205,6 @@ class ClusterType extends Component {
                                                     <Label htmlFor="hdpVersion"><h4>Version</h4></Label>
                                                     <Input type="select" name="hdpVersion" id="hdpVersion" onChange={this.changeVersion.bind(this)}>
                                                         <option>3.0</option>
-                                                        <option>3.1</option>
                                                     </Input>
                                                 </FormGroup>
                                             </td>
@@ -242,7 +241,6 @@ class ClusterType extends Component {
                                                     <Label htmlFor="hdfVersion"><h4>Version</h4></Label>
                                                     <Input type="select" name="hdfVersion" id="hdfVersion" onChange={this.changeVersion.bind(this)}>
                                                         <option>3.2</option>
-                                                        <option>3.3</option>
                                                     </Input>
                                                 </FormGroup>
                                             </td>
@@ -279,7 +277,6 @@ class ClusterType extends Component {
                                                     <Label htmlFor="combinedVersion"><h4>Version</h4></Label>
                                                     <Input type="select" name="combinedVersion" id="combinedVersion" onChange={this.changeVersion.bind(this)}>
                                                         <option>HDP 3.0 | HDF 3.2</option>
-                                                        <option>HDP 3.1 | HDF 3.3</option>
                                                     </Input>
                                                 </FormGroup>
                                             </td>

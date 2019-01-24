@@ -33,13 +33,13 @@ class Services extends Component {
         var services = [];
 
         // Mandatory Services
-        const mandatoryServiceList = servicesData.filter((service) => ((service.cluster_id === clusterId) && (service.mandatory === 1)));
+        const mandatoryServiceList = servicesData.filter((service) => ((service.cluster_id == clusterId) && (service.mandatory == 1)));
         mandatoryServiceList.map((service) => {
             services.push(JSON.parse(JSON.stringify({ id: service.id, name: service.service_description, img: service.img, display: service.display })));
         })
 
         // Selected Services
-        const serviceList = servicesData.filter((service) => ((service.cluster_id === clusterId) && (service.display === 1)));
+        const serviceList = servicesData.filter((service) => ((service.cluster_id == clusterId) && (service.display == 1)));
         serviceList.map((service) => {
             if (this.state[service.id]) {
                 services.push(JSON.parse(JSON.stringify({ id: service.id, name: service.service_description, img: service.img, display: service.display })));
@@ -63,7 +63,7 @@ class Services extends Component {
 
         if (!isChecked) {
             // If we are enabling a service, we check for dependencies
-            const currentService = servicesData.filter((service) => (service.id === serviceId));
+            const currentService = servicesData.filter((service) => (service.id == serviceId));
             var dependencies = '';
             currentService.map((service) => {
                 dependencies = service.dependency;
@@ -97,7 +97,7 @@ class Services extends Component {
 
         const { values: { clusterType, clusterVersion, clusterId } } = this.props;
 
-        const serviceList = servicesData.filter((service) => ((service.cluster_id === clusterId) && (service.display === 1)));
+        const serviceList = servicesData.filter((service) => ((service.cluster_id == clusterId) && (service.display == 1)));
 
         if (this.state.firstLoad) {
             serviceList.map((service) => {
@@ -137,7 +137,7 @@ class Services extends Component {
                 </Row>
                 <Row>
                     {serviceList.map((service) => {
-                        if (service.mandatory === 1)
+                        if (service.mandatory == 1)
 
                             return <Col md="2">
                                 <Card className='border-success'>

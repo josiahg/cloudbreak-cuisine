@@ -77,10 +77,12 @@ router.route('/item/:id/download').get((req, res) => {
     // Writing all the files
   const fs = require('fs');
   const zip = require('express-zip');
+
   var files = [];
-  var yAMLdata = '';
-   var bpStrFile = '/bundle'+req.params.id+'/blueprint-bundle'+req.params.id+'.txt';
-   var ymlStrFile = '/bundle'+req.params.id+'/yaml-bundle'+req.params.id+'.txt';
+
+
+   var bpStrFile = '/bundle'+req.params.id+'/blueprint-bundle'+req.params.id+'.json';
+   var ymlStrFile = '/bundle'+req.params.id+'/yaml-bundle'+req.params.id+'.yaml';
    if (!fs.existsSync('/bundle'+req.params.id)){
     fs.mkdirSync('/bundle'+req.params.id);
 }
@@ -94,7 +96,6 @@ router.route('/item/:id/download').get((req, res) => {
                  // 2. Writing yaml
                 db.one('select content from cloudbreak_cuisine.bundles_contents where type=\'YAML\' and bundle_id =' + req.params.id)
                 .then(ymlData => {
-                    yAMLdata = Buffer.from(ymlData.content, 'base64');
                     var yml = Buffer.from(ymlData.content, 'base64');
                     fs.writeFile(ymlStrFile, yml, (err) => {  
                         if (err) throw err;})
