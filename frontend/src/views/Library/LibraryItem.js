@@ -309,7 +309,7 @@ class LibraryItem extends Component {
                    <h3>Pushing to {this.state.destination} ... <i className={this.state.saved ? 'fa fa-check': 'fa fa-spinner fa-spin'}></i> </h3>
                   </ModalBody>
                   <ModalFooter>
-                  <Button color={this.state.saved ? 'success' : 'secondary'} href={this.state.destination === "Cloudbreak" ? this.state.cb_url : "#/whoville"} target={this.state.destination === "Cloudbreak" ? "_blank" : ""} disabled={!this.state.saved}>Go to {this.state.destination} <i className="fa fa-long-arrow-right"></i></Button>
+                  <Button color={this.state.saved ? 'success' : 'secondary'} href={this.state.destination === "Cloudbreak" ? this.state.cb_url+'/sl' : "#/whoville"} target={this.state.destination === "Cloudbreak" ? "_blank" : ""} disabled={!this.state.saved}>Go to {this.state.destination} <i className="fa fa-long-arrow-right"></i></Button>
                    </ModalFooter>
                 </Modal>
 
