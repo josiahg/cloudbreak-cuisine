@@ -201,6 +201,9 @@ class Dashboard extends Component {
     const initProfile = await fetch('http://localhost:4000/api/whoville/refreshprofile')
     const resProfile = await initProfile.json()
     
+   if(!(resProfile.toString() === "refresh successful")) {
+    alert('Couldn\'t refresh whoville profile! Verify that whoville is up and running.')
+   } else {
     const initWhovilleProfile = await fetch('http://localhost:4000/api/profiles/whoville');
     const whovilleProfile = await initWhovilleProfile.json()
 
@@ -231,7 +234,7 @@ class Dashboard extends Component {
     })
     const fetchedClusterData = await initClusterData.json()
     this.setState({ clusterData: fetchedClusterData, loading: false})
-
+  }
     // fetch('http://localhost:4000/api/profiles/whoville')
     // .then(response => response.json())
     // .then(profileData => {
