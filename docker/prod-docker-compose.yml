@@ -1,0 +1,36 @@
+version: '3.1'
+
+services:
+  ui:
+      image: 'josiahgoodson/cloudbreak-cuisine-frontend:latest'
+      #volumes:
+        #- ../frontend:/usr/src/app
+      ports:
+        - 3000:3000
+      links:
+        - api
+        - whoville
+  api:
+    image: 'josiahgoodson/cloudbreak-cuisine-backend:latest'
+    #volumes:
+      #- ../backend:/usr/src/app
+    ports:
+      - 4000:4000
+    links:
+      - db
+      - whoville
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: pg_pass123!
+    volumes:
+      - ../backend/assets/db_scripts:/docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
+  whoville:
+    image: 'chaffelson/whoville:latest'
+    volumes:
+      - ${PROFILE}:/profile.yml:ro
+    ports:
+      - 5000:5000
