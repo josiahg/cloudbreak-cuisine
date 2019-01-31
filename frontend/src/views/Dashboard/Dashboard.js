@@ -59,7 +59,11 @@ function DashboardClassName(state) {
 
 function DashboardItemText(props) {
   const dashboardItem = props.dashboardItem
-  const state = dashboardItem.status
+  if (dashboardItem.status.toString() === 'AVAILABLE'){
+    var state = dashboardItem.cluster.status
+  } else {
+    var state =  dashboardItem.status
+  }
   var widget_text = "No creation info"
 
   if (state.toString() === "AVAILABLE") {
