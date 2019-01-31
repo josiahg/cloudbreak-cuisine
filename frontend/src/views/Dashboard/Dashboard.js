@@ -18,7 +18,7 @@ function ProgressClassName(state) {
 
   if (state.toString() === "AVAILABLE") {
     class_name = "progress-xs my-3 bg-info"
-  } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "CREATE_IN_PROGRESS") || (state.toString() === "START_IN_PROGRESS")) {
+  } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "CREATE_IN_PROGRESS") || (state.toString() === "START_IN_PROGRESS") || (state.toString() === "REQUESTED" )) {
     class_name = "progress-xs my-3 bg-light-blue"
   } else if ((state.toString() === "CREATE_FAILED") || (state.toString() === "UPDATE_FAILED")) {
     class_name = "progress-xs my-3 bg-red"
@@ -36,7 +36,7 @@ function DashboardClassName(state) {
 
   if (state.toString() === "AVAILABLE") {
     class_name = "text-white bg-success border-success"
-  } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "CREATE_IN_PROGRESS") || (state.toString() === "START_IN_PROGRESS")) {
+  } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "CREATE_IN_PROGRESS") || (state.toString() === "START_IN_PROGRESS" || (state.toString() === "REQUESTED" ))) {
     class_name = "text-white bg-blue border-blue"
   } else if ((state.toString() === "CREATE_FAILED") || (state.toString() === "UPDATE_FAILED")) {
     class_name = "text-white bg-danger border-danger"
@@ -64,7 +64,7 @@ function DashboardItemText(props) {
 
   if (state.toString() === "AVAILABLE") {
     widget_text = "Status: " + state;
-  } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "CREATE_IN_PROGRESS") || (state.toString() === "START_IN_PROGRESS") || (state.toString() === "DELETE_IN_PROGRESS")) {
+  } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "CREATE_IN_PROGRESS") || (state.toString() === "START_IN_PROGRESS") || (state.toString() === "DELETE_IN_PROGRESS") || (state.toString() === "REQUESTED" )) {
     widget_text = "Status: " + state;
   } else if ((state.toString() === "CREATE_FAILED") || (state.toString() === "UPDATE_FAILED")) {
     //const date = dashboardItem.fail_date
@@ -83,7 +83,7 @@ function ProgressValue(state) {
 
   if (state.toString() === "AVAILABLE") {
     value = '100'
-  } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "DELETE_IN_PROGRESS")) {
+  } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "DELETE_IN_PROGRESS") || (state.toString() === "REQUESTED" )) {
     value = '50'
   } else if (state.toString() === "failed") {
     value = '0'
@@ -113,13 +113,16 @@ class Dashboard extends Component {
     };
   }
 
+  
   deleteStack = (e) => {
-    
-    this.setState({['modal'+e.target.id]: !this.state['modal'+e.target.id]})
-      fetch('http://localhost:4000/api/whoville/deletestack/' + e.target.id)
+    this.setState({['modal'+e.target.name]: !this.state['modal'+e.target.name],
+                  ['modaldelete'+e.target.name]: !this.state['modaldelete'+e.target.name]})
+
+
+      fetch('http://localhost:4000/api/whoville/deletestack/' + e.target.name)
           .then(response => response.json())
           .catch(err => console.error(this.props.url, err.toString()))
-
+this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.id]})
       
   }
 
@@ -327,10 +330,15 @@ class Dashboard extends Component {
         </Row>
         <Row>
           
-          {bundleList.map((dashboardItem, index) =>
-            <Col xs="12" sm="6" lg="3">
-              <Card className={DashboardClassName(dashboardItem.status)}>
+          {bundleList.map((dashboardItem, index) => {
+              if (dashboardItem.status.toString() === 'AVAILABLE'){
+                var theStatus = dashboardItem.cluster.status
+              } else {
+                var theStatus =  dashboardItem.status
+              }
 
+            return <Col xs="12" sm="6" lg="3">
+              <Card className={DashboardClassName(theStatus)}>
                 <CardBody className="pb-0">
                   <ButtonGroup className="float-right">
                     <Dropdown id={dashboardItem.name} isOpen={this.state[dashboardItem.name]} toggle={() => { this.setState({ [dashboardItem.name]: !this.state[dashboardItem.name] }); }} >
@@ -341,30 +349,41 @@ class Dashboard extends Component {
                         {/* <DropdownItem><i className="icon-eyeglass"></i>&nbsp;Details</DropdownItem> */}
                         <DropdownItem id={dashboardItem.name} onClick={this.goToBundle.bind(this)}><i className="fa fa-building-o"></i>&nbsp;Whoville Bundle</DropdownItem>
                         <DropdownItem href={dashboardItem.cluster.ambariServerUrl} target="_blank"><i className="fa fa-external-link"></i>&nbsp;Go to Ambari</DropdownItem>
-                        <DropdownItem name={dashboardItem.name} id={dashboardItem.status} onClick={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}><i className="fa fa-remove"></i>&nbsp;Terminate</DropdownItem>
+                        <DropdownItem name={dashboardItem.name} id={theStatus} onClick={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}><i className="fa fa-remove"></i>&nbsp;Terminate</DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
                   </ButtonGroup>
                   <div className="text-value">{dashboardItem.name}</div>
                   <DashboardItemText key={index} dashboardItem={dashboardItem} />
+                  <Modal isOpen={this.state['modaldelete'+dashboardItem.name]}
+                       className={'modal-danger' + this.props.className}>
+                   <ModalBody>
+                  <h3>Sending delete... <i className='fa fa-spinner fa-spin'></i></h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color="primary" onClick={this.refreshPage.bind(this)}>Refresh Dashboard <i className="fa fa-long-arrow-right"></i></Button>
+                  </ModalFooter>
+                </Modal>
+
                   <Modal isOpen={this.state['modal'+dashboardItem.name]} toggle={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}
-                       className={'modal-'+(dashboardItem.status.toString() === 'AVAILABLE' ? 'danger ' : 'warning ')+' ' + this.props.className}>
+                       className={'modal-'+((theStatus.toString() === 'AVAILABLE' || theStatus.toString() === 'CREATE_FAILED') ? 'danger ' : 'warning ')+' ' + this.props.className}>
                   <ModalHeader toggle={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}>Deleting Stack</ModalHeader>
                   <ModalBody>
-                  <h3>{dashboardItem.status.toString() === 'AVAILABLE' ? 'Are you sure you want to terminate this stack?' : "You can only delete stacks when they are in status AVAILABLE"} </h3>
+                  <h3>{(theStatus.toString() === 'AVAILABLE' || theStatus.toString() === 'CREATE_FAILED')  ? 'Are you sure you want to terminate this stack?' : "You can only delete stacks when they are in status AVAILABLE or CREATE_FAILED"} </h3>
                   </ModalBody>
                   <ModalFooter>
                   <Button color='secondary' onClick={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
-                    <Button id={dashboardItem.name} color={dashboardItem.status.toString() === 'AVAILABLE' ? 'danger' : 'warning'} onClick={this.deleteStack.bind(this)} disabled={!(dashboardItem.status.toString() === 'AVAILABLE')}><i className="fa fa-remove"></i>&nbsp; Terminate Stack</Button>
+                    <Button name={dashboardItem.name}  id={dashboardItem.id} color={(theStatus.toString() === 'AVAILABLE' || theStatus.toString() === 'CREATE_FAILED') ? 'danger' : 'warning'} onClick={this.deleteStack.bind(this)} disabled={!(theStatus.toString() === 'AVAILABLE' || theStatus.toString() === 'CREATE_FAILED') }><i className="fa fa-remove"></i>&nbsp; Terminate Stack</Button>
                   </ModalFooter>
                 </Modal>
                 </CardBody>
                 <div className="chart-wrapper" style={{ height: '20px', margin: '20px' }}>
-                  <Progress className={ProgressClassName(dashboardItem.status)} color='white' value={dashboardItem.progress} value={ProgressValue(dashboardItem.status)} />
+                  <Progress className={ProgressClassName(theStatus)} color='white' value={dashboardItem.progress} value={ProgressValue(theStatus)} />
                 </div>
               </Card>
             </Col>
 
+          }
           )}
 
 
