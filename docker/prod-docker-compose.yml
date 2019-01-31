@@ -21,7 +21,6 @@ services:
       - whoville
   db:
     image: postgres
-    restart: always
     environment:
       POSTGRES_PASSWORD: pg_pass123!
     volumes:
