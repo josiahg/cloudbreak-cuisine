@@ -47,7 +47,7 @@ class Services extends Component {
         mandatoryServiceList.map((service) => {
             services.push(JSON.parse(JSON.stringify({ id: service.id, name: service.service_description, img: service.img, display: service.display })));
         })
-
+        
         // Selected Services
         const serviceList = servicesData.filter((service) => ((service.cluster_id == clusterId) && (service.display == 1)));
         serviceList.map((service) => {

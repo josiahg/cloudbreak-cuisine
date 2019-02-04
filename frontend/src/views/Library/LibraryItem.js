@@ -46,7 +46,7 @@ class LibraryItem extends Component {
     this.setState({confirmPush: !this.state.confirmPush,
                   saving: !this.state.saving,
                   destination: event.target.name})
-                  if (event.target.name.toString() === 'Cloudbreak') {
+    if (event.target.name.toString() === 'Cloudbreak') {
     const initWhoville = await fetch('http://localhost:4000/api/whoville/refresh')
     const resWhoville = await initWhoville.json()
     const initProfile = await fetch('http://localhost:4000/api/whoville/refreshprofile')
@@ -158,6 +158,50 @@ class LibraryItem extends Component {
     this.setState({saved: !this.state.saved})
 
   } else {
+
+
+    //PUSHING TO WHOVILLE
+    const initWhoville = await fetch('http://localhost:4000/api/whoville/refresh')
+    const resWhoville = await initWhoville.json()
+    const initProfile = await fetch('http://localhost:4000/api/whoville/refreshprofile')
+    const resProfile = await initProfile.json()
+
+    // GENERATING DATA
+    var whovilleDataPush = '{ "blueprint": ';
+
+    // BLUEPRINT
+    var content=this.state.libraryItemContent.filter((content) => (content.type.toString() === 'BLUEPRINT'))
+    .map((content) => {
+      return content.content
+    })
+
+    whovilleDataPush = whovilleDataPush + Base64.decode(content) +',';
+
+    // RECIPES
+
+    whovilleDataPush = whovilleDataPush + '"recipes": [';
+
+    this.state.libraryItemRecipes.map((recipe) => {
+      whovilleDataPush = whovilleDataPush + '{';
+      whovilleDataPush = whovilleDataPush + '"name" : "' + recipe.recipename +'", ';
+      whovilleDataPush = whovilleDataPush + '"type" : "' + recipe.recipename +'", ';
+      whovilleDataPush = whovilleDataPush + '"node_name" : "' + recipe.recipename +'", ';
+      whovilleDataPush = whovilleDataPush + '"content" : "' + recipe.recipename +'"},';
+    })
+    whovilleDataPush = whovilleDataPush.substring(0,whovilleDataPush.length-1);
+
+    whovilleDataPush = whovilleDataPush + '], ';
+
+    // STACK LAYOUT
+    whovilleDataPush = whovilleDataPush + ' "infra": ';
+    var content=this.state.libraryItemContent.filter((content) => (content.type.toString() === 'LAYOUT'))
+    .map((content) => {
+      return content.content
+    })
+
+    whovilleDataPush = whovilleDataPush + Base64.decode(content) +'}';
+
+    //alert(whovilleDataPush)
 
     this.setState({saved: !this.state.saved})
 
@@ -297,7 +341,7 @@ class LibraryItem extends Component {
                   <ModalFooter>
                   <Button color='secondary' onClick={() => { this.setState({ confirmPush: !this.state.confirmPush}); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
                   <Button color='success' id={this.state.libraryItem.id} name="Cloudbreak" onClick={this.pushBundle.bind(this)}><i className="fa fa-cloud"></i>&nbsp; Cloudbreak</Button>
-                  <Button color='success' id={this.state.libraryItem.id} name="Whoville" disabled><i className="fa fa-building-o"></i>&nbsp; Whoville</Button>
+                  <Button color='success' id={this.state.libraryItem.id} name="Whoville" onClick={this.pushBundle.bind(this)} disabled><i className="fa fa-building-o"></i>&nbsp; Whoville</Button>
                    </ModalFooter>
                 </Modal>
 
@@ -369,7 +413,7 @@ class LibraryItem extends Component {
                 <NavItem>
                   <NavLink
                     active={this.state.activeTab[3] === '3'}
-                    onClick={() => { this.toggle(3, '3'); }} ><h3>Yaml</h3>
+                    onClick={() => { this.toggle(3, '3'); }} ><h3>Layout</h3>
                   </NavLink>
                 </NavItem>
               </Nav>
@@ -516,8 +560,8 @@ class LibraryItem extends Component {
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText><i className="fa fa-code"></i></InputGroupText>
                           </InputGroupAddon>
-                          <Input type="textarea" rows="20" id="recipeYAML" name="recipeYAML" value={
-                            this.state.libraryItemContent.filter((content) => (content.type.toString() === 'YAML'))
+                          <Input type="textarea" rows="20" id="recipeLayout" name="recipeLayout" value={
+                            this.state.libraryItemContent.filter((content) => (content.type.toString() === 'LAYOUT'))
                               .map((content) => {
                                 return Base64.decode(content.content)
                               })

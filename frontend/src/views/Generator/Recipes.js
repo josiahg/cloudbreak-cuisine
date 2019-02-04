@@ -149,7 +149,7 @@ class Recipes extends Component {
 
                                         {serviceList.map((service) => {
                                             //return <h1>{service.id}</h1>
-                                            const associatedRecipes = recipesData.filter((recipe) => ((recipe.serviceid === service.id ) && (recipe.display === 1)))
+                                            const associatedRecipes = recipesData.filter((recipe) => ((recipe.serviceid === service.id )))
                                             return associatedRecipes.map((recipe) => {
                                                 if (recipe.mandatory === 1)
                                                     return <tr className="text-white bg-green">
@@ -212,7 +212,7 @@ class Recipes extends Component {
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <div>NO ASSOCIATED SERCIVE</div>
+                                                        <div>NO ASSOCIATED SERVICE</div>
                                                     </td>
                                                     <td>
                                                         <div>{recipe.addon_type}</div>

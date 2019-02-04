@@ -45,9 +45,9 @@ class DataPlaneApplications extends Component {
             const recipeList = recipes.filter((recipes) => recipes.id);
                 var recipesT = [];
                 recipeList.map((recipe) => {
-                    if (this.state[recipe.id]) {
-                        recipesT.push(JSON.parse(JSON.stringify({ id: recipe.id, name: recipe.recipename, type: recipe.recipe_type, addon_type: recipe.addon_type, display: recipe.display })));
-                    }
+                    
+                        recipesT.push(JSON.parse(JSON.stringify({ id: recipe.id, name: recipe.name, type: recipe.type, addon_type: recipe.addon_type, display: recipe.display })));
+                    
                 });
             recipesT.push(JSON.parse(JSON.stringify({ id: 16, name: 'CDSW Setup', type: 'Post Cluster Install', addon_type: 'Recipe', display: 0 })));
             this.props.setRecipeList(recipesT);

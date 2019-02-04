@@ -82,7 +82,7 @@ router.route('/item/:id/download').get((req, res) => {
 
 
    var bpStrFile = '/bundle'+req.params.id+'/blueprint-bundle'+req.params.id+'.json';
-   var ymlStrFile = '/bundle'+req.params.id+'/yaml-bundle'+req.params.id+'.yaml';
+   var ymlStrFile = '/bundle'+req.params.id+'/layout-bundle'+req.params.id+'.json';
    if (!fs.existsSync('/bundle'+req.params.id)){
     fs.mkdirSync('/bundle'+req.params.id);
 }
@@ -93,8 +93,8 @@ router.route('/item/:id/download').get((req, res) => {
             fs.writeFile(bpStrFile, bp, (err) => {  
                 if (err) throw err;})
             }).then(
-                 // 2. Writing yaml
-                db.one('select content from cloudbreak_cuisine.bundles_contents where type=\'YAML\' and bundle_id =' + req.params.id)
+                 // 2. Writing layout
+                db.one('select content from cloudbreak_cuisine.bundles_contents where type=\'LAYOUT\' and bundle_id =' + req.params.id)
                 .then(ymlData => {
                     var yml = Buffer.from(ymlData.content, 'base64');
                     fs.writeFile(ymlStrFile, yml, (err) => {  

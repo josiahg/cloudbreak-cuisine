@@ -16,7 +16,7 @@ class Confirmation extends Component{
         this.state = {
             saving: false,
             generatingBP: false,
-            generatingYAML: false,
+            generatingLayout: false,
             registering: false,
             saved: false,
             bundleName: '',
@@ -24,20 +24,20 @@ class Confirmation extends Component{
             missingForm: false
         }
     }
-    yamlIcon (){
+    layoutIcon (){
         if(this.state.generatingBP) {
             return ''
         } else {
-             if(this.state.generatingYAML){
+             if(this.state.generatingLayout){
                return 'fa fa-spinner fa-spin'
              } else {
-                 return 'fa fa-remove'
+                 return 'fa fa-check'
              }
         }
     }
 
     componentIcon (){
-        if(this.state.generatingBP || this.state.generatingYAML) {
+        if(this.state.generatingBP || this.state.generatingLayout) {
             return ''
         } else {
              if(this.state.registering){
@@ -199,12 +199,38 @@ class Confirmation extends Component{
 
 
           this.setState({ generatingBP: false,
-                          generatingYAML: true });
+                          generatingLayout: true });
 
 
-         // 2. Generating YAML (skipping for now)
+         // 2. Generating Layout 
+         // NOTE: WILL HAVE TO CHANGE ONCE WE SUPPORT MORE THAN ONE VERSION
+         var cluster_id;
+         if(clusterType.toString() === 'HDP') {
+            cluster_id=1
+        } else if(clusterType.toString() === 'HDF'){
+            cluster_id=2
+        }else {
+            cluster_id=3
+        }
 
-         this.setState({ generatingYAML: false,
+         var layout = '{ "name": "' + this.state.bundleName + '", ';
+         layout = layout + '"description": "' + this.state.bundleDescription + '", ';
+         layout = layout + '"infra": { "ambariRepo": { ';
+         
+
+         var retrieveClusterInfo = await fetch('http://localhost:4000/api/clusters/'+cluster_id)
+        var clusterInfo = await retrieveClusterInfo.json()
+
+
+        layout = layout + '"version": "' + clusterInfo.ambari_repo_version + '",';
+        layout = layout + '"baseUrl": "' + clusterInfo.ambari_base_url + '",';
+        layout = layout + '"gpgKeyUrl": "' + clusterInfo.ambari_gpg_key_url + '"}, "stackRepo": {';
+        layout = layout + '"version": "' + clusterInfo.repo_version + '",';
+        layout = layout + '"baseUrl": "' + clusterInfo.repo_def_file_url + '"}}}';
+
+   
+
+         this.setState({ generatingLayout: false,
                          registering: true });
 
          // 3. Registering components
@@ -230,15 +256,7 @@ class Confirmation extends Component{
         
 
          // 3.1. Cluster
-         // NOTE: WILL HAVE TO CHANGE ONCE WE SUPPORT MORE THAN ONE VERSION
-         var cluster_id;
-         if(clusterType.toString() === 'HDP') {
-            cluster_id=1
-        } else if(clusterType.toString() === 'HDF'){
-            cluster_id=2
-        }else {
-            cluster_id=3
-        }
+         
 
 
         var insertCluster = await fetch('http://localhost:4000/api/generator/insert/dependency', {
@@ -329,8 +347,19 @@ class Confirmation extends Component{
             })
 var clusterResponse = await insertCluster.json()
 
-         // 3.5.2. YML (Nothing for now)
-
+         // 3.5.2. Layout (Nothing for now)
+         var insertCluster = await fetch('http://localhost:4000/api/generator/insert/content', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                bundle_id: bundleId,
+                type: 'LAYOUT',
+                content: Base64.encode(JSON.stringify(JSON.parse(layout), undefined, 2))
+            })
+            })
 
      
 
@@ -356,7 +385,7 @@ var clusterResponse = await insertCluster.json()
 
     render(){
         const {values: { clusterType, clusterVersion, clusterId, services, recipes, dataPlaneApplications }} = this.props;
-        const serviceList = services.filter((service) => (service.display == 1));
+        const serviceList = services.filter((service) => (service.id));
         const recipesList = recipes.filter((recipe) => recipe.id);
         //const applicationList = dataPlaneApplications.filter((application) => application.id);
 
@@ -406,7 +435,7 @@ var clusterResponse = await insertCluster.json()
                   
                   <ModalBody>
                    <h3>Blueprint ... <i className={this.state.generatingBP ? 'fa fa-spinner fa-spin' : 'fa fa-check'}></i> </h3>
-                   <h3>YAML ... <i className={this.yamlIcon()}></i> </h3>
+                   <h3>Layout ... <i className={this.layoutIcon()}></i> </h3>
                    <h3>Registering bundle ... <i className={this.componentIcon()}></i> </h3>
                   </ModalBody>
                   <ModalFooter>
