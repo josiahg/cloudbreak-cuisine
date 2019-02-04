@@ -143,7 +143,7 @@ class Recipes extends Component {
                                                             <i className="icon-eyeglass"></i>&nbsp;View
                                     </Button>
                                                         &nbsp;
-                                   <Button size="sm" color="warning" href={"#/editrecipes/" + recipe.id} disabled={recipe.id < 14}>
+                                   <Button size="sm" color="warning" href={"#/editrecipes/" + recipe.id} disabled={recipe.id < 17}>
                                                             <i className="icon-note"></i>&nbsp;Edit
                                     </Button>
                               

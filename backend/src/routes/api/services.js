@@ -21,6 +21,16 @@ router.route('/distinctnames').get((req, res) => {
             console.log('ERROR:', error)
         })
 });
+router.route('/dependencies').get((req, res) => {
+    db.any('select * from cloudbreak_cuisine.services_dependencies')
+        .then(data => {
+            res.json(data);
+        })
+        .catch(error => {
+            console.log('ERROR:', error)
+        })
+});
+
 
 router.route('/:id').get((req, res) => {
     db.one('select * from cloudbreak_cuisine.services where id = ' + req.params.id)
@@ -31,6 +41,7 @@ router.route('/:id').get((req, res) => {
             console.log('ERROR:', error)
         })
 });
+
 
 
 module.exports = router;

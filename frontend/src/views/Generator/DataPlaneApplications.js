@@ -15,19 +15,51 @@ class DataPlaneApplications extends Component {
     }
 
     saveAndContinue = (e) => {
+
+
         var applications = [];
+        var cdswPresent = false;
 
         // Selected Services
         const applicationList = dataPlaneApplicationsData.filter((application) => application.id);
         applicationList.map((application) => {
             if (this.state[application.id]) {
                 applications.push(JSON.parse(JSON.stringify({ id: application.id, name: application.description, img: application.img })));
+                if(application.description === 'CDSW'){
+                    cdswPresent=true;
+                }
             }
         })
 
+
+
         this.props.setDataPlaneApplicationList(applications);
+
+        
+
+        // Recipes
+        if (cdswPresent){
+
+            const { values: { recipes } } = this.props;
+
+            const recipeList = recipes.filter((recipes) => recipes.id);
+                var recipesT = [];
+                recipeList.map((recipe) => {
+                    if (this.state[recipe.id]) {
+                        recipesT.push(JSON.parse(JSON.stringify({ id: recipe.id, name: recipe.recipename, type: recipe.recipe_type, addon_type: recipe.addon_type, display: recipe.display })));
+                    }
+                });
+            recipesT.push(JSON.parse(JSON.stringify({ id: 16, name: 'CDSW Setup', type: 'Post Cluster Install', addon_type: 'Recipe', display: 0 })));
+            this.props.setRecipeList(recipesT);
+        }
+
+        
+        
         e.preventDefault();
         this.props.nextStep();
+
+
+        
     }
 
     back = (e) => {
@@ -57,6 +89,7 @@ class DataPlaneApplications extends Component {
     loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
     render() {
+        
         const applicationList = dataPlaneApplicationsData.filter((application) => application.id);
 
         if (this.state.firstLoad) {
@@ -75,7 +108,7 @@ class DataPlaneApplications extends Component {
             <div className="animated fadeIn align-items-center">
                 <Row>
                     <Col>
-                        <h1>Step 4: Select Data Plane Services</h1>
+                        <h1>Step 4: Select Additional Applications</h1>
                     </Col>
                 </Row>
                 <Row>
@@ -102,7 +135,7 @@ class DataPlaneApplications extends Component {
                                 <CardHeader className={this.state["cardHeaderClass" + application.id]}>
                                     {application.description}
                                     <div className="card-header-actions">
-                                        <AppSwitch id={application.id} className={'mx-1'} variant={'pill'} color={'success'} outline={'alt'} checked={this.state[application.id]} onChange={this.changeSwitch} />
+                                        <AppSwitch id={application.id} className={'mx-1'} variant={'pill'} color={'success'} outline={'alt'} checked={this.state[application.id]} onChange={this.changeSwitch} disabled={application.id < 5}/>
                                     </div>
                                 </CardHeader>
                                 <CardBody className="align-items-center">

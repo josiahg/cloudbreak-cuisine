@@ -138,18 +138,57 @@ class Confirmation extends Component{
         }
         
         blueprint = blueprint.substring(0,blueprint.length-1);
-        blueprint = blueprint + ']}],'
+        blueprint = blueprint + ']}'
 
-        // 1.5. Name
+        var cdswPresent = false;
+        // 1.5. If CDSW, we generate a CDSW node
+        dataPlaneApplications.map((application, index, arr) => {
+            if  (application.name === 'CDSW') {
+                cdswPresent = true;
+            }
+        }
+        )
+        if(cdswPresent) {
+            blueprint = blueprint + ',{'+
+                '"name": "cdsw",'+
+                '"configurations": [],'+
+                '"components": ['+
+                '  {'+
+                '    "name": "SPARK2_CLIENT"'+
+                '  },'+
+                '  {'+
+                '    "name": "ZOOKEEPER_CLIENT"'+
+                '  },'+
+                '  {'+
+                '    "name": "YARN_CLIENT"'+
+                '  },'+
+                '  {'+
+                '    "name": "HDFS_CLIENT"'+
+                '   },'+
+                '   {'+
+                '    "name": "MAPREDUCE2_CLIENT"'+
+                '   },'+
+                '   {'+
+                '     "name": "HIVE_CLIENT"'+
+                '   }'+
+                ' ],'+
+                ' "cardinality": "1" '+
+                '  }],'
+        } else {
+            blueprint = blueprint + '],'
+        }
+        
+
+        // 1.6. Name
         var stack_name ='';
         var stack_version = '';
         
         if(clusterType.toString() === 'HDF') {
             stack_name='HDF'
-            stack_version='3.2'
+            stack_version='3.3'
         } else {
             stack_name='HDP'
-            stack_version='3.0'
+            stack_version='3.1'
         }
 
          blueprint = blueprint + '"Blueprints": {"blueprint_name": "'+ this.state.bundleName +'",'
@@ -420,7 +459,7 @@ var clusterResponse = await insertCluster.json()
                                     </tr>
                                     <tr height="35px">
                                         <td width="30%">
-                                            <strong>DataPlane Apps</strong>
+                                            <strong>Additional Apps</strong>
                                         </td>
                                         <td width="70%">
                                         {dataPlaneApplications.map((application, index, arr) => {

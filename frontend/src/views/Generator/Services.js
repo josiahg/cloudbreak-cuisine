@@ -10,7 +10,7 @@ class Services extends Component {
     constructor(props) {
         super(props);
         this.changeSwitch = this.changeSwitch.bind(this);
-        this.state = { firstLoad: true, servicesData: [] }
+        this.state = { firstLoad: true, servicesData: [], dependencyData: [] }
     }
 
     loadData() {
@@ -22,8 +22,18 @@ class Services extends Component {
             .catch(err => console.error(this.props.url, err.toString()))
     }
 
+    loadDependencyData() {
+        fetch('http://localhost:4000/api/services/dependencies')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ dependencyData: data })
+            })
+            .catch(err => console.error(this.props.url, err.toString()))
+    }
+
     componentDidMount() {
         this.loadData()
+        this.loadDependencyData()
     }
 
     saveAndContinue = (e) => {
@@ -64,17 +74,24 @@ class Services extends Component {
         if (!isChecked) {
             // If we are enabling a service, we check for dependencies
             const currentService = servicesData.filter((service) => (service.id == serviceId));
-            var dependencies = '';
+            var dependencies = [];
+            var hasDependencies = false;
             currentService.map((service) => {
-                dependencies = service.dependency;
+                this.state.dependencyData.filter((dep) => (dep.service_id === service.id)).map((dep) => {
+                    hasDependencies = true;
+                    dependencies.push(dep.requires_service_id);
+                })
+                
             }
             )
-            if (dependencies !== '') {
+            if (hasDependencies) {
+                for(var i in dependencies) {
                 this.setState({
-                    [dependencies]: true,
-                    ["cardHeaderClass" + dependencies]: 'text-white bg-success',
-                    ["cardClass" + dependencies]: 'border-success'
+                    [dependencies[i]]: true,
+                    ["cardHeaderClass" + dependencies[i]]: 'text-white bg-success',
+                    ["cardClass" + dependencies[i]]: 'border-success'
                 });
+            }
             }
             this.setState({
                 [serviceId]: !this.state[serviceId],

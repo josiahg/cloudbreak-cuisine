@@ -282,7 +282,7 @@ class Recipe extends Component {
                           <i className="fa fa-long-arrow-left"></i> Back
                             </Button>
                         &nbsp;
-                      <Button size="lg" color="warning" href={"#/editrecipes/" + recipe.id} disabled={recipe.id < 14}>
+                      <Button size="lg" color="warning" href={"#/editrecipes/" + recipe.id} disabled={recipe.id < 17}>
                           <i className="icon-note"></i>&nbsp;Edit
                                     </Button>
                                     &nbsp;

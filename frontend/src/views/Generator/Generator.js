@@ -105,6 +105,7 @@ class Generator extends Component {
             case 5:
                 return <DataPlaneApplications
                     setDataPlaneApplicationList={this.setDataPlaneApplicationList}
+                    setRecipeList={this.setRecipeList}
                     nextStep={this.nextStep}
                     prevStep={this.prevStep}
                     values={values}

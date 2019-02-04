@@ -34,7 +34,7 @@ class WelcomeScreen extends Component{
                         <ListGroupItem><strong>1. </strong>Choose cluster type</ListGroupItem>
                         <ListGroupItem><strong>2. </strong>Select cluster services</ListGroupItem>
                         <ListGroupItem><strong>3. </strong>Select services add-ons</ListGroupItem>
-                        <ListGroupItem><strong>4. </strong>Select DataPlane applications</ListGroupItem>
+                        <ListGroupItem><strong>4. </strong>Select additional applications</ListGroupItem>
                         <ListGroupItem><strong>5. </strong>Save bundle to library</ListGroupItem>
                    
                     </ListGroup>

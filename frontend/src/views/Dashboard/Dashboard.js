@@ -107,6 +107,7 @@ class Dashboard extends Component {
 
     this.toggleModal = this.toggleModal.bind(this);
     this.state = {
+      cbUrl: '',
       dropdownOpen: false,
       radioSelected: 2,
       token: '',
@@ -227,6 +228,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
       })
     })
     const CBToken = await initCBToken.json()
+    this.setState({cbUrl: whovilleProfile[0].cb_url.toString()});
    
     const initClusterData = await fetch('http://localhost:4000/api/dashboard/getclusters', {
       method: 'POST',
@@ -318,11 +320,16 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
           <Col align="right" >
             <div >
               <Button size="lg" color="warning" onClick={this.refreshPage.bind(this)}>
+              
                 <i className={isLoading ? 'fa fa-refresh fa-spin' : 'fa fa-refresh'}></i>&nbsp;Refresh
                               </Button>
               &nbsp;
                               <Button size="lg" color="danger" disabled>
                 <i className="fa fa-bomb"></i>&nbsp;Nuke
+                              </Button>
+                              &nbsp;
+              <Button size="lg" color="success" href={"https://" + this.state.cbUrl +"/sl"} target="_blank">
+                <i className='fa fa-external-link'></i>&nbsp;Cloudbreak
                               </Button>
             </div>
           </Col>

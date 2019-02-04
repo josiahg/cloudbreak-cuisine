@@ -70,6 +70,16 @@ class Recipes extends Component {
             })
         });
 
+
+        // No services
+        const noServicesRecipes = recipesData.filter((recipe) => ((recipe.serviceid === 0)));
+        noServicesRecipes.map((recipe) => {
+                if (this.state[recipe.id]) {
+                    recipes.push(JSON.parse(JSON.stringify({ id: recipe.id, name: recipe.recipename, type: recipe.recipe_type, addon_type: recipe.addon_type, display: recipes.display })));
+                }
+            });
+     
+
         this.props.setRecipeList(recipes);
         e.preventDefault();
         this.props.nextStep();
@@ -139,7 +149,7 @@ class Recipes extends Component {
 
                                         {serviceList.map((service) => {
                                             //return <h1>{service.id}</h1>
-                                            const associatedRecipes = recipesData.filter((recipe) => ((recipe.serviceid === service.id) && (recipe.display === 1)))
+                                            const associatedRecipes = recipesData.filter((recipe) => ((recipe.serviceid === service.id ) && (recipe.display === 1)))
                                             return associatedRecipes.map((recipe) => {
                                                 if (recipe.mandatory === 1)
                                                     return <tr className="text-white bg-green">
@@ -192,6 +202,35 @@ class Recipes extends Component {
                                             )
                                         })
                                         }
+
+                                        {recipesData.filter((recipe) => ((recipe.serviceid === 0 ) && (recipe.display === 1))).map((recipe) => {
+
+                                                 return <tr className={this.state["trBgClass" + recipe.id]}>
+                                                    <td className="text-center">
+                                                        <div>
+                                                            <img alt='' src='../../assets/img/cuisine/no-entry.png' height="50px" width="50px" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div>NO ASSOCIATED SERCIVE</div>
+                                                    </td>
+                                                    <td>
+                                                        <div>{recipe.addon_type}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div>{recipe.recipename}</div>
+                                                    </td>
+                                                    <td  >
+                                                        <div>{recipe.recipe_type}</div>
+                                                    </td>
+                                                    <td className="text-center" valign="top">
+                                                        <AppSwitch id={recipe.id} className={'mx-1'} variant={'pill'} color={'success'} outline={'alt'} checked={this.state[recipe.id]} onChange={this.changeSwitch} />
+                                                    </td>
+                                                </tr>
+
+                                        })
+                                    }
+                                        
                                     </tbody>
                                 </Table>
                             </CardBody>
