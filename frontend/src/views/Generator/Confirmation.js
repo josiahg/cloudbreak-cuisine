@@ -24,6 +24,21 @@ class Confirmation extends Component{
             missingForm: false
         }
     }
+
+    findAndReplace(string, target, replacement) {
+ 
+        var i = 0, length = string.length;
+        
+        for (i; i < length; i++) {
+        
+          string = string.replace(target, replacement);
+        
+        }
+        
+        return string;
+        
+       }
+
     layoutIcon (){
         if(this.state.generatingBP) {
             return ''
@@ -190,13 +205,15 @@ class Confirmation extends Component{
             stack_name='HDP'
             stack_version='3.1'
         }
+        
 
-         blueprint = blueprint + '"Blueprints": {"blueprint_name": "'+ this.state.bundleName +'",'
+        var normalizedBundleName = "bp-"+this.findAndReplace(this.state.bundleName.toString().toLowerCase(), " ", "-")+".json"
+
+         blueprint = blueprint + '"Blueprints": {"blueprint_name": "'+ normalizedBundleName +'",'
          blueprint = blueprint + '"stack_name": "'+ stack_name +'",'
          blueprint = blueprint + '"stack_version": "'+ stack_version +'"}}'
 
         
-
 
           this.setState({ generatingBP: false,
                           generatingLayout: true });
@@ -213,8 +230,19 @@ class Confirmation extends Component{
             cluster_id=3
         }
 
-         var layout = '{ "name": "' + this.state.bundleName + '", ';
-         layout = layout + '"description": "' + this.state.bundleDescription + '", ';
+        
+        // 2.1. General Info
+         var layout = '{ "desc": "' + this.state.bundleDescription + '", ';
+         layout = layout + '"deploywait": "' + 1800 + '", ';
+         layout = layout + '"purge": "' + true + '", ';
+         layout = layout + '"priority": "", ';
+         layout = layout + '"seq:": { ';
+         layout = layout + '"prep_deps": ["' + normalizedBundleName + '"], ';
+         layout = layout + '"prep_spec": ["' + normalizedBundleName + '"], ';
+         layout = layout + '"do_builds": ["' + normalizedBundleName + '"] ';
+         layout = layout + '}, ';
+
+         // 2.2. Stack Info
          layout = layout + '"infra": { "ambariRepo": { ';
          
 
@@ -226,9 +254,125 @@ class Confirmation extends Component{
         layout = layout + '"baseUrl": "' + clusterInfo.ambari_base_url + '",';
         layout = layout + '"gpgKeyUrl": "' + clusterInfo.ambari_gpg_key_url + '"}, "stackRepo": {';
         layout = layout + '"version": "' + clusterInfo.repo_version + '",';
-        layout = layout + '"baseUrl": "' + clusterInfo.repo_def_file_url + '"}}}';
+        layout = layout + '"baseUrl": "' + clusterInfo.repo_def_file_url + '"}},';
 
-   
+        // 2.3. Blueprint Info
+         layout = layout + '"blueprint": { "name": "' + normalizedBundleName + '"}, ';
+        
+         // 2.4. Recipe Info
+         layout = layout + '"recipe": [ ';
+
+         for(var key in recipes){
+            var prefix= '';
+            var typeNormalized ='';
+            if(recipes[key].type === 'Pre Ambari Start'){
+                prefix = 'pras-';
+                typeNormalized = 'PRE_AMBARI_START';
+            } else if(recipes[key].type === 'Post Cluster Install'){
+                prefix =  'poci-';
+                typeNormalized = 'POST_CLUSTER_INSTALL';
+            } else if(recipes[key].type === 'Post Ambari Start'){
+                prefix =  'poas-';
+                typeNormalized = 'POST_AMBARI_START';
+            } else if(recipes[key].type === 'On Termination'){
+                prefix =  'prte-'
+                typeNormalized = 'PRE_TERMINATION';
+            }
+
+            layout = layout + '{ "name" : "' + prefix + this.findAndReplace(recipes[key].name.toString().toLowerCase(), " ", "-") + '.sh",';
+            layout = layout + ' "typ" : "' +  typeNormalized  + '"},';
+
+         }
+         layout = layout.substring(0,layout.length-1);
+         layout = layout + "],"
+
+         
+        // 2.5. Group Info
+        layout = layout + '"group": [ ';
+        
+        // Creating the different recipe arrays
+
+        var getNodes = await fetch('http://localhost:4000/api/recipes/nodes')
+        var resNodes = await getNodes.json()
+
+        var masterRecipes = '[';
+        var computeRecipes = '[';
+        var workerRecipes = '[';
+        var cdswRecipes = '[';
+        for(var key in recipes){
+            for(var j in resNodes){
+                if(resNodes[j].recipe_id.toString() === recipes[key].id.toString()) {
+                   
+                    var prefix = '';
+                    if(recipes[key].type === 'Pre Ambari Start'){
+                        prefix = 'pras-';
+                    } else if(recipes[key].type === 'Post Cluster Install'){
+                        prefix =  'poci-';
+                    } else if(recipes[key].type === 'Post Ambari Start'){
+                        prefix =  'poas-';
+                    } else if(recipes[key].type === 'On Termination'){
+                        prefix =  'prte-'
+                    }
+
+                    if(resNodes[j].node_type.toString() === "MASTER"){
+                        masterRecipes = masterRecipes + '"' + prefix + this.findAndReplace(recipes[key].name.toString().toLowerCase(), " ", "-")  + '.sh",'
+                    } else if(resNodes[j].node_type.toString() === "WORKER"){
+                        workerRecipes = workerRecipes + '"' + prefix + this.findAndReplace(recipes[key].name.toString().toLowerCase(), " ", "-")  + '.sh",'
+                    } else if(resNodes[j].node_type.toString() === "COMPUTE"){
+                        computeRecipes = computeRecipes + '"' + prefix + this.findAndReplace(recipes[key].name.toString().toLowerCase(), " ", "-")  + '.sh",'
+                    } else if(resNodes[j].node_type.toString() === "CDSW"){
+                        cdswRecipes = cdswRecipes + '"' + prefix + this.findAndReplace(recipes[key].name.toString().toLowerCase(), " ", "-")  + '.sh",'
+                    }
+
+                }
+            }
+
+        }
+        if(masterRecipes.length > 1) masterRecipes = masterRecipes.substring(0,masterRecipes.length-1);
+        masterRecipes = masterRecipes + ']';
+
+        if(workerRecipes.length > 1) workerRecipes = workerRecipes.substring(0,workerRecipes.length-1);
+        workerRecipes = workerRecipes + ']';
+
+        if(computeRecipes.length > 1) computeRecipes = computeRecipes.substring(0,computeRecipes.length-1);
+        computeRecipes = computeRecipes + ']';
+
+        if(cdswRecipes.length > 1) cdswRecipes = cdswRecipes.substring(0,cdswRecipes.length-1);
+        cdswRecipes = cdswRecipes + ']';
+
+
+        // 2.5.1. Master
+        layout = layout + '{ "master" : {';
+        layout = layout + '"recipe" : ' + masterRecipes + ',';
+        layout = layout + '"type" : "GATEWAY",';
+        layout = layout + '"machine" : "8x28-8x32"}},';
+        
+
+
+        // 2.5.2. Worker
+        layout = layout + '{ "worker" : {';
+        layout = layout + '"recipe" : ' + workerRecipes + ',';
+        layout = layout + '"type" : "CORE",';
+        layout = layout + '"machine" : "4x14-4x16"}},';
+
+        // 2.5.3. Compute
+        layout = layout + '{ "compute" : {';
+        layout = layout + '"recipe" : ' + computeRecipes + ',';
+        layout = layout + '"type" : "CORE",';
+        layout = layout + '"machine" : "4x14-4x16"}},';
+
+        // 2.5.4. Additional if any
+        if(cdswPresent) {
+            layout = layout + '{ "cdsw" : {';
+            layout = layout + '"recipe" : ' + cdswRecipes + ',';
+            layout = layout + '"type" : "CORE",';
+            layout = layout + '"machine" : "16x60-16x66",';
+            layout = layout + '"rootvol" : "100",';
+            layout = layout + '"vols" : "12x500"}},';
+        }
+        layout = layout.substring(0,layout.length-1);
+         layout = layout + "]}"
+
 
          this.setState({ generatingLayout: false,
                          registering: true });

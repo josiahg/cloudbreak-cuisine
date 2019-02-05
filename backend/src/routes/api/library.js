@@ -72,81 +72,63 @@ router.route('/item/:id/contents').get((req, res) => {
 });
 
 
-router.route('/item/:id/download').get((req, res) => {
 
-    // Writing all the files
-  const fs = require('fs');
-  const zip = require('express-zip');
+router.route('/item/download/create/folder').post((req, res) => {
+    const fs = require('fs');
 
-  var files = [];
+    const path = require('path');
 
-
-   var bpStrFile = '/bundle'+req.params.id+'/blueprint-bundle'+req.params.id+'.json';
-   var ymlStrFile = '/bundle'+req.params.id+'/layout-bundle'+req.params.id+'.json';
-   if (!fs.existsSync('/bundle'+req.params.id)){
-    fs.mkdirSync('/bundle'+req.params.id);
-}
-   // 1. Writing Blueprint 
-    db.one('select content from cloudbreak_cuisine.bundles_contents where type=\'BLUEPRINT\' and bundle_id =' + req.params.id)
-        .then(bpData => {
-            var bp = Buffer.from(bpData.content, 'base64');
-            fs.writeFile(bpStrFile, bp, (err) => {  
-                if (err) throw err;})
-            }).then(
-                 // 2. Writing layout
-                db.one('select content from cloudbreak_cuisine.bundles_contents where type=\'LAYOUT\' and bundle_id =' + req.params.id)
-                .then(ymlData => {
-                    var yml = Buffer.from(ymlData.content, 'base64');
-                    fs.writeFile(ymlStrFile, yml, (err) => {  
-                        if (err) throw err;})
-                    })
-            ).then(
-                // 3. Writing recipes
-                db.any('select cloudbreak_cuisine.recipes.* from cloudbreak_cuisine.bundles_dependencies, cloudbreak_cuisine.recipes ' +
-                'where cloudbreak_cuisine.bundles_dependencies.dep_id = cloudbreak_cuisine.recipes.id ' +
-                'and dep_type = \'RECIPES\' ' +
-                'and bundle_id =' + req.params.id)
-             .then(recipeData => {
-
-                
-                 for(var key in recipeData){
-                     var filename ='/bundle'+req.params.id+'/';
-                     var filecontent = Buffer.from(recipeData[key].content, 'base64');
-                    if(recipeData[key].recipe_type === 'Pre Ambari Start'){
-                        filename = filename + 'pras-'
-                    } else if(recipeData[key].recipe_type === 'Post Cluster Install'){
-                        filename = filename + 'poci-'
-                    } else if(recipeData[key].recipe_type === 'Post Ambari Start'){
-                        filename = filename + 'poas-'
-                    } else if(recipeData[key].recipe_type === 'On Termination'){
-                        filename = filename + 'onte-'
-                    }
-                    filename = filename + 'bundle' +req.params.id+ '-recipe' + recipeData[key].id + '.sh'
-                    //console.log(filename);
-                    fs.writeFile(filename, filecontent, (err) => {  
-                        if (err) throw err;})
-                    }
-                    })
-         
-           
-           ).then(
-            fs.readdir('/bundle'+req.params.id+'/', function(err, items) {
-                // 4. Zipping
+    if (!fs.existsSync(req.body.folderName)){
+        fs.mkdirSync(req.body.folderName);
+    } else {
+        fs.readdir(req.body.folderName, (err, files) => {
+            if (err) throw err;
+       
+            for (const file of files) {
+              fs.unlink(path.join(req.body.folderName, file), err => {
                 if (err) throw err;
-                for (var i=0; i<items.length; i++) {
+              });
+            }
+          });
+    }
 
-                    files.push({path: '/bundle'+req.params.id+'/'+items[i], name: items[i]});
-                    
-                   // console.log(items[i]);
-                }
-                res.zip(files, 'cuisine-bundle'+req.params.id+'.zip');
-            }))
-        .catch(error => {
-            console.log('ERROR:', error)
-        })
-  
+    res.json("Folder " + req.body.folderName + " prepared")
 
 
 });
+
+
+router.route('/item/download/create/file').post((req, res) => {
+    const fs = require('fs');
+
+    var file = Buffer.from(req.body.content, 'base64');
+    fs.writeFile(req.body.fileName, file, (err) => {  
+        if (err) throw err;})
+    res.json("File " + req.body.fileName + " created")
+
+
+});
+
+router.route('/item/download/zip/').get((req, res) => {
+    const fs = require('fs');
+    const zip = require('express-zip');
+
+    var files = []
+    fs.readdir(req.query.folderName, function(err, items) {
+        if (err) throw err;
+        for (var i=0; i<items.length; i++) {
+
+            files.push({path: req.query.folderName+'/'+items[i], name: items[i]});
+            
+            console.log(items[i]);
+        }
+
+       res.zip(files, req.query.fileName);
+    })
+
+
+
+});
+
 
 module.exports = router;

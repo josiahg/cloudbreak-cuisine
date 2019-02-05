@@ -29,8 +29,12 @@ class LibraryItem extends Component {
       confirmPush: false,
       saving: false,
       saved: false,
+      preparingDownload: false,
+      downloadReady: false,
       destination: '',
-      cb_url: ''
+      cb_url: '',
+      downloadLink: '',
+      thePush: ''
     }
   }
   confirmPushBundle() {
@@ -54,6 +58,137 @@ class LibraryItem extends Component {
     }
 
 
+  }
+
+  recipePrefix(recipe_type) {
+    if(recipe_type === 'Pre Ambari Start') {
+      return 'pras-';
+    } else if(recipe_type === 'Post Ambari Start') {
+      return 'poas-';
+    } else if(recipe_type === 'Post Cluster Install') {
+      return 'poci-';
+    } else {
+      return 'prte-';
+    }
+
+
+  }
+
+  downloadBundle = async event => {
+
+    this.setState({preparingDownload: !this.state.preparingDownload})
+
+    // First, we prepare the folder
+    var folder = "/bundle-" + (this.state.libraryItem.name.toString()).replace(/ /g, "-").toLowerCase()
+
+  
+
+    const initFolder = await fetch('http://localhost:4000/api/library/item/download/create/folder', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        folderName: folder
+      })
+    })
+    const resInit = await initFolder.json()
+    
+    
+
+
+    // Then we add the files in folder
+
+    // BLUEPRINT & LAYOUT
+    const retrieveContents = await fetch('http://localhost:4000/api/library/item/'+this.state.libraryItem.id+'/contents');
+    const respContents = await retrieveContents.json()
+
+    var bpContent ='';
+    var bpFileName = "/bp-" + (this.state.libraryItem.name.toString()).replace(/ /g, "-").toLowerCase() + ".json";
+    var lyContent='';
+    var lyFileName = "/layout-" + (this.state.libraryItem.name.toString()).replace(/ /g, "-").toLowerCase() + ".json";
+
+    for(var key in respContents){
+      if(respContents[key].type.toString() === 'BLUEPRINT'){
+        bpContent = respContents[key].content;
+      } else if(respContents[key].type.toString() === 'LAYOUT'){
+        lyContent = respContents[key].content;
+      }
+    }
+
+    const createBP = await fetch('http://localhost:4000/api/library/item/download/create/file', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fileName: folder + bpFileName,
+        content: bpContent
+      })
+    })
+    const resBP = await createBP.json()
+
+   
+
+
+    const createLY = await fetch('http://localhost:4000/api/library/item/download/create/file', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fileName: folder + lyFileName,
+        content: lyContent
+      })
+    })
+    const resLY = await createLY.json()
+
+  
+    // RECIPES
+    const retrieveRecipes = await fetch('http://localhost:4000/api/library/item/'+this.state.libraryItem.id+'/dependencies/recipes');
+    const respRecipes = await retrieveRecipes.json()
+
+    for(var key in respRecipes){
+      var recipeFileName = "/" + this.recipePrefix(respRecipes[key].recipe_type) + (respRecipes[key].recipename.toString()).replace(/ /g, "-").toLowerCase() + ".sh";
+      var recipeContent = respRecipes[key].content;
+
+      var createRP = await fetch('http://localhost:4000/api/library/item/download/create/file', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fileName: folder + recipeFileName,
+        content: recipeContent
+      })
+    })
+    const resRP = await createRP.json()
+   
+
+    }
+
+    // Finally we create the Zip and update the link
+
+    var zipFileName = 'cuisine-bundle-' + (this.state.libraryItem.name.toString()).replace(/ /g, "-").toLowerCase()  + '.zip'
+    // var createZIP = await fetch('http://localhost:4000/api/library/item/download/create/zip', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     fileName: zipFileName,
+    //     folderName: folder
+    //   })
+    // })
+    // const resZIP = await createZIP.json()
+
+    this.setState({downloadLink: 'http://localhost:4000/api/library/item/download/zip?folderName=' + folder + '&fileName='+zipFileName,
+                  downloadReady: !this.state.downloadReady})
   }
 
   pushBundle = async event => {
@@ -139,7 +274,7 @@ class LibraryItem extends Component {
       body: JSON.stringify({
         token: CBToken,
         cb_url: whovilleProfile[0].cb_url.toString(),
-        name: prefix + currentRecipe.id + '-' + (currentRecipe.recipename).replace(/ /g, "-").toLowerCase()
+        name: prefix + (currentRecipe.recipename).replace(/ /g, "-").toLowerCase()
         
       })
     })
@@ -155,7 +290,7 @@ class LibraryItem extends Component {
       body: JSON.stringify({
         token: CBToken,
         cb_url: whovilleProfile[0].cb_url.toString(),
-        name: prefix + currentRecipe.id + '-' + (currentRecipe.recipename).replace(/ /g, "-").toLowerCase(),
+        name: prefix  + (currentRecipe.recipename).replace(/ /g, "-").toLowerCase(),
         description: currentRecipe.recipedescription + '(' + currentRecipe.recipe_type +')',
         recipeType: recipeType,
         content: base64Recipe
@@ -198,17 +333,18 @@ class LibraryItem extends Component {
     var resNodes = await getNodes.json()
 
     this.state.libraryItemRecipes.map((recipe) => {
+
       whovilleDataPush = whovilleDataPush + '{';
-      whovilleDataPush = whovilleDataPush + '"name" : "' + recipe.recipename +'", ';
-      whovilleDataPush = whovilleDataPush + '"type" : "' + this.cloudbreakRecipeType(recipe.recipe_type) +'", ';
-      whovilleDataPush = whovilleDataPush + '"nodes" : [';
-      var myNodes = resNodes.filter((nodeRecipe) => (nodeRecipe.recipe_id == recipe.id))
-      myNodes.map((nodeRecipe) => {
-        whovilleDataPush = whovilleDataPush + '"' + nodeRecipe.node_type + '",'
+      whovilleDataPush = whovilleDataPush + '"name" : "' + this.recipePrefix(recipe.recipe_type)  + (recipe.recipename).replace(/ /g, "-").toLowerCase() +'.sh", ';
+      // whovilleDataPush = whovilleDataPush + '"type" : "' + this.cloudbreakRecipeType(recipe.recipe_type) +'", ';
+      // whovilleDataPush = whovilleDataPush + '"nodes" : [';
+      // var myNodes = resNodes.filter((nodeRecipe) => (nodeRecipe.recipe_id == recipe.id))
+      // myNodes.map((nodeRecipe) => {
+      //   whovilleDataPush = whovilleDataPush + '"' + nodeRecipe.node_type + '",'
       
-      })
-      whovilleDataPush = whovilleDataPush.substring(0,whovilleDataPush.length-1);
-      whovilleDataPush = whovilleDataPush + '],'
+      // })
+      // whovilleDataPush = whovilleDataPush.substring(0,whovilleDataPush.length-1);
+      // whovilleDataPush = whovilleDataPush + '],'
 
       whovilleDataPush = whovilleDataPush + '"content" : "' + recipe.content +'"},';
     })
@@ -224,6 +360,7 @@ class LibraryItem extends Component {
     })
 
     whovilleDataPush = whovilleDataPush + Base64.decode(content) +'}';
+    this.setState({thePush: whovilleDataPush})
 
     this.setState({saved: !this.state.saved})
 
@@ -295,12 +432,6 @@ class LibraryItem extends Component {
       .catch(err => console.error(this.props.url, err.toString()))
   }
 
-  downloadBundle = (e) => {
-    fetch('http://localhost:4000/api/library/item/' + e.target.id + '/download')
-      .then(response => response.json())
-      .catch(err => console.error(this.props.url, err.toString()))
-  }
-
   componentDidMount() {
     this.loadData()
     this.loadServicesData()
@@ -327,6 +458,7 @@ class LibraryItem extends Component {
     else {
       return (
         <div className="animated fadeIn">
+        {/* {this.state.thePush} */}
           <Row>
             <Col xs={6} md={4}>
               <Card className="card-accent-success">
@@ -363,7 +495,7 @@ class LibraryItem extends Component {
                   <ModalFooter>
                   <Button color='secondary' onClick={() => { this.setState({ confirmPush: !this.state.confirmPush}); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
                   <Button color='success' id={this.state.libraryItem.id} name="Cloudbreak" onClick={this.pushBundle.bind(this)}><i className="fa fa-cloud"></i>&nbsp; Cloudbreak</Button>
-                  <Button color='success' id={this.state.libraryItem.id} name="Whoville" onClick={this.pushBundle.bind(this)} disabled><i className="fa fa-building-o"></i>&nbsp; Whoville</Button>
+                  <Button color='success' id={this.state.libraryItem.id} name="Whoville" onClick={this.pushBundle.bind(this)}><i className="fa fa-building-o"></i>&nbsp; Whoville</Button>
                    </ModalFooter>
                 </Modal>
 
@@ -376,6 +508,18 @@ class LibraryItem extends Component {
                   </ModalBody>
                   <ModalFooter>
                   <Button color={this.state.saved ? 'success' : 'secondary'} href={this.state.destination === "Cloudbreak" ? this.state.cb_url+'/sl' : "#/whoville"} target={this.state.destination === "Cloudbreak" ? "_blank" : ""} disabled={!this.state.saved}>Go to {this.state.destination} <i className="fa fa-long-arrow-right"></i></Button>
+                   </ModalFooter>
+                </Modal>
+
+                <Modal isOpen={this.state.preparingDownload} toggle={this.state.downloadReady ?  () => { this.setState({ preparingDownload: !this.state.preparingDownload, downloadReady: !this.state.downloadReady }); } : ''}
+                       className={this.state.downloadReady ? 'modal-success ' + this.props.className : 'modal-secondary ' + this.props.className}>
+                       <ModalHeader >{this.state.downloadReady ? 'Bundle Ready to Download!' : 'Preparing bundle package ... '} <i className={this.state.downloadReady ? '':'fa fa-spinner fa-spin'}></i></ModalHeader>
+                  
+                  <ModalBody>
+                   <h3>Preparing bundle package ... <i className={this.state.downloadReady ? 'fa fa-check': 'fa fa-spinner fa-spin'}></i> </h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color={this.state.downloadReady ? 'success' : 'secondary'} href={this.state.downloadLink} disabled={!this.state.downloadReady}><i className="fa fa-download"></i>&nbsp;Download</Button>
                    </ModalFooter>
                 </Modal>
 
@@ -396,12 +540,12 @@ class LibraryItem extends Component {
                     </Button>
                         </td>
                         <td align="center">
-                          <Button id={this.state.libraryItem.id} color="success" width="25%" href={'http://localhost:4000/api/library/item/' + this.state.libraryItem.id + '/download'}>
+                          <Button id={this.state.libraryItem.id} color="success" width="25%" onClick={this.downloadBundle.bind(this)}>
                             <i className="fa fa-download"></i>&nbsp;Download
                     </Button>
                         </td>
                         <td align="center" width="25%">
-                          <Button  id={this.state.libraryItem.id} color="success" onClick={this.confirmPushBundle.bind(this)}>
+                          <Button  name={this.state.libraryItem.id} color="success" onClick={this.confirmPushBundle.bind(this)}>
                             <i className="fa fa-cloud-upload" ></i>&nbsp;Push
                     </Button>
                         </td>
