@@ -84,6 +84,16 @@ router.route('/update_recipe').post((req2, res) => {
     
 });
 
+router.route('/nodes').get((req, res) => {
+    db.any('select * from cloudbreak_cuisine.recipes_nodes')
+        .then(data => {
+            res.json(data);
+        })
+        .catch(error => {
+            console.log('ERROR:', error)
+        })
+});
+
 
 router.route('/:id').get((req, res) => {
     db.one('select * from cloudbreak_cuisine.recipes where id = ' + req.params.id)
@@ -108,5 +118,17 @@ router.route('/:id/details').get((req, res) => {
             console.log('ERROR:', error)
         })
 });
+
+router.route('/:id/nodes').get((req, res) => {
+    db.any('select * from cloudbreak_cuisine.recipes_nodes where recipe_id = ' + req.params.id)
+        .then(data => {
+            res.json(data);
+        })
+        .catch(error => {
+            console.log('ERROR:', error)
+        })
+});
+
+
 
 module.exports = router;

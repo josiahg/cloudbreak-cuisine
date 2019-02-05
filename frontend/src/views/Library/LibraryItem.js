@@ -42,6 +42,20 @@ class LibraryItem extends Component {
 
   }
 
+  cloudbreakRecipeType(recipe_type) {
+    if(recipe_type === 'Pre Ambari Start') {
+      return 'PRE_AMBARI_START';
+    } else if(recipe_type === 'Post Ambari Start') {
+      return 'POST_AMBARI_START';
+    } else if(recipe_type === 'Post Cluster Install') {
+      return 'POST_CLUSTER_INSTALL';
+    } else {
+      return 'PRE_TERMINATION';
+    }
+
+
+  }
+
   pushBundle = async event => {
     this.setState({confirmPush: !this.state.confirmPush,
                   saving: !this.state.saving,
@@ -180,13 +194,23 @@ class LibraryItem extends Component {
     // RECIPES
 
     whovilleDataPush = whovilleDataPush + '"recipes": [';
+    var getNodes = await fetch('http://localhost:4000/api/recipes/nodes')
+    var resNodes = await getNodes.json()
 
     this.state.libraryItemRecipes.map((recipe) => {
       whovilleDataPush = whovilleDataPush + '{';
       whovilleDataPush = whovilleDataPush + '"name" : "' + recipe.recipename +'", ';
-      whovilleDataPush = whovilleDataPush + '"type" : "' + recipe.recipename +'", ';
-      whovilleDataPush = whovilleDataPush + '"node_name" : "' + recipe.recipename +'", ';
-      whovilleDataPush = whovilleDataPush + '"content" : "' + recipe.recipename +'"},';
+      whovilleDataPush = whovilleDataPush + '"type" : "' + this.cloudbreakRecipeType(recipe.recipe_type) +'", ';
+      whovilleDataPush = whovilleDataPush + '"nodes" : [';
+      var myNodes = resNodes.filter((nodeRecipe) => (nodeRecipe.recipe_id == recipe.id))
+      myNodes.map((nodeRecipe) => {
+        whovilleDataPush = whovilleDataPush + '"' + nodeRecipe.node_type + '",'
+      
+      })
+      whovilleDataPush = whovilleDataPush.substring(0,whovilleDataPush.length-1);
+      whovilleDataPush = whovilleDataPush + '],'
+
+      whovilleDataPush = whovilleDataPush + '"content" : "' + recipe.content +'"},';
     })
     whovilleDataPush = whovilleDataPush.substring(0,whovilleDataPush.length-1);
 
@@ -200,8 +224,6 @@ class LibraryItem extends Component {
     })
 
     whovilleDataPush = whovilleDataPush + Base64.decode(content) +'}';
-
-    //alert(whovilleDataPush)
 
     this.setState({saved: !this.state.saved})
 
