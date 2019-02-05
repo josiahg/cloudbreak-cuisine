@@ -10,6 +10,7 @@ import {
   Label,
   TabPane, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
+import { notDeepStrictEqual } from 'assert';
 
 class Recipe extends Component {
   constructor(props) {
@@ -21,9 +22,19 @@ class Recipe extends Component {
       recipesData: [],
       servicesData: [],
       clustersData: [],
+      recipeNodesData: [],
       modal: false
     };
   }
+
+  containsNode(nodeList, nodeType) {
+    var containNodeType = false;
+    for(var key in nodeList) {
+      if(nodeList[key].node_type.toString() === nodeType.toString()) containNodeType= true;
+    }
+    return containNodeType;
+  }
+
 
 
   loadRecipeData() {
@@ -44,6 +55,16 @@ class Recipe extends Component {
       .catch(err => console.error(this.props.url, err.toString()))
   }
 
+  loadRecipeNodes() {
+    fetch('http://localhost:4000/api/recipes/nodes')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ recipeNodesData: data })
+      })
+      .catch(err => console.error(this.props.url, err.toString()))
+  }
+
+
   loadClusterData() {
     fetch('http://localhost:4000/api/clusters')
       .then(response => response.json())
@@ -56,6 +77,7 @@ class Recipe extends Component {
   componentDidMount() {
     this.loadRecipeData()
     this.loadServiceData()
+    this.loadRecipeNodes()
     this.loadClusterData()
   }
   lorem() {
@@ -96,6 +118,7 @@ class Recipe extends Component {
   render() {
     //const serviceList = this.state.servicesData.filter((service) => ((service.service_description)))
     const recipeList = this.state.recipesData.filter((recipe) => (recipe.id.toString() === this.props.match.params.id));
+    const nodeList = this.state.recipeNodesData.filter((node) => (node.recipe_id.toString() === this.props.match.params.id))
 
 
 
@@ -232,8 +255,7 @@ class Recipe extends Component {
                         </InputGroup>
                       </Col>
                     </FormGroup>
-
-                    <FormGroup row>
+<FormGroup row>
 
                       <Col md="3">
                         <Label htmlFor="name">Cluster Version</Label>
@@ -255,6 +277,32 @@ class Recipe extends Component {
                         </InputGroup>
                       </Col>
                     </FormGroup>
+
+                    <FormGroup row>
+                    <Col md="3">
+                      <Label>Applies to Nodes</Label>
+                    </Col>
+                    <Col md="9">
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox1" name="inline-checkbox1" value="Master" disabled checked={this.containsNode(nodeList, "MASTER")}/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox1">Master</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox2" name="inline-checkbox2" value="Worker" disabled checked={this.containsNode(nodeList, "WORKER")}/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox2">Worker</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox3" name="inline-checkbox3" value="Compute" disabled checked={this.containsNode(nodeList, "COMPUTE")}/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox3">Compute</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox3" name="inline-checkbox3" value="CDSW" disabled checked={this.containsNode(nodeList, "CDSW")}/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox3">CDSW</Label>
+                      </FormGroup>
+                    </Col>
+                  </FormGroup>
+
+
 
 
 

@@ -21,6 +21,16 @@ router.route('/nextid').get((req, res) => {
         })
 });
 
+router.route('/delete/nodes/:id').get((req, res) => {
+    db.none('delete from cloudbreak_cuisine.recipes_nodes where recipe_id =' + req.params.id)
+        .then(data => {
+            res.json("Delete Successful!");
+        })
+        .catch(error => {
+            console.log('ERROR:', error)
+        })
+});
+
 router.route('/delete/:id').get((req, res) => {
     db.none('delete from cloudbreak_cuisine.recipes where id =' + req.params.id)
         .then(data => {
@@ -68,6 +78,23 @@ router.route('/update_recipe').post((req2, res) => {
      
  });
 
+ router.route('/insert_recipe/nodes').post((req2, res) => {
+    
+    db.none('insert into cloudbreak_cuisine.recipes_nodes (recipe_id, node_type)  values ($1, $2)', 
+    [req2.body.recipe_id, req2.body.node_type]) 
+    .then(() => {
+      
+        res.json("Insert Sucessful!");
+    })
+    .catch(error => {
+        res.json("Insert failed!");
+        console.log('ERROR:', error)
+    })
+
+    
+});
+
+
  router.route('/insert_recipe').post((req2, res) => {
     
     db.none('insert into cloudbreak_cuisine.recipes (id, serviceid, recipename, recipedescription, addon_type, recipe_type, mandatory, display, content)  values ($1, $2, $3, $4, $5, $6, $7, $8, $9)', 
@@ -86,6 +113,17 @@ router.route('/update_recipe').post((req2, res) => {
 
 router.route('/nodes').get((req, res) => {
     db.any('select * from cloudbreak_cuisine.recipes_nodes')
+        .then(data => {
+            res.json(data);
+        })
+        .catch(error => {
+            console.log('ERROR:', error)
+        })
+});
+
+
+router.route('/nodes/:id').get((req, res) => {
+    db.any('select * from cloudbreak_cuisine.recipes_nodes where recipe_id = '+ req.params.id)
         .then(data => {
             res.json(data);
         })

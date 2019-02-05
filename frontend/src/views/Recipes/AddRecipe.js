@@ -39,12 +39,17 @@ class AddRecipe extends Component {
       confirm: false,
       confirmed: false,
       mandatory: 0,
-      display: 1
+      display: 1,
+      appliesToMaster: true,
+      appliesToWorker: false,
+      appliesToCompute: false,
+      appliesToCDSW: false
     };
   }
 
-  saveRecipe = (e) => {
-    fetch('http://localhost:4000/api/recipes/checkcompatibility', {
+  saveRecipe = async event => {
+
+    const checkcompatibility = await fetch('http://localhost:4000/api/recipes/checkcompatibility', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -55,22 +60,27 @@ class AddRecipe extends Component {
         cluster_version: this.state.cluster_version,
         service_description: this.state.service_description
       })
-    }).then(response => response.json())
-    .then(data => {
-      
-       if(data.serviceid) {
+    })
 
-        this.setState({ serviceid: data.serviceid,
+
+    const respCheck = await checkcompatibility.json()
+
+      
+       if(respCheck.serviceid) {
+
+        this.setState({ serviceid: respCheck.serviceid,
           confirm: !this.state.confirm});
        } else {
         this.setState({ modal: !this.state.modal});
        }
-    })
-    .catch(err => console.error(this.props.url, err.toString()) )
+
   }
 
-  insertRecipe = (e) => {
-    fetch('http://localhost:4000/api/recipes/insert_recipe', {
+
+  insertRecipe = async event => {
+
+
+    const updRecipe = await fetch('http://localhost:4000/api/recipes/insert_recipe', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -92,11 +102,95 @@ class AddRecipe extends Component {
         mandatory: this.state.mandatory,
         display: this.state.display
       })
-    }).then(response => response.json()).then(
+    })
+    const respUpd = updRecipe.json()
+
+
+    if(this.state.appliesToMaster){
+      const insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipe_id: this.state.recipeid,
+          node_type: 'MASTER'
+        })
+      })
+      const respNode = await insertNode.json()
+    }
+
+    if(this.state.appliesToWorker){
+      const insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipe_id: this.state.recipeid,
+          node_type: 'WORKER'
+        })
+      })
+      const respNode = await insertNode.json()
+    }
+
+    if(this.state.appliesToCompute){
+      const insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipe_id: this.state.recipeid,
+          node_type: 'COMPUTE'
+        })
+      })
+      const respNode = await insertNode.json()
+    }
+
+    if(this.state.appliesToCDSW){
+      var insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipe_id: this.state.recipeid,
+          node_type: 'CDSW'
+        })
+      })
+      var respNode = await insertNode.json()
+    }
+
+    
+
+
+
+
     this.setState({ confirm: !this.state.confirm,
-      confirmed: !this.state.confirmed}));
+      confirmed: !this.state.confirmed})
   }
 
+
+  handleMasterNodeChange = (e) => {
+    this.setState({ appliesToMaster: !this.state.appliesToMaster });
+  }
+
+  handleWorkerNodeChange = (e) => {
+    this.setState({ appliesToWorker: !this.state.appliesToWorker });
+  }
+
+  handleComputeNodeChange = (e) => {
+    this.setState({ appliesToCompute: !this.state.appliesToCompute });
+  }
+
+  handleCDSWNodeChange = (e) => {
+    this.setState({ appliesToCDSW: !this.state.appliesToCDSW });
+  }
 
   handleContentChange = (e) => {
     this.setState({ content: Base64.encode(e.target.value) });
@@ -372,6 +466,29 @@ class AddRecipe extends Component {
                         </InputGroup>
                       </Col>
                     </FormGroup>
+                    <FormGroup row>
+                    <Col md="3">
+                      <Label>Applies to Nodes</Label>
+                    </Col>
+                    <Col md="9">
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox1" name="inline-checkbox1" value="Master"  checked={this.state.appliesToMaster} onClick={this.handleMasterNodeChange.bind(this)}/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox1">Master</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox2" name="inline-checkbox2" value="Worker"  checked={this.state.appliesToWorker} onClick={this.handleWorkerNodeChange.bind(this)}/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox2">Worker</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox3" name="inline-checkbox3" value="Compute"  checked={this.state.appliesToCompute} onClick={this.handleComputeNodeChange.bind(this)}/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox3">Compute</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox3" name="inline-checkbox3" value="CDSW"  checked={this.state.appliesToCDSW} onClick={this.handleCDSWNodeChange.bind(this)}/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox3">CDSW</Label>
+                      </FormGroup>
+                    </Col>
+                  </FormGroup>
 
                     <FormGroup row>
                       <Col md="3">

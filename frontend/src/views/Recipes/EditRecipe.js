@@ -24,6 +24,7 @@ class EditRecipe extends Component {
       distinctClusters: [],
       distinctVersions: [],
       recipesDetailedData: [],
+      recipeNodesData: [],
       serviceid: '',
       clusterid: '',
       recipeid: '',
@@ -41,21 +42,39 @@ class EditRecipe extends Component {
       mandatory: '',
       display: '',
       delete: false,
-      deleted: false
+      deleted: false,
+      appliesToMaster: false,
+      appliesToWorker: false,
+      appliesToCompute: false,
+      appliesToCDSW: false
     };
   }
 
-  deleteRecipe = (e) => {
+  containsNode(nodeList, nodeType) {
+    var containNodeType = false;
+    for(var key in nodeList) {
+      if(nodeList[key].node_type.toString() === nodeType.toString()) containNodeType= true;
+    }
+    return containNodeType;
+  }
+
+  deleteRecipe = async event => {
     
-    fetch('http://localhost:4000/api/recipes/delete/' + this.state.recipeid)
-    .then(response => response.json).then(
+    const deleteRecipeNodes = await fetch('http://localhost:4000/api/recipes/delete/nodes/' + this.state.recipeid)
+    const respDeleteRecipeNodes = await deleteRecipeNodes.json()
+
+    const deleteRecipe = await fetch('http://localhost:4000/api/recipes/delete/' + this.state.recipeid)
+    const respDeleteRecipe = await deleteRecipe.json()
+
+
       this.setState({ delete: !this.state.delete,
-        deleted: !this.state.deleted}));
+        deleted: !this.state.deleted})
 
   }
 
-  saveRecipe = (e) => {
-    fetch('http://localhost:4000/api/recipes/checkcompatibility', {
+  saveRecipe = async event => {
+
+    const checkcompatibility = await fetch('http://localhost:4000/api/recipes/checkcompatibility', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -66,22 +85,26 @@ class EditRecipe extends Component {
         cluster_version: this.state.cluster_version,
         service_description: this.state.service_description
       })
-    }).then(response => response.json())
-    .then(data => {
-      
-       if(data.serviceid) {
+    })
 
-        this.setState({ serviceid: data.serviceid,
+
+    const respCheck = await checkcompatibility.json()
+
+      
+       if(respCheck.serviceid) {
+
+        this.setState({ serviceid: respCheck.serviceid,
           confirm: !this.state.confirm});
        } else {
         this.setState({ modal: !this.state.modal});
        }
-    })
-    .catch(err => console.error(this.props.url, err.toString()) )
+
   }
 
-  insertRecipe = (e) => {
-    fetch('http://localhost:4000/api/recipes/update_recipe', {
+  insertRecipe = async event => {
+
+
+    const updRecipe = await fetch('http://localhost:4000/api/recipes/update_recipe', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -103,9 +126,79 @@ class EditRecipe extends Component {
         mandatory: this.state.mandatory,
         display: this.state.display
       })
-    }).then(response => response.json()).then(
+    })
+    const respUpd = updRecipe.json()
+    
+    const deleteRecipeNodes = await fetch('http://localhost:4000/api/recipes/delete/nodes/' + this.state.recipeid)
+    const respDeleteRecipeNodes = await deleteRecipeNodes.json()
+
+    if(this.state.appliesToMaster){
+      const insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipe_id: this.state.recipeid,
+          node_type: 'MASTER'
+        })
+      })
+      const respNode = await insertNode.json()
+    }
+
+    if(this.state.appliesToWorker){
+      const insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipe_id: this.state.recipeid,
+          node_type: 'WORKER'
+        })
+      })
+      const respNode = await insertNode.json()
+    }
+
+    if(this.state.appliesToCompute){
+      const insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipe_id: this.state.recipeid,
+          node_type: 'COMPUTE'
+        })
+      })
+      const respNode = await insertNode.json()
+    }
+
+    if(this.state.appliesToCDSW){
+      var insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipe_id: this.state.recipeid,
+          node_type: 'CDSW'
+        })
+      })
+      var respNode = await insertNode.json()
+    }
+
+    
+
+
+
+
     this.setState({ confirm: !this.state.confirm,
-      confirmed: !this.state.confirmed}));
+      confirmed: !this.state.confirmed})
   }
 
 
@@ -133,6 +226,22 @@ class EditRecipe extends Component {
 
   handleClusterVersionChange = (e) => {
     this.setState({ cluster_version: e.target.value });
+  }
+
+  handleMasterNodeChange = (e) => {
+    this.setState({ appliesToMaster: !this.state.appliesToMaster });
+  }
+
+  handleWorkerNodeChange = (e) => {
+    this.setState({ appliesToWorker: !this.state.appliesToWorker });
+  }
+
+  handleComputeNodeChange = (e) => {
+    this.setState({ appliesToCompute: !this.state.appliesToCompute });
+  }
+
+  handleCDSWNodeChange = (e) => {
+    this.setState({ appliesToCDSW: !this.state.appliesToCDSW });
   }
 
 
@@ -184,6 +293,20 @@ class EditRecipe extends Component {
       })
       .catch(err => console.error(this.props.url, err.toString()))
   }
+  loadRecipeNodes() {
+    fetch('http://localhost:4000/api/recipes/nodes/'+this.props.match.params.id)
+      .then(response => response.json())
+      .then(data => {
+          if(this.containsNode(data, "MASTER")) this.setState({ appliesToMaster: true });
+          if(this.containsNode(data, "WORKER")) this.setState({ appliesToWorker: true });
+          if(this.containsNode(data, "COMPUTE")) this.setState({ appliesToCompute: true });
+          if(this.containsNode(data, "CDSW")) this.setState({ appliesToCDSW: true });
+      
+        
+      })
+      .catch(err => console.error(this.props.url, err.toString()))
+  }
+
 
   toggle(tabPane, tab) {
     const newArray = this.state.activeTab.slice()
@@ -199,6 +322,7 @@ class EditRecipe extends Component {
     this.loadDistinctClusters()
     this.loadDistinctVersions()
     this.loadRecipeData()
+    this.loadRecipeNodes()
   }
 
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
@@ -207,7 +331,7 @@ class EditRecipe extends Component {
     const serviceList = this.state.distinctServices.filter((service) => ((service.service_description)))
     const clusterList = this.state.distinctClusters.filter((cluster) => ((cluster.cluster_type)))
     const versionList = this.state.distinctVersions.filter((version) => ((version.version)))
-
+    const nodeList = this.state.recipeNodesData.filter((node) => (node.recipe_id.toString() === this.props.match.params.id))
 
     return (
 
@@ -395,7 +519,29 @@ class EditRecipe extends Component {
                         </InputGroup>
                       </Col>
                     </FormGroup>
-
+                    <FormGroup row>
+                    <Col md="3">
+                      <Label>Applies to Nodes</Label>
+                    </Col>
+                    <Col md="9">
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox1" name="inline-checkbox1" value="Master"  checked={this.state.appliesToMaster} onClick={this.handleMasterNodeChange.bind(this)}/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox1">Master</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox2" name="inline-checkbox2" value="Worker"  checked={this.state.appliesToWorker} onClick={this.handleWorkerNodeChange.bind(this)}/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox2">Worker</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox3" name="inline-checkbox3" value="Compute"  checked={this.state.appliesToCompute} onClick={this.handleComputeNodeChange.bind(this)}/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox3">Compute</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox3" name="inline-checkbox3" value="CDSW"  checked={this.state.appliesToCDSW} onClick={this.handleCDSWNodeChange.bind(this)}/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox3">CDSW</Label>
+                      </FormGroup>
+                    </Col>
+                  </FormGroup>
                     <FormGroup row>
                       <Col md="3">
                         <Label htmlFor="content">Recipe Content</Label>
