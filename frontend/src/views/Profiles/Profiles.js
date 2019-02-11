@@ -46,7 +46,7 @@ class Profiles extends Component {
       <div className="animated fadeIn">
       <Row>
                     <Col>
-                        <h1>Cuisine Profiles</h1>
+                        <h1>Profiles</h1>
                         </Col>
                         <Col align="right" > 
                         <div >

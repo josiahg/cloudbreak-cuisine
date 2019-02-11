@@ -40,7 +40,7 @@ componentDidMount() {
       <div className="animated fadeIn">
       <Row>
                     <Col>
-                        <h1>Cuisine Users</h1>
+                        <h1>Users</h1>
                         </Col>
                         <Col align="right" > 
                         <div >

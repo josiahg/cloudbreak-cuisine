@@ -27,7 +27,7 @@ class WelcomeScreen extends Component{
           </CardHeader>
           <CardBody >
             <div className="chart-wrapper" align="left">
-            <p>Creating a combination of Cloudbreak blueprints and recipes is easy with Cloudbreak Cuisine.</p>
+            <p>Creating a combination of Cloudbreak blueprints and recipes is easy with Whoville UI.</p>
                     <p>Follow these five simple steps:</p>
                     <ListGroup>
                    

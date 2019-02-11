@@ -49,7 +49,7 @@ class Library extends Component {
       <div className="animated fadeIn">
       <Row>
           <Col>
-          <h1>Cuisine Library</h1>
+          <h1>Local Library</h1>
           </Col>
                           <Col align="right" > 
                           <div >
