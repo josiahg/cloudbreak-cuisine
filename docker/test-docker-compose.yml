@@ -35,5 +35,6 @@ services:
     image: 'chaffelson/whoville:latest'
     volumes:
       - ${PROFILE}:/profile.yml:ro
+      - ${SSHKEY}:${SSHKEY}:ro
     ports:
       - 5000:5000
