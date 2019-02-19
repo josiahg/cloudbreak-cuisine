@@ -15,9 +15,10 @@ Cloudbreak Cuisine is a React application allowing easier use of Hortonworks Clo
 ### Pre-requisites
 
 * Docker
-* npm (can be installed via homebrew)
 
 Important: For whoville, follow the setup instructions [here](https://github.com/Chaffelson/whoville).
+
+You must have an SSHKEY environment variable containing the path to your private key `key_name.pem`.
 
 You must have a PROFILE environment variable containing the path to your whoville `profile.yml`.
 
@@ -39,7 +40,6 @@ The following will download all dependencies using NPM, and start the various co
 
 ```
 cd cloudbreak-cuisine/
-chmod +x start.sh
 ./start.sh
 ```
 
