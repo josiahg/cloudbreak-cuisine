@@ -10,6 +10,16 @@ then
     exit 1;
 fi
 
+# Ensure that $SSHKEY has been set
+if [ -z $SSHKEY ]
+then
+    echo "ERROR: Please set SSHKEY environment variable."
+    echo "NOTE: SSHKEY should point to the .pem file you intend to use with your cluster"
+    echo ""
+    echo "EXITING"
+    exit 1;
+fi
+
 # Ensure we cleanly exited last time
 docker-compose -f docker/dev-docker-compose.yml down
 docker-compose -f docker/test-docker-compose.yml down
