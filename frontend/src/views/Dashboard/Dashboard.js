@@ -154,7 +154,7 @@ function DirectorProgressValue(dashboardItem) {
 
   var remainingSteps = dashboardItem[1].remainingSteps;
   var completedSteps = dashboardItem[1].completedSteps;
-  var value = (remainingSteps / completedSteps)*100;
+  var value = (completedSteps / (completedSteps+remainingSteps))*100;
 
 
   return (
