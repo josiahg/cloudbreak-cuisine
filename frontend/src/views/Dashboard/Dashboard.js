@@ -475,7 +475,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
                 <i className='fa fa-external-link'></i>&nbsp;Cloudbreak
                               </Button>
                               &nbsp;
-                              <Button size="lg" color="success" href={"https://" + this.state.cbUrl +":7189/detail/environment.html?environment=pvi-whoville"} target="_blank">
+                              <Button size="lg" color="success" href={"https://" + this.state.cbUrl +":7189/"} target="_blank">
                 <i className='fa fa-external-link'></i>&nbsp;Director
                               </Button>
             </div>
