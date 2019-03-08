@@ -9,6 +9,7 @@ const Whoville = React.lazy(() => import('./views/Whoville/Whoville'));
 const WhovilleItem = React.lazy(() => import('./views/Whoville/WhovilleItem'));
 
 const Generator = React.lazy(() => import('./views/Generator/Generator'));
+const ProfileGenerator = React.lazy(() => import('./views/ProfileGenerator/ProfileGenerator'));
 
 const Dashboard = React.lazy(() => import('./views/Dashboard'));
 const Users = React.lazy(() => import('./views/Users/Users'));
@@ -33,6 +34,7 @@ const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/generator', name: 'Generator', component: Generator },
+  { path: '/profile/generator', name: 'ProfileGenerator', component: ProfileGenerator },
   { path: '/recipes', exact: true,  name: 'Recipes', component: Recipes },
   { path: '/addrecipe', exact: true,  name: 'Add Recipe', component: AddRecipe },
   { path: '/recipes/:id', exact: true, name: 'Recipe', component: Recipe },

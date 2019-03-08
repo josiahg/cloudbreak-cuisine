@@ -13,6 +13,31 @@ import {
   Row, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 
+
+function DirectorProgressClassName(state) {
+  var class_name = "progress-xs my-3 bg-info"
+
+
+
+  if ((state.toString() === "READY")){
+    class_name = "progress-xs my-3 bg-light-gray"
+  } else if ((state.toString() === "BOOTSTRAPPING") || (state.toString() === "UPDATING")) {
+    class_name = "progress-xs my-3 bg-light-blue"
+  } else if ((state.toString() === "BOOTSTRAP_FAILED") || (state.toString() === "UPDATE_FAILED") || (state.toString() === "TERMINATE_FAILED") ) {
+    class_name = "progress-xs my-3 bg-red"
+  } else if ((state.toString() === "UNKNOWN") || (state.toString() === "TERMINATED")) {
+    class_name = "progress-xs my-3 bg-light-gray"
+  } else if ((state.toString() === "TERMINATING")) {
+    class_name = "progress-xs my-3 bg-yellow"
+  }
+
+
+  return (
+    class_name
+  )
+}
+
+
 function ProgressClassName(state) {
   var class_name = "progress-xs my-3 bg-info"
 
@@ -31,6 +56,30 @@ function ProgressClassName(state) {
     class_name
   )
 }
+
+function DirectorDashboardClassName(state) {
+  var class_name = "text-white bg-primary border-primary"
+
+
+  if ((state.toString() === "READY")){
+    class_name = "text-white bg-success border-success"
+  } else if ((state.toString() === "BOOTSTRAPPING") || (state.toString() === "UPDATING")) {
+    class_name = "text-white bg-blue border-blue"
+  } else if ((state.toString() === "BOOTSTRAP_FAILED") || (state.toString() === "UPDATE_FAILED") || (state.toString() === "TERMINATE_FAILED") ) {
+    //const date = dashboardItem.fail_date
+    class_name = "text-white bg-danger border-danger"
+  } else if ((state.toString() === "UNKNOWN") || (state.toString() === "TERMINATED")) {
+    class_name = "text-white bg-secondary border-secondary"
+  } else if ((state.toString() === "TERMINATING")) {
+    class_name = "text-white bg-warning border-warning"
+  }
+
+  return (
+    class_name
+  )
+}
+
+
 function DashboardClassName(state) {
   var class_name = "text-white bg-primary border-primary"
 
@@ -50,12 +99,32 @@ function DashboardClassName(state) {
   )
 }
 
-/*function LibraryLink(bundle_id) {
-  var link = '#/library/' + bundle_id
+function DirectorDashboardItemText(props) {
+  const dashboardItem = props.dashboardItem
+  var state = dashboardItem[1].stage;
+
+  var widget_text = "Director | No Creation Info"
+
+  if ((state.toString() === "READY")){
+    widget_text = "Director | Status: " + state;
+  } else if ((state.toString() === "BOOTSTRAPPING") || (state.toString() === "UPDATING")) {
+    widget_text = "Director | Status: " + state;
+  } else if ((state.toString() === "BOOTSTRAP_FAILED") || (state.toString() === "UPDATE_FAILED") || (state.toString() === "TERMINATE_FAILED") ) {
+    //const date = dashboardItem.fail_date
+    widget_text = "Director | Status: " + state;
+  } else if ((state.toString() === "UNKNOWN")  || (state.toString() === "TERMINATED")) {
+    widget_text = "Director | Status: " + state;
+  } else if ((state.toString() === "TERMINATING")) {
+    widget_text = "Director | Status: " + state;
+  }
+
   return (
-    link
+
+    <div>{widget_text.toString()}</div>
+
   )
-}*/
+}
+
 
 function DashboardItemText(props) {
   const dashboardItem = props.dashboardItem
@@ -67,18 +136,29 @@ function DashboardItemText(props) {
   var widget_text = "No creation info"
 
   if (state.toString() === "AVAILABLE") {
-    widget_text = "Status: " + state;
+    widget_text = "Cloudbreak | Status: " + state;
   } else if ((state.toString() === "UPDATE_IN_PROGRESS") || (state.toString() === "CREATE_IN_PROGRESS") || (state.toString() === "START_IN_PROGRESS") || (state.toString() === "DELETE_IN_PROGRESS") || (state.toString() === "REQUESTED" )) {
-    widget_text = "Status: " + state;
+    widget_text = "Cloudbreak | Status: " + state;
   } else if ((state.toString() === "CREATE_FAILED") || (state.toString() === "UPDATE_FAILED")) {
     //const date = dashboardItem.fail_date
-    widget_text = "Status: " + state;
+    widget_text = "Cloudbreak | Status: " + state;
   }
 
   return (
 
     <div>{widget_text.toString()}</div>
 
+  )
+}
+function DirectorProgressValue(dashboardItem) {
+
+  var remainingSteps = dashboardItem[1].remainingSteps;
+  var completedSteps = dashboardItem[1].completedSteps;
+  var value = (remainingSteps / completedSteps)*100;
+
+
+  return (
+    value
   )
 }
 
@@ -108,16 +188,64 @@ class Dashboard extends Component {
     this.toggleModal = this.toggleModal.bind(this);
     this.state = {
       cbUrl: '',
+      namespace: '',
       dropdownOpen: false,
       radioSelected: 2,
       token: '',
       clusterData: [],
       loading: true,
       modal: false,
-      deletion: false
+      deletion: false,
+      directorClusterData: []
     };
   }
 
+
+  directorDeleteStack = async event => {
+
+    var environment = this.state.namespace + "whoville";
+    var deployment = event.target.id;
+    var cluster = event.target.name;
+
+    this.setState({['modal'+cluster]: !this.state['modal'+cluster],
+                  ['modaldelete'+cluster]: !this.state['modaldelete'+cluster],
+                  ['dirRefPostDelete'+cluster]: true})
+
+
+    // First, we get a cookie
+    const initDirectorSession = await fetch('http://localhost:4000/api/director/login', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: this.state.default_user,
+        password: this.state.default_pwd,
+        di_url: this.state.cbUrl
+      })
+    })
+    const directorCookie = await initDirectorSession.json()
+  
+
+     // Then we send a delete
+     const sendDelete = await fetch('http://localhost:4000/api/director/delete/cluster', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        environment: environment,
+        deployment: deployment,
+        cluster: cluster,
+        di_url: this.state.cbUrl,
+        cookie: directorCookie.toString()
+      })
+    })
+    const deleteExecuted = await sendDelete.json()
+    this.setState({['dirRefPostDelete'+cluster]: false})
+  }
   
   deleteStack = (e) => {
     this.setState({['modal'+e.target.name]: !this.state['modal'+e.target.name],
@@ -133,7 +261,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
 
   goToBundle = (e) => {
     var nameArray = e.target.id.split("-")
-    //for (i )
+    
     fetch('http://localhost:4000/api/dashboard/getbundleid', {
       method: 'POST',
       headers: {
@@ -151,70 +279,27 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
       .catch(err => console.error(this.props.url, err.toString()))
   }
 
-  getClusterData() {
-    fetch('http://localhost:4000/api/profiles/whoville')
-      .then(response => response.json())
-      .then(profileData => {
-        fetch('http://localhost:4000/api/dashboard/gettoken', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user: profileData[0].default_email.toString(),
-            password: profileData[0].default_pwd.toString(),
-            cb_url: profileData[0].cb_url.toString()
-          })
-        })
-          .then(response => response.json())
-          .then(data => {
-            fetch('http://localhost:4000/api/dashboard/getclusters', {
-              method: 'POST',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                token: data,
-                cb_url: profileData[0].cb_url.toString()
-              })
-            })
-              .then(response => response.json())
-              .then(data => {
-                this.setState({ clusterData: data })
-              })
-              .catch(err => console.error(this.props.url, err.toString()))
-          })
-          .catch(err => console.error(this.props.url, err.toString()))
-      })
-      .catch(err => console.error(this.props.url, err.toString()))
-  }
-
-  initData() {
-    fetch('http://localhost:4000/api/whoville/refresh')
-      .then(response => response.json())
-      .catch(err => console.error(this.props.url, err.toString()))
-  }
-
-  initProfileData() {
-    fetch('http://localhost:4000/api/whoville/refreshprofile')
-      .then(response => response.json())
-      .catch(err => console.error(this.props.url, err.toString()))
-  }
+ 
 
   async componentDidMount(){
+
+    
+    // 1. Refresh whoville
     const initWhoville = await fetch('http://localhost:4000/api/whoville/refresh')
     const resWhoville = await initWhoville.json()
+    
     const initProfile = await fetch('http://localhost:4000/api/whoville/refreshprofile')
     const resProfile = await initProfile.json()
     
    if(!(resProfile.toString() === "refresh successful")) {
     alert('Couldn\'t refresh whoville profile! Verify that whoville is up and running.')
    } else {
+
+    
     const initWhovilleProfile = await fetch('http://localhost:4000/api/profiles/whoville');
     const whovilleProfile = await initWhovilleProfile.json()
-
+    
+    // 2. Get Cloudbreak data
     const initCBToken = await fetch('http://localhost:4000/api/dashboard/gettoken', {
       method: 'POST',
       headers: {
@@ -242,45 +327,103 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
       })
     })
     const fetchedClusterData = await initClusterData.json()
-    this.setState({ clusterData: fetchedClusterData, loading: false})
-  }
-    // fetch('http://localhost:4000/api/profiles/whoville')
-    // .then(response => response.json())
-    // .then(profileData => {
-    //   fetch('http://localhost:4000/api/dashboard/gettoken', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Accept': 'application/json',
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //       user: profileData[0].default_email.toString(),
-    //       password: profileData[0].default_pwd.toString(),
-    //       cb_url: profileData[0].cb_url.toString()
-    //     })
-    //   })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //       fetch('http://localhost:4000/api/dashboard/getclusters', {
-    //         method: 'POST',
-    //         headers: {
-    //           'Accept': 'application/json',
-    //           'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //           token: data,
-    //           cb_url: profileData[0].cb_url.toString()
-    //         })
-    //       })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //           this.setState({ clusterData: data })
-    //         })
-    //     })
-    // }).then( this.setState({loading: false}))
-    // .catch(err => console.error(this.props.url, err.toString()))
-    //const initCbData = await cbData.json()
+    this.setState({ clusterData: fetchedClusterData, default_email: whovilleProfile[0].default_email.toString(), default_user: whovilleProfile[0].default_user.toString(), default_pwd: whovilleProfile[0].default_pwd.toString()})
+
+    // 3. Get Director data
+    
+    const initDirectorSession = await fetch('http://localhost:4000/api/director/login', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: whovilleProfile[0].default_user.toString(),
+        password: whovilleProfile[0].default_pwd.toString(),
+        di_url: whovilleProfile[0].cb_url.toString()
+      })
+    })
+    const directorCookie = await initDirectorSession.json()
    
+    // 3.1. Get all deployments
+    const getDeployments = await fetch('http://localhost:4000/api/director/list/deployments', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        environment: whovilleProfile[0].namespace.toString() + "whoville",
+        di_url: whovilleProfile[0].cb_url.toString(),
+        cookie: directorCookie.toString()
+      })
+    })
+    const directorDeployments = await getDeployments.json()
+    
+    var fetchedDirectorClusterData = []
+    // 3.2. Loop through deployments
+    for (var i in directorDeployments) {
+
+
+      // Get deployment details
+      var getDeploymentDetails= await fetch('http://localhost:4000/api/director/deployment/details', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          environment: whovilleProfile[0].namespace.toString() + "whoville",
+          deployment: directorDeployments[i],
+          di_url: whovilleProfile[0].cb_url.toString(),
+          cookie: directorCookie.toString()
+        })
+      })
+      var deploymentDetails = await getDeploymentDetails.json()
+
+      // Get all clusters
+      var getClusters = await fetch('http://localhost:4000/api/director/list/clusters', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          environment: whovilleProfile[0].namespace.toString() + "whoville",
+          deployment: directorDeployments[i],
+          di_url: whovilleProfile[0].cb_url.toString(),
+          cookie: directorCookie.toString()
+        })
+      })
+      var directorClusters = await getClusters.json()
+
+      // 3.3. Loop through clusters
+      for (var j in directorClusters) {
+        var getClusterDetails = await fetch('http://localhost:4000/api/director/cluster/status', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            environment: whovilleProfile[0].namespace.toString() + "whoville",
+            deployment: directorDeployments[i],
+            cluster: directorClusters[j],
+            di_url: whovilleProfile[0].cb_url.toString(),
+            cookie: directorCookie.toString()
+          })
+        })
+        var directorClustersDetails= await getClusterDetails.json()
+        fetchedDirectorClusterData.push([deploymentDetails,directorClustersDetails,{"clusterName": directorClusters[j]}])
+      }
+    }
+    
+    this.setState({ directorClusterData: fetchedDirectorClusterData, namespace: whovilleProfile[0].namespace.toString(), loading: false})
+    
+  }
+  
+
+  
   
     
   }
@@ -308,8 +451,8 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
   }
   render() {
     const isLoading = this.state.loading;
-    //const dashboardItemList = dashboardData.filter((dashboardItem) => dashboardItem.id)
     const bundleList = this.state.clusterData.filter((bundle) => bundle.name);
+    
 
     return (
       <div >
@@ -330,6 +473,10 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
                               &nbsp;
               <Button size="lg" color="success" href={"https://" + this.state.cbUrl +"/sl"} target="_blank">
                 <i className='fa fa-external-link'></i>&nbsp;Cloudbreak
+                              </Button>
+                              &nbsp;
+                              <Button size="lg" color="success" href={"https://" + this.state.cbUrl +":7189/detail/environment.html?environment=pvi-whoville"} target="_blank">
+                <i className='fa fa-external-link'></i>&nbsp;Director
                               </Button>
             </div>
           </Col>
@@ -398,7 +545,59 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
           )}
 
 
+          {this.state.directorClusterData.map((dashboardItem, index) => {
+              var theStatus = dashboardItem[1].stage;
 
+             return  <Col xs="12" sm="6" lg="3">
+              <Card className={DirectorDashboardClassName(theStatus)}>
+                <CardBody className="pb-0">
+                  <ButtonGroup className="float-right">
+                    <Dropdown id={dashboardItem[2].clusterName} isOpen={this.state[dashboardItem[2].clusterName]} toggle={() => { this.setState({ [dashboardItem[2].clusterName]: !this.state[dashboardItem[2].clusterName] }); }} >
+                      <DropdownToggle caret className="p-0" color="transparent">
+                        <i className="icon-settings"></i>
+                      </DropdownToggle>
+                      <DropdownMenu right>
+                        {/* <DropdownItem><i className="icon-eyeglass"></i>&nbsp;Details</DropdownItem> */}
+                        <DropdownItem id={dashboardItem[2].clusterName} onClick={this.goToBundle.bind(this)}><i className="fa fa-building-o"></i>&nbsp;Whoville Bundle</DropdownItem>
+                        <DropdownItem href={'https://' + dashboardItem[0].managerInstance.properties.publicIpAddress + ':7183'} target="_blank"><i className="fa fa-external-link"></i>&nbsp;Go to Manager</DropdownItem>
+                        <DropdownItem name={dashboardItem[2].clusterName} id={theStatus} onClick={() => { this.setState({ ['modal'+dashboardItem[2].clusterName]: !this.state['modal'+dashboardItem[2].clusterName] }); }}><i className="fa fa-remove"></i>&nbsp;Terminate</DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
+                  </ButtonGroup>
+                  <div className="text-value">{dashboardItem[2].clusterName}</div>
+                  <DirectorDashboardItemText key={index} dashboardItem={dashboardItem} />
+                  <Modal isOpen={this.state['modaldelete'+dashboardItem[2].clusterName]}
+                       className={'modal-danger' + this.props.className}>
+                   <ModalBody>
+                  <h3>Sending delete... <i className='fa fa-spinner fa-spin'></i></h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color="primary" onClick={this.refreshPage.bind(this)} disabled={this.state['dirRefPostDelete'+dashboardItem[2].clusterName]}>Refresh Dashboard <i className="fa fa-long-arrow-right"></i></Button>
+                  </ModalFooter>
+                </Modal>
+
+                  <Modal isOpen={this.state['modal'+dashboardItem[2].clusterName]} toggle={() => { this.setState({ ['modal'+dashboardItem[2].clusterName]: !this.state['modal'+dashboardItem[2].clusterName] }); }}
+                       className={'modal-'+((theStatus.toString() === 'READY' || theStatus.toString() === 'BOOTSTRAP_FAILED') ? 'danger ' : 'warning ')+' ' + this.props.className}>
+                  <ModalHeader toggle={() => { this.setState({ ['modal'+dashboardItem[2].clusterName]: !this.state['modal'+dashboardItem[2].clusterName] }); }}>Deleting Stack</ModalHeader>
+                  <ModalBody>
+                  <h3>{(theStatus.toString() === 'READY' || theStatus.toString() === 'BOOTSTRAP_FAILED')  ? 'Are you sure you want to terminate this stack?' : "You can only delete stacks when they are in status READY or BOOTSTRAP_FAILED"} </h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='secondary' onClick={() => { this.setState({ ['modal'+dashboardItem[2].clusterName]: !this.state['modal'+dashboardItem[2].clusterName] }); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
+                    <Button name={dashboardItem[2].clusterName}  id={dashboardItem[0].name} color={(theStatus.toString() === 'READY' || theStatus.toString() === 'BOOTSTRAP_FAILED') ? 'danger' : 'warning'} onClick={this.directorDeleteStack.bind(this)} disabled={!(theStatus.toString() === 'READY' || theStatus.toString() === 'BOOTSTRAP_FAILED') }><i className="fa fa-remove"></i>&nbsp; Terminate Stack</Button>
+                  </ModalFooter>
+                </Modal>
+
+
+                </CardBody>
+                <div className="chart-wrapper" style={{ height: '20px', margin: '20px' }}>
+                  <Progress className={DirectorProgressClassName(theStatus)} color='white' value={DirectorProgressValue(dashboardItem)} />
+                </div>
+              </Card>
+            </Col>
+
+          }
+          )}  
 
           {/* {dashboardItemList.map((dashboardItem, index) =>
                <Col xs="12" sm="6" lg="3">

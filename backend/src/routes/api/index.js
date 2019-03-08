@@ -11,5 +11,6 @@ router.use('/dashboard', require('./dashboard'));
 router.use('/components', require('./components'));
 router.use('/generator', require('./generator'));
 router.use('/cloudbreak', require('./cloudbreak'));
+router.use('/director', require('./director'));
 
 module.exports = router;
