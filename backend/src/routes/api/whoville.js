@@ -175,79 +175,85 @@ router.route('/refresh').get((req, res) => {
 
 router.route('/refreshProfile').get((req, res) => {
     request('http://whoville:5000/api/whoville/v1/getProfile', function (error, response, body) {
-        if(body){
+        if(response.statusCode.toString() === "200"){
             var message = JSON.parse(body);
             var whoville_profile_id = 1;
-    request('http://whoville:5000/api/whoville/v1/getCB', function (error2, response2, body2) {
-        if(body2){
-            // Profile Overview
+                request('http://whoville:5000/api/whoville/v1/getCB', function (error2, response2, body2) {
+                  
+                    if(response2.statusCode.toString() === "200"){
+                        // Profile Overview
+                
+                    var profile_id = 1;
+                    var namespace = message.namespace;
+                    var user_mode = message.user_mode;
+                        var  cb_url = JSON.parse(body2)[0];
+                            
+                            var default_user = message.username;
+                            var default_email = message.email;
+                            var default_pwd = message.password;
+                        
+                            db.none('insert into cloudbreak_cuisine.whoville_profile (id, profile_id, namespace, user_mode, cb_url, default_user, default_email, default_pwd) '+
+                                    'values($1,$2,$3,$4,$5,$6,$7,$8) on conflict(id) DO UPDATE '+
+                                    'set id=$1, profile_id=$2, namespace=$3, user_mode=$4, cb_url=$5, default_user=$6, default_email=$7, default_pwd=$8', 
+                                    [whoville_profile_id, profile_id, namespace, user_mode, cb_url, default_user, default_email, default_pwd])
+                            .then(() => {
+
+                                // Profile Tags
+                    var tagTable = message['tags'];
+                    var tag_id = 1;
+                    for(var key in tagTable){
+                        db.none('insert into cloudbreak_cuisine.whoville_profile_tags (id, whoville_profile_id, tag_name, tag_value) '+
+                            'values($1,$2,$3,$4) on conflict(id) DO UPDATE '+
+                            'set id=$1, whoville_profile_id=$2, tag_name=$3, tag_value=$4', 
+                            [tag_id, whoville_profile_id, key, tagTable[key]])
+                        .then(() => {
+                        
+                        })
+                        .catch(error => {
+                            console.log("DB Error: ", error);
+                        });
+                        tag_id++;
+                        }
     
-    var profile_id = 1;
-    var namespace = message.namespace;
-    var user_mode = message.user_mode;
-          var  cb_url = JSON.parse(body2)[0];
-            
-            var default_user = message.username;
-            var default_email = message.email;
-            var default_pwd = message.password;
-        
-            db.none('insert into cloudbreak_cuisine.whoville_profile (id, profile_id, namespace, user_mode, cb_url, default_user, default_email, default_pwd) '+
-                    'values($1,$2,$3,$4,$5,$6,$7,$8) on conflict(id) DO UPDATE '+
-                    'set id=$1, profile_id=$2, namespace=$3, user_mode=$4, cb_url=$5, default_user=$6, default_email=$7, default_pwd=$8', 
-                    [whoville_profile_id, profile_id, namespace, user_mode, cb_url, default_user, default_email, default_pwd])
+        // Profile credentials
+        var credential_id = 1;
+        var type = 'aws';
+        var type_img = '../../assets/img/cuisine/aws.png';
+        var provider = message['platform'].provider;
+        var region = message['platform'].region;
+        var bucket = message.bucket;
+        var bucketrole = message.bucketrole;
+    
+    
+            db.none('insert into cloudbreak_cuisine.whoville_profile_credentials (id, whoville_profile_id, type, type_img, provider, region, bucket, bucket_role) '+
+                'values($1,$2,$3,$4,$5,$6,$7,$8) on conflict(id) DO UPDATE '+
+                'set id=$1, whoville_profile_id=$2, type=$3, type_img=$4, provider=$5, region=$6, bucket=$7, bucket_role=$8', 
+                [credential_id, whoville_profile_id, type, type_img, provider, region, bucket, bucketrole])
             .then(() => {
-                // success;
+                res.json("refresh successful");
             })
             .catch(error => {
                 console.log("DB Error: ", error);
             });
-        }
-    });
+                                    
+                            })
+                            .catch(error => {
+                                console.log("DB Error: ", error);
+                            });
+
+                
+                        } else {
+
+                        res.json("no CB data!");
+                    }});
     
-
-    // Profile Tags
-    var tagTable = message['tags'];
-    var tag_id = 1;
-    for(var key in tagTable){
-        db.none('insert into cloudbreak_cuisine.whoville_profile_tags (id, whoville_profile_id, tag_name, tag_value) '+
-            'values($1,$2,$3,$4) on conflict(id) DO UPDATE '+
-            'set id=$1, whoville_profile_id=$2, tag_name=$3, tag_value=$4', 
-            [tag_id, whoville_profile_id, key, tagTable[key]])
-        .then(() => {
-            // success;
-        })
-        .catch(error => {
-            console.log("DB Error: ", error);
-        });
-        tag_id++;
-    }
-
-
-    // Profile credentials
-    var credential_id = 1;
-    var type = 'aws';
-    var type_img = '../../assets/img/cuisine/aws.png';
-    var provider = message['platform'].provider;
-    var region = message['platform'].region;
-    var bucket = message.bucket;
-    var bucketrole = message.bucketrole;
-
-
-        db.none('insert into cloudbreak_cuisine.whoville_profile_credentials (id, whoville_profile_id, type, type_img, provider, region, bucket, bucket_role) '+
-            'values($1,$2,$3,$4,$5,$6,$7,$8) on conflict(id) DO UPDATE '+
-            'set id=$1, whoville_profile_id=$2, type=$3, type_img=$4, provider=$5, region=$6, bucket=$7, bucket_role=$8', 
-            [credential_id, whoville_profile_id, type, type_img, provider, region, bucket, bucketrole])
-        .then(() => {
-            // success;
-        })
-        .catch(error => {
-            console.log("DB Error: ", error);
-        });
-  
-        res.json("refresh successful");
+    
+                    
+    
+   
     }else {
 
-        res.json("no data");
+        res.json("no profile data!");
     }
 
       });

@@ -196,7 +196,10 @@ class Dashboard extends Component {
       loading: true,
       modal: false,
       deletion: false,
-      directorClusterData: []
+      directorClusterData: [],
+      errorLoading: false,
+      profileError: false,
+      cbError: false
     };
   }
 
@@ -292,7 +295,16 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
     const resProfile = await initProfile.json()
     
    if(!(resProfile.toString() === "refresh successful")) {
-    alert('Couldn\'t refresh whoville profile! Verify that whoville is up and running.')
+    this.setState({ errorLoading: true})
+
+    if(resProfile.toString() === "no profile data!") {
+      this.setState({ profileError: true})
+    } else if(resProfile.toString() === "no CB data!") {
+      this.setState({ cbError: true})
+    }
+
+    this.setState({ loading: false})
+
    } else {
 
     
@@ -453,7 +465,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
     const isLoading = this.state.loading;
     const bundleList = this.state.clusterData.filter((bundle) => bundle.name);
     
-
+    if(!this.state.errorLoading) {
     return (
       <div >
         <Row>
@@ -630,7 +642,46 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
         </Row>
 
       </div>
-    );
+    )} else {
+      if(this.state.profileError) {
+
+        return <Row>
+                  <Col>
+                  <div className="chart-wrapper" align="center">
+                      <img alt='' src='../../assets/img/cuisine/debugging.png' height="350" width="350"/>
+                      <p>&nbsp;</p>
+                      <h2>Whoville profile unavailable. Please check that whoville is up.</h2>
+                      <Button size="lg" color="danger" onClick={this.refreshPage.bind(this)} ><i className='fa fa-refresh'></i>&nbsp;Refresh</Button>
+                      </div>
+                  </Col>
+              </Row>
+      } else if(this.state.cbError){
+        return <Row>
+                  <Col>
+                  <div className="chart-wrapper" align="center">
+                      <img alt='' src='../../assets/img/cuisine/broken-link.png' height="350" width="350"/>
+                      <p>&nbsp;</p>
+                      <h2>Cloudbreak instance unavailable. Deploy a demo first.</h2>
+                      <Button size="lg" color="warning" href="#/whoville">Deploy a demo <i className="fa fa-long-arrow-right"></i></Button>
+                      </div>
+                  </Col>
+              </Row>
+      } else {
+        return <Row>
+                  <Col>
+                  <div className="chart-wrapper" align="center">
+                      <img alt='' src='../../assets/img/cuisine/debugging.png' height="350" width="350"/>
+                      <p>&nbsp;</p>
+                      <h2>Something is up. Please check your containers.</h2>
+                      <Button size="lg" color="danger" onClick={this.refreshPage.bind(this)} ><i className='fa fa-refresh'></i>&nbsp;Refresh</Button>
+                      </div>
+                  </Col>
+              </Row>
+      }
+      
+    }
+    
+    ;
   }
 
 }
