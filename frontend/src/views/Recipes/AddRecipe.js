@@ -13,6 +13,8 @@ import {
 import recipesData from './RecipesData'
 import servicesListData from './ServicesListData'
 
+var hn = window.location.hostname
+
 class AddRecipe extends Component {
   constructor(props) {
     super(props);
@@ -49,7 +51,7 @@ class AddRecipe extends Component {
 
   saveRecipe = async event => {
 
-    const checkcompatibility = await fetch('http://localhost:4000/api/recipes/checkcompatibility', {
+    const checkcompatibility = await fetch('http://' + hn + ':4000/api/recipes/checkcompatibility', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -80,7 +82,7 @@ class AddRecipe extends Component {
   insertRecipe = async event => {
 
 
-    const updRecipe = await fetch('http://localhost:4000/api/recipes/insert_recipe', {
+    const updRecipe = await fetch('http://' + hn + ':4000/api/recipes/insert_recipe', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -107,7 +109,7 @@ class AddRecipe extends Component {
 
 
     if(this.state.appliesToMaster){
-      const insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+      const insertNode = await fetch('http://' + hn + ':4000/api/recipes/insert_recipe/nodes', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -122,7 +124,7 @@ class AddRecipe extends Component {
     }
 
     if(this.state.appliesToWorker){
-      const insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+      const insertNode = await fetch('http://' + hn + ':4000/api/recipes/insert_recipe/nodes', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -137,7 +139,7 @@ class AddRecipe extends Component {
     }
 
     if(this.state.appliesToCompute){
-      const insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+      const insertNode = await fetch('http://' + hn + ':4000/api/recipes/insert_recipe/nodes', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -152,7 +154,7 @@ class AddRecipe extends Component {
     }
 
     if(this.state.appliesToCDSW){
-      var insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+      var insertNode = await fetch('http://' + hn + ':4000/api/recipes/insert_recipe/nodes', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -219,7 +221,7 @@ class AddRecipe extends Component {
   }
 
   loadIdData() {
-    fetch('http://localhost:4000/api/recipes/nextid')
+    fetch('http://' + hn + ':4000/api/recipes/nextid')
       .then(response => response.json())
       .then(data => {
         data.map((id) => this.setState({ recipeid: id.id }))
@@ -229,7 +231,7 @@ class AddRecipe extends Component {
   }
 
   loadRecipeData() {
-    fetch('http://localhost:4000/api/recipes/'+this.props.match.params.id+'/details')
+    fetch('http://' + hn + ':4000/api/recipes/'+this.props.match.params.id+'/details')
       .then(response => response.json())
       .then(data => {
         this.setState({ recipeid: data.id,
@@ -251,7 +253,7 @@ class AddRecipe extends Component {
   }
 
   loadDistinctServices() {
-    fetch('http://localhost:4000/api/services/distinctnames')
+    fetch('http://' + hn + ':4000/api/services/distinctnames')
       .then(response => response.json())
       .then(data => {
         this.setState({ distinctServices: data })
@@ -260,7 +262,7 @@ class AddRecipe extends Component {
   }
 
   loadDistinctClusters() {
-    fetch('http://localhost:4000/api/clusters/distincttypes')
+    fetch('http://' + hn + ':4000/api/clusters/distincttypes')
       .then(response => response.json())
       .then(data => {
         this.setState({ distinctClusters: data })
@@ -269,7 +271,7 @@ class AddRecipe extends Component {
   }
 
   loadDistinctVersions() {
-    fetch('http://localhost:4000/api/clusters/distinctversions')
+    fetch('http://' + hn + ':4000/api/clusters/distinctversions')
       .then(response => response.json())
       .then(data => {
         this.setState({ distinctVersions: data })

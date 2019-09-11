@@ -12,6 +12,8 @@ import {
 } from 'reactstrap';
 import { notDeepStrictEqual } from 'assert';
 
+var hn = window.location.hostname
+
 class Recipe extends Component {
   constructor(props) {
     super(props);
@@ -38,7 +40,7 @@ class Recipe extends Component {
 
 
   loadRecipeData() {
-    fetch('http://localhost:4000/api/recipes')
+    fetch('http://' + hn + ':4000/api/recipes')
       .then(response => response.json())
       .then(data => {
         this.setState({ recipesData: data })
@@ -47,7 +49,7 @@ class Recipe extends Component {
   }
 
   loadServiceData() {
-    fetch('http://localhost:4000/api/services')
+    fetch('http://' + hn + ':4000/api/services')
       .then(response => response.json())
       .then(data => {
         this.setState({ servicesData: data })
@@ -56,7 +58,7 @@ class Recipe extends Component {
   }
 
   loadRecipeNodes() {
-    fetch('http://localhost:4000/api/recipes/nodes')
+    fetch('http://' + hn + ':4000/api/recipes/nodes')
       .then(response => response.json())
       .then(data => {
         this.setState({ recipeNodesData: data })
@@ -66,7 +68,7 @@ class Recipe extends Component {
 
 
   loadClusterData() {
-    fetch('http://localhost:4000/api/clusters')
+    fetch('http://' + hn + ':4000/api/clusters')
       .then(response => response.json())
       .then(data => {
         this.setState({ clustersData: data })

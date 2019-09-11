@@ -9,6 +9,8 @@ import { Card, CardBody, CardHeader, Progress, Row, Col, Button,
     InputGroupText, Modal, ModalBody, ModalFooter, ModalHeader
      } from 'reactstrap';
 
+var hn = window.location.hostname
+
 class Confirmation extends Component{
     constructor(props) {
         super(props);
@@ -87,7 +89,7 @@ class Confirmation extends Component{
         
         for(var key in services){
             
-            var getConfig = await fetch('http://localhost:4000/api/generator/getserviceconfig/' + services[key].id)
+            var getConfig = await fetch('http://' + hn + ':4000/api/generator/getserviceconfig/' + services[key].id)
             var config = await getConfig.json()
            
             if(!(config.toString() === "")){
@@ -105,7 +107,7 @@ class Confirmation extends Component{
 
         for(var key in services){
             
-            var getConfig = await fetch('http://localhost:4000/api/generator/mastercomponents/' + services[key].id)
+            var getConfig = await fetch('http://' + hn + ':4000/api/generator/mastercomponents/' + services[key].id)
             var config = await getConfig.json()
            
             if(!(config.toString() === "")){
@@ -124,7 +126,7 @@ class Confirmation extends Component{
 
         for(var key in services){
             
-            var getConfig = await fetch('http://localhost:4000/api/generator/workercomponents/' + services[key].id)
+            var getConfig = await fetch('http://' + hn + ':4000/api/generator/workercomponents/' + services[key].id)
             var config = await getConfig.json()
            
             if(!(config.toString() === "")){
@@ -142,7 +144,7 @@ class Confirmation extends Component{
 
         for(var key in services){
             
-            var getConfig = await fetch('http://localhost:4000/api/generator/computecomponents/' + services[key].id)
+            var getConfig = await fetch('http://' + hn + ':4000/api/generator/computecomponents/' + services[key].id)
             var config = await getConfig.json()
            
             if(!(config.toString() === "")){
@@ -246,7 +248,7 @@ class Confirmation extends Component{
          layout = layout + '"infra": { "ambariRepo": { ';
          
 
-         var retrieveClusterInfo = await fetch('http://localhost:4000/api/clusters/'+cluster_id)
+         var retrieveClusterInfo = await fetch('http://' + hn + ':4000/api/clusters/'+cluster_id)
         var clusterInfo = await retrieveClusterInfo.json()
 
 
@@ -292,7 +294,7 @@ class Confirmation extends Component{
         
         // Creating the different recipe arrays
 
-        var getNodes = await fetch('http://localhost:4000/api/recipes/nodes')
+        var getNodes = await fetch('http://' + hn + ':4000/api/recipes/nodes')
         var resNodes = await getNodes.json()
 
         var masterRecipes = '[';
@@ -379,7 +381,7 @@ class Confirmation extends Component{
 
          // 3. Registering components
 
-         var insertBundle = await fetch('http://localhost:4000/api/generator/insert/bundle', {
+         var insertBundle = await fetch('http://' + hn + ':4000/api/generator/insert/bundle', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -393,7 +395,7 @@ class Confirmation extends Component{
 
          var bundleResponse = await insertBundle.json()
 
-         var getNextBundeId= await fetch('http://localhost:4000/api/generator/maxid/')
+         var getNextBundeId= await fetch('http://' + hn + ':4000/api/generator/maxid/')
          var bundleIdJson = await getNextBundeId.json()
          var bundleId = bundleIdJson.id
         
@@ -403,7 +405,7 @@ class Confirmation extends Component{
          
 
 
-        var insertCluster = await fetch('http://localhost:4000/api/generator/insert/dependency', {
+        var insertCluster = await fetch('http://' + hn + ':4000/api/generator/insert/dependency', {
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
@@ -421,7 +423,7 @@ class Confirmation extends Component{
          // 3.2. Services
          for(var key in services){
             
-            var insertService = await fetch('http://localhost:4000/api/generator/insert/dependency', {
+            var insertService = await fetch('http://' + hn + ':4000/api/generator/insert/dependency', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -440,7 +442,7 @@ class Confirmation extends Component{
          // 3.3. Recipes
          for(var key in recipes){
             
-            var insertRecipes = await fetch('http://localhost:4000/api/generator/insert/dependency', {
+            var insertRecipes = await fetch('http://' + hn + ':4000/api/generator/insert/dependency', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -459,7 +461,7 @@ class Confirmation extends Component{
          // 3.4. MPACK
          if(clusterId == 3) {
 
-            var insertMPACK = await fetch('http://localhost:4000/api/generator/insert/dependency', {
+            var insertMPACK = await fetch('http://' + hn + ':4000/api/generator/insert/dependency', {
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
@@ -477,7 +479,7 @@ class Confirmation extends Component{
          // 3.5. Inserting contents
 
          // 3.5.1. Blueprint
-         var insertCluster = await fetch('http://localhost:4000/api/generator/insert/content', {
+         var insertCluster = await fetch('http://' + hn + ':4000/api/generator/insert/content', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -492,7 +494,7 @@ class Confirmation extends Component{
 var clusterResponse = await insertCluster.json()
 
          // 3.5.2. Layout (Nothing for now)
-         var insertCluster = await fetch('http://localhost:4000/api/generator/insert/content', {
+         var insertCluster = await fetch('http://' + hn + ':4000/api/generator/insert/content', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

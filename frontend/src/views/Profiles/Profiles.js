@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, Col, Row, Table, Button } from 'reactstrap';
 
+var hn = window.location.hostname
+
 // import profilesData from './ProfilesData'
 
 class Profiles extends Component {
@@ -11,7 +13,7 @@ class Profiles extends Component {
       this.state = { profilesData: [] }
   }
   deleteProfile = (e) => {
-      fetch('http://localhost:4000/api/profiles/del/'+e.target.id, {
+      fetch('http://' + hn + ':4000/api/profiles/del/'+e.target.id, {
         method: 'POST',
         headers: {},
         body: JSON.stringify({})
@@ -19,12 +21,12 @@ class Profiles extends Component {
       
  }
  refreshData() {
-  fetch('http://localhost:4000/api/whoville/refreshprofile')
+  fetch('http://' + hn + ':4000/api/whoville/refreshprofile')
       .then(response => response.json())
       .catch(err => console.error(this.props.url, err.toString()))
 }
   loadData() {
-      fetch('http://localhost:4000/api/profiles')
+      fetch('http://' + hn + ':4000/api/profiles')
           .then(response => response.json())
           .then(data => {
               this.setState({profilesData: data})

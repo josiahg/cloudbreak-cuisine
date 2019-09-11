@@ -9,6 +9,7 @@ import {
   Label, Nav, NavItem, NavLink, TabContent, TabPane, CardFooter
 } from 'reactstrap';
 
+var hn = window.location.hostname
 
 class User extends Component {
   constructor(props) {
@@ -20,7 +21,7 @@ class User extends Component {
   }
 
   loadData() {
-    fetch('http://localhost:4000/api/users/')
+    fetch('http://' + hn + ':4000/api/users/')
       .then(response => response.json())
       .then(data => {
         this.setState({ usersData: data })

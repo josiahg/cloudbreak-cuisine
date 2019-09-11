@@ -5,6 +5,8 @@ import {
 } from 'reactstrap';
 import { AppSwitch } from '@coreui/react'
 
+var hn = window.location.hostname
+
 //import recipesData from './RecipesData'
 
 class Recipes extends Component {
@@ -15,7 +17,7 @@ class Recipes extends Component {
     }
 
     loadData() {
-        fetch('http://localhost:4000/api/recipes')
+        fetch('http://' + hn + ':4000/api/recipes')
             .then(response => response.json())
             .then(data => {
                 this.setState({ recipesData: data })

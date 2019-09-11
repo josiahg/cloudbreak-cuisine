@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {  Card, CardBody, Col, Row, Table, Button } from 'reactstrap';
 
+var hn = window.location.hostname
 
 class Users extends Component {
 
@@ -10,7 +11,7 @@ class Users extends Component {
       this.state = { usersData: [] }
   }
   deleteProfile = (e) => {
-    fetch('http://localhost:4000/api/users/del/'+e.target.id, {
+    fetch('http://' + hn + ':4000/api/users/del/'+e.target.id, {
       method: 'POST',
       headers: {},
       body: JSON.stringify({})
@@ -19,7 +20,7 @@ class Users extends Component {
 }
 
   loadData() {
-    fetch('http://localhost:4000/api/users')
+    fetch('http://' + hn + ':4000/api/users')
         .then(response => response.json())
         .then(data => {
             this.setState({usersData: data})

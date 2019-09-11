@@ -13,6 +13,7 @@ import {
   Row, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 
+var hn = window.location.hostname
 
 function DirectorProgressClassName(state) {
   var class_name = "progress-xs my-3 bg-info"
@@ -216,7 +217,7 @@ class Dashboard extends Component {
 
 
     // First, we get a cookie
-    const initDirectorSession = await fetch('http://localhost:4000/api/director/login', {
+    const initDirectorSession = await fetch('http://' + hn + ':4000/api/director/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -232,7 +233,7 @@ class Dashboard extends Component {
   
 
      // Then we send a delete
-     const sendDelete = await fetch('http://localhost:4000/api/director/delete/cluster', {
+     const sendDelete = await fetch('http://' + hn + ':4000/api/director/delete/cluster', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -255,7 +256,7 @@ class Dashboard extends Component {
                   ['modaldelete'+e.target.name]: !this.state['modaldelete'+e.target.name]})
 
 
-      fetch('http://localhost:4000/api/whoville/deletestack/' + e.target.name)
+      fetch('http://' + hn + ':4000/api/whoville/deletestack/' + e.target.name)
           .then(response => response.json())
           .catch(err => console.error(this.props.url, err.toString()))
 this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.id]})
@@ -265,7 +266,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
   goToBundle = (e) => {
     var nameArray = e.target.id.split("-")
     
-    fetch('http://localhost:4000/api/dashboard/getbundleid', {
+    fetch('http://' + hn + ':4000/api/dashboard/getbundleid', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -288,10 +289,11 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
 
     
     // 1. Refresh whoville
-    const initWhoville = await fetch('http://localhost:4000/api/whoville/refresh')
+
+    const initWhoville = await fetch('http://' + hn + ':4000/api/whoville/refresh')
     const resWhoville = await initWhoville.json()
     
-    const initProfile = await fetch('http://localhost:4000/api/whoville/refreshprofile')
+    const initProfile = await fetch('http://' + hn + ':4000/api/whoville/refreshprofile')
     const resProfile = await initProfile.json()
     
    if(!(resProfile.toString() === "refresh successful")) {
@@ -308,11 +310,11 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
    } else {
 
     
-    const initWhovilleProfile = await fetch('http://localhost:4000/api/profiles/whoville');
+    const initWhovilleProfile = await fetch('http://' + hn + ':4000/api/profiles/whoville');
     const whovilleProfile = await initWhovilleProfile.json()
     
     // 2. Get Cloudbreak data
-    const initCBToken = await fetch('http://localhost:4000/api/dashboard/gettoken', {
+    const initCBToken = await fetch('http://' + hn + ':4000/api/dashboard/gettoken', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -327,7 +329,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
     const CBToken = await initCBToken.json()
     this.setState({cbUrl: whovilleProfile[0].cb_url.toString()});
    
-    const initClusterData = await fetch('http://localhost:4000/api/dashboard/getclusters', {
+    const initClusterData = await fetch('http://' + hn + ':4000/api/dashboard/getclusters', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -343,7 +345,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
 
     // 3. Get Director data
     
-    const initDirectorSession = await fetch('http://localhost:4000/api/director/login', {
+    const initDirectorSession = await fetch('http://' + hn + ':4000/api/director/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -358,7 +360,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
     const directorCookie = await initDirectorSession.json()
    
     // 3.1. Get all deployments
-    const getDeployments = await fetch('http://localhost:4000/api/director/list/deployments', {
+    const getDeployments = await fetch('http://' + hn + ':4000/api/director/list/deployments', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -378,7 +380,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
 
 
       // Get deployment details
-      var getDeploymentDetails= await fetch('http://localhost:4000/api/director/deployment/details', {
+      var getDeploymentDetails= await fetch('http://' + hn + ':4000/api/director/deployment/details', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -394,7 +396,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
       var deploymentDetails = await getDeploymentDetails.json()
 
       // Get all clusters
-      var getClusters = await fetch('http://localhost:4000/api/director/list/clusters', {
+      var getClusters = await fetch('http://' + hn + ':4000/api/director/list/clusters', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -411,7 +413,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
 
       // 3.3. Loop through clusters
       for (var j in directorClusters) {
-        var getClusterDetails = await fetch('http://localhost:4000/api/director/cluster/status', {
+        var getClusterDetails = await fetch('http://' + hn + ':4000/api/director/cluster/status', {
           method: 'POST',
           headers: {
             'Accept': 'application/json',

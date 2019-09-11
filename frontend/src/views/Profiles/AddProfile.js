@@ -11,7 +11,7 @@ import {
 } from 'reactstrap';
 
 
-
+var hn = window.location.hostname
 
 
 class AddProfile extends Component {
@@ -38,7 +38,7 @@ class AddProfile extends Component {
     if (this.state.baseURL && this.state.profileName && this.state.file) {
 
 
-      fetch('http://localhost:4000/api/profiles/set', {
+      fetch('http://' + hn + ':4000/api/profiles/set', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -90,7 +90,7 @@ class AddProfile extends Component {
 
 
   loadIdData() {
-    fetch('http://localhost:4000/api/profiles/nextid')
+    fetch('http://' + hn + ':4000/api/profiles/nextid')
       .then(response => response.json())
       .then(data => {
         data.map((id) => this.setState({ profileId: id.id }))
@@ -100,7 +100,7 @@ class AddProfile extends Component {
   }
 
   loadUserData() {
-    fetch('http://localhost:4000/api/users')
+    fetch('http://' + hn + ':4000/api/users')
       .then(response => response.json())
       .then(data => {
         this.setState({ userList: data })

@@ -29,7 +29,7 @@ class Library extends Component {
     }
 
     loadData() {
-        fetch('http://localhost:4000/api/library')
+        fetch('http://' + window.location.hostname + ':4000/api/library')
             .then(response => response.json())
             .then(data => {
                 this.setState({libraryData: data})

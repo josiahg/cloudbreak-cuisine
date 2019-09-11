@@ -12,6 +12,8 @@ import {
 
 //import libraryData from './LibraryData'
 
+var hn = window.location.hostname
+
 class WhovilleItem extends Component {
 
   constructor(props) {
@@ -38,7 +40,7 @@ class WhovilleItem extends Component {
 
   loadData() {
 
-    fetch('http://localhost:4000/api/whoville/item/' + this.props.match.params.id)
+    fetch('http://' + hn + ':4000/api/whoville/item/' + this.props.match.params.id)
       .then(response => response.json())
       .then(data => {
         this.setState({
@@ -50,7 +52,7 @@ class WhovilleItem extends Component {
   }
 
   loadStackData() {
-    fetch('http://localhost:4000/api/whoville/item/' + this.props.match.params.id + '/dependencies/stack')
+    fetch('http://' + hn + ':4000/api/whoville/item/' + this.props.match.params.id + '/dependencies/stack')
       .then(response => response.json())
       .then(data => {
         this.setState({ libraryItemStack: data })
@@ -58,7 +60,7 @@ class WhovilleItem extends Component {
       .catch(err => console.error(this.props.url, err.toString()))
   }
   loadRecipesData() {
-    fetch('http://localhost:4000/api/whoville/item/' + this.props.match.params.id + '/dependencies/recipes')
+    fetch('http://' + hn + ':4000/api/whoville/item/' + this.props.match.params.id + '/dependencies/recipes')
       .then(response => response.json())
       .then(data => {
         this.setState({ libraryItemRecipes: data })
@@ -67,7 +69,7 @@ class WhovilleItem extends Component {
   }
 
   loadInputData() {
-    fetch('http://localhost:4000/api/whoville/item/' + this.props.match.params.id + '/dependencies/input')
+    fetch('http://' + hn + ':4000/api/whoville/item/' + this.props.match.params.id + '/dependencies/input')
       .then(response => response.json())
       .then(data => {
         this.setState({ libraryItemInput: data })
@@ -75,7 +77,7 @@ class WhovilleItem extends Component {
       .catch(err => console.error(this.props.url, err.toString()))
   }
   loadBundleContent() {
-    fetch('http://localhost:4000/api/whoville/item/' + this.props.match.params.id + '/contents')
+    fetch('http://' + hn + ':4000/api/whoville/item/' + this.props.match.params.id + '/contents')
       .then(response => response.json())
       .then(data => {
         this.setState({ libraryItemContent: data })
@@ -104,7 +106,7 @@ class WhovilleItem extends Component {
       confirm: !this.state.confirm,
       primary: !this.state.primary
     });
-     fetch('http://localhost:4000/api/whoville/deploy/' + e.target.id)
+     fetch('http://' + hn + ':4000/api/whoville/deploy/' + e.target.id)
        .then(response => response.json())
        .catch(err => console.error(this.props.url, err.toString()))
 

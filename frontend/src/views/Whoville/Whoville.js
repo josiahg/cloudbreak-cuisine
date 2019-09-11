@@ -4,6 +4,8 @@ import Widget02 from './Widget02';
 
 //import libraryData from './LibraryData'
 
+var hn = window.location.hostname
+
 function LibraryItemCol(props) {
     const libraryItem = props.libraryItem
     const itemLink = `#/whoville/${libraryItem.id}`
@@ -28,14 +30,14 @@ class Whoville extends Component {
         this.state = { libraryData: [] }
     }
     initData() {
-        fetch('http://localhost:4000/api/whoville/refresh')
+        fetch('http://' + hn + ':4000/api/whoville/refresh')
             .then(response => response.json())
             .catch(err => console.error(this.props.url, err.toString()))
     }
 
 
     loadData() {
-        fetch('http://localhost:4000/api/whoville')
+        fetch('http://' + hn + ':4000/api/whoville')
             .then(response => response.json())
             .then(data => {
                 this.setState({libraryData: data})

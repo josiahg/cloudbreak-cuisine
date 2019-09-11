@@ -4,6 +4,8 @@ import {
 } from 'reactstrap';
 import { AppSwitch } from '@coreui/react'
 
+var hn = window.location.hostname
+
 //import servicesData from './ServicesData'
 
 class Services extends Component {
@@ -14,7 +16,7 @@ class Services extends Component {
     }
 
     loadData() {
-        fetch('http://localhost:4000/api/services')
+        fetch('http://' + hn + ':4000/api/services')
             .then(response => response.json())
             .then(data => {
                 this.setState({ servicesData: data })
@@ -23,7 +25,7 @@ class Services extends Component {
     }
 
     loadDependencyData() {
-        fetch('http://localhost:4000/api/services/dependencies')
+        fetch('http://' + hn + ':4000/api/services/dependencies')
             .then(response => response.json())
             .then(data => {
                 this.setState({ dependencyData: data })

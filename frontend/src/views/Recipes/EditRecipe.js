@@ -13,6 +13,8 @@ import {
 import recipesData from './RecipesData'
 import servicesListData from './ServicesListData'
 
+var hn = window.location.hostname
+
 class EditRecipe extends Component {
   constructor(props) {
     super(props);
@@ -60,10 +62,10 @@ class EditRecipe extends Component {
 
   deleteRecipe = async event => {
     
-    const deleteRecipeNodes = await fetch('http://localhost:4000/api/recipes/delete/nodes/' + this.state.recipeid)
+    const deleteRecipeNodes = await fetch('http://' + hn + ':4000/api/recipes/delete/nodes/' + this.state.recipeid)
     const respDeleteRecipeNodes = await deleteRecipeNodes.json()
 
-    const deleteRecipe = await fetch('http://localhost:4000/api/recipes/delete/' + this.state.recipeid)
+    const deleteRecipe = await fetch('http://' + hn + ':4000/api/recipes/delete/' + this.state.recipeid)
     const respDeleteRecipe = await deleteRecipe.json()
 
 
@@ -74,7 +76,7 @@ class EditRecipe extends Component {
 
   saveRecipe = async event => {
 
-    const checkcompatibility = await fetch('http://localhost:4000/api/recipes/checkcompatibility', {
+    const checkcompatibility = await fetch('http://' + hn + ':4000/api/recipes/checkcompatibility', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -104,7 +106,7 @@ class EditRecipe extends Component {
   insertRecipe = async event => {
 
 
-    const updRecipe = await fetch('http://localhost:4000/api/recipes/update_recipe', {
+    const updRecipe = await fetch('http://' + hn + ':4000/api/recipes/update_recipe', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -129,11 +131,11 @@ class EditRecipe extends Component {
     })
     const respUpd = updRecipe.json()
     
-    const deleteRecipeNodes = await fetch('http://localhost:4000/api/recipes/delete/nodes/' + this.state.recipeid)
+    const deleteRecipeNodes = await fetch('http://' + hn + ':4000/api/recipes/delete/nodes/' + this.state.recipeid)
     const respDeleteRecipeNodes = await deleteRecipeNodes.json()
 
     if(this.state.appliesToMaster){
-      const insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+      const insertNode = await fetch('http://' + hn + ':4000/api/recipes/insert_recipe/nodes', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -148,7 +150,7 @@ class EditRecipe extends Component {
     }
 
     if(this.state.appliesToWorker){
-      const insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+      const insertNode = await fetch('http://' + hn + ':4000/api/recipes/insert_recipe/nodes', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -163,7 +165,7 @@ class EditRecipe extends Component {
     }
 
     if(this.state.appliesToCompute){
-      const insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+      const insertNode = await fetch('http://' + hn + ':4000/api/recipes/insert_recipe/nodes', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -178,7 +180,7 @@ class EditRecipe extends Component {
     }
 
     if(this.state.appliesToCDSW){
-      var insertNode = await fetch('http://localhost:4000/api/recipes/insert_recipe/nodes', {
+      var insertNode = await fetch('http://' + hn + ':4000/api/recipes/insert_recipe/nodes', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -246,7 +248,7 @@ class EditRecipe extends Component {
 
 
   loadRecipeData() {
-    fetch('http://localhost:4000/api/recipes/'+this.props.match.params.id+'/details')
+    fetch('http://' + hn + ':4000/api/recipes/'+this.props.match.params.id+'/details')
       .then(response => response.json())
       .then(data => {
         this.setState({ recipeid: data.id,
@@ -268,7 +270,7 @@ class EditRecipe extends Component {
   }
 
   loadDistinctServices() {
-    fetch('http://localhost:4000/api/services/distinctnames')
+    fetch('http://' + hn + ':4000/api/services/distinctnames')
       .then(response => response.json())
       .then(data => {
         this.setState({ distinctServices: data })
@@ -277,7 +279,7 @@ class EditRecipe extends Component {
   }
 
   loadDistinctClusters() {
-    fetch('http://localhost:4000/api/clusters/distincttypes')
+    fetch('http://' + hn + ':4000/api/clusters/distincttypes')
       .then(response => response.json())
       .then(data => {
         this.setState({ distinctClusters: data })
@@ -286,7 +288,7 @@ class EditRecipe extends Component {
   }
 
   loadDistinctVersions() {
-    fetch('http://localhost:4000/api/clusters/distinctversions')
+    fetch('http://' + hn + ':4000/api/clusters/distinctversions')
       .then(response => response.json())
       .then(data => {
         this.setState({ distinctVersions: data })
@@ -294,7 +296,7 @@ class EditRecipe extends Component {
       .catch(err => console.error(this.props.url, err.toString()))
   }
   loadRecipeNodes() {
-    fetch('http://localhost:4000/api/recipes/nodes/'+this.props.match.params.id)
+    fetch('http://' + hn + ':4000/api/recipes/nodes/'+this.props.match.params.id)
       .then(response => response.json())
       .then(data => {
           if(this.containsNode(data, "MASTER")) this.setState({ appliesToMaster: true });

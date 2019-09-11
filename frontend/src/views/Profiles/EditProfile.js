@@ -11,6 +11,8 @@ import {
   Nav, NavItem, NavLink, TabContent, TabPane
 } from 'reactstrap';
 
+var hn = window.location.hostname
+
 //import profilesData from './ProfilesData'
 
 class EditProfile extends Component {
@@ -36,7 +38,7 @@ class EditProfile extends Component {
 
 
   loadData() {
-    fetch('http://localhost:4000/api/profiles/')
+    fetch('http://' + hn + ':4000/api/profiles/')
       .then(response => response.json())
       .then(data => {
         data.map((profile) => this.setState({
@@ -54,7 +56,7 @@ class EditProfile extends Component {
   }
 
   loadUserData() {
-    fetch('http://localhost:4000/api/users')
+    fetch('http://' + hn + ':4000/api/users')
       .then(response => response.json())
       .then(data => {
         this.setState({ userList: data })
@@ -68,7 +70,7 @@ class EditProfile extends Component {
   }
 
   deleteProfile = (e) => {
-    fetch('http://localhost:4000/api/profiles/del/' + e.target.id, {
+    fetch('http://' + hn + ':4000/api/profiles/del/' + e.target.id, {
       method: 'POST',
       headers: {},
       body: JSON.stringify({})

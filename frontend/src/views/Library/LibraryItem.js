@@ -10,6 +10,8 @@ import {
   Label, Button, Nav, NavItem, NavLink, Row, TabContent, TabPane, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 
+var hn = window.location.hostname
+
 //import libraryData from './LibraryData'
 
 class LibraryItem extends Component {
@@ -83,7 +85,7 @@ class LibraryItem extends Component {
 
   
 
-    const initFolder = await fetch('http://localhost:4000/api/library/item/download/create/folder', {
+    const initFolder = await fetch('http://' + hn + ':4000/api/library/item/download/create/folder', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -101,7 +103,7 @@ class LibraryItem extends Component {
     // Then we add the files in folder
 
     // BLUEPRINT & LAYOUT
-    const retrieveContents = await fetch('http://localhost:4000/api/library/item/'+this.state.libraryItem.id+'/contents');
+    const retrieveContents = await fetch('http://' + hn + ':4000/api/library/item/'+this.state.libraryItem.id+'/contents');
     const respContents = await retrieveContents.json()
 
     var bpContent ='';
@@ -117,7 +119,7 @@ class LibraryItem extends Component {
       }
     }
 
-    const createBP = await fetch('http://localhost:4000/api/library/item/download/create/file', {
+    const createBP = await fetch('http://' + hn + ':4000/api/library/item/download/create/file', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -133,7 +135,7 @@ class LibraryItem extends Component {
    
 
 
-    const createLY = await fetch('http://localhost:4000/api/library/item/download/create/file', {
+    const createLY = await fetch('http://' + hn + ':4000/api/library/item/download/create/file', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -148,14 +150,14 @@ class LibraryItem extends Component {
 
   
     // RECIPES
-    const retrieveRecipes = await fetch('http://localhost:4000/api/library/item/'+this.state.libraryItem.id+'/dependencies/recipes');
+    const retrieveRecipes = await fetch('http://' + hn + ':4000/api/library/item/'+this.state.libraryItem.id+'/dependencies/recipes');
     const respRecipes = await retrieveRecipes.json()
 
     for(var key in respRecipes){
       var recipeFileName = "/" + this.recipePrefix(respRecipes[key].recipe_type) + (respRecipes[key].recipename.toString()).replace(/ /g, "-").toLowerCase() + ".sh";
       var recipeContent = respRecipes[key].content;
 
-      var createRP = await fetch('http://localhost:4000/api/library/item/download/create/file', {
+      var createRP = await fetch('http://' + hn + ':4000/api/library/item/download/create/file', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -174,7 +176,7 @@ class LibraryItem extends Component {
     // Finally we create the Zip and update the link
 
     var zipFileName = 'cuisine-bundle-' + (this.state.libraryItem.name.toString()).replace(/ /g, "-").toLowerCase()  + '.zip'
-    // var createZIP = await fetch('http://localhost:4000/api/library/item/download/create/zip', {
+    // var createZIP = await fetch('http://' + hn + ':4000/api/library/item/download/create/zip', {
     //   method: 'POST',
     //   headers: {
     //     'Accept': 'application/json',
@@ -187,7 +189,7 @@ class LibraryItem extends Component {
     // })
     // const resZIP = await createZIP.json()
 
-    this.setState({downloadLink: 'http://localhost:4000/api/library/item/download/zip?folderName=' + folder + '&fileName='+zipFileName,
+    this.setState({downloadLink: 'http://' + hn + ':4000/api/library/item/download/zip?folderName=' + folder + '&fileName='+zipFileName,
                   downloadReady: !this.state.downloadReady})
   }
 
@@ -196,16 +198,16 @@ class LibraryItem extends Component {
                   saving: !this.state.saving,
                   destination: event.target.name})
     if (event.target.name.toString() === 'Cloudbreak') {
-    const initWhoville = await fetch('http://localhost:4000/api/whoville/refresh')
+    const initWhoville = await fetch('http://' + hn + ':4000/api/whoville/refresh')
     const resWhoville = await initWhoville.json()
-    const initProfile = await fetch('http://localhost:4000/api/whoville/refreshprofile')
+    const initProfile = await fetch('http://' + hn + ':4000/api/whoville/refreshprofile')
     const resProfile = await initProfile.json()
     
-    const initWhovilleProfile = await fetch('http://localhost:4000/api/profiles/whoville');
+    const initWhovilleProfile = await fetch('http://' + hn + ':4000/api/profiles/whoville');
     const whovilleProfile = await initWhovilleProfile.json()
 
     this.setState({cb_url: 'http://'+whovilleProfile[0].cb_url.toString()})
-    const initCBToken = await fetch('http://localhost:4000/api/dashboard/gettoken', {
+    const initCBToken = await fetch('http://' + hn + ':4000/api/dashboard/gettoken', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -225,7 +227,7 @@ class LibraryItem extends Component {
       return content.content
     })
     var base64BP=Base64.encode(Base64.decode(content))
-    const CBpushBundle = await fetch('http://localhost:4000/api/cloudbreak/push/bundle', {
+    const CBpushBundle = await fetch('http://' + hn + ':4000/api/cloudbreak/push/bundle', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -265,7 +267,7 @@ class LibraryItem extends Component {
         prefix='prte-';
       }
      
-      var delRecipe = await fetch('http://localhost:4000/api/cloudbreak/delete/recipe', {
+      var delRecipe = await fetch('http://' + hn + ':4000/api/cloudbreak/delete/recipe', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -281,7 +283,7 @@ class LibraryItem extends Component {
     var delCBRecipe = await delRecipe.json()
     
 
-      var CBpushRecipe = await fetch('http://localhost:4000/api/cloudbreak/push/recipe', {
+      var CBpushRecipe = await fetch('http://' + hn + ':4000/api/cloudbreak/push/recipe', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -310,9 +312,9 @@ class LibraryItem extends Component {
 
 
     //PUSHING TO WHOVILLE
-    const initWhoville = await fetch('http://localhost:4000/api/whoville/refresh')
+    const initWhoville = await fetch('http://' + hn + ':4000/api/whoville/refresh')
     const resWhoville = await initWhoville.json()
-    const initProfile = await fetch('http://localhost:4000/api/whoville/refreshprofile')
+    const initProfile = await fetch('http://' + hn + ':4000/api/whoville/refreshprofile')
     const resProfile = await initProfile.json()
 
     // GENERATING DATA
@@ -329,7 +331,7 @@ class LibraryItem extends Component {
     // RECIPES
 
     whovilleDataPush = whovilleDataPush + '"recipes": [';
-    var getNodes = await fetch('http://localhost:4000/api/recipes/nodes')
+    var getNodes = await fetch('http://' + hn + ':4000/api/recipes/nodes')
     var resNodes = await getNodes.json()
 
     this.state.libraryItemRecipes.map((recipe) => {
@@ -372,14 +374,14 @@ class LibraryItem extends Component {
     
 
     var id=event.target.id;
-    var delContent = await fetch('http://localhost:4000/api/generator/delete/bundle_contents/' + id)
+    var delContent = await fetch('http://' + hn + ':4000/api/generator/delete/bundle_contents/' + id)
     var confirmC = await delContent.json()
     
-    var delDeps = await fetch('http://localhost:4000/api/generator/delete/bundle_dependencies/' + id)
+    var delDeps = await fetch('http://' + hn + ':4000/api/generator/delete/bundle_dependencies/' + id)
     var confirmD = await delDeps.json()
 
 
-    var delB = await fetch('http://localhost:4000/api/generator/delete/bundle/' +id)
+    var delB = await fetch('http://' + hn + ':4000/api/generator/delete/bundle/' +id)
     var confirmB = await delB.json()
 
     this.setState({delete: !this.state.delete,
@@ -388,7 +390,7 @@ class LibraryItem extends Component {
   }
 
   loadData() {
-    fetch('http://localhost:4000/api/library/item/' + this.props.match.params.id)
+    fetch('http://' + hn + ':4000/api/library/item/' + this.props.match.params.id)
       .then(response => response.json())
       .then(data => {
         this.setState({ libraryItem: data })
@@ -397,7 +399,7 @@ class LibraryItem extends Component {
   }
 
   loadServicesData() {
-    fetch('http://localhost:4000/api/library/item/' + this.props.match.params.id + '/dependencies/services')
+    fetch('http://' + hn + ':4000/api/library/item/' + this.props.match.params.id + '/dependencies/services')
       .then(response => response.json())
       .then(data => {
         this.setState({ libraryItemServices: data })
@@ -406,7 +408,7 @@ class LibraryItem extends Component {
   }
 
   loadRecipesData() {
-    fetch('http://localhost:4000/api/library/item/' + this.props.match.params.id + '/dependencies/recipes')
+    fetch('http://' + hn + ':4000/api/library/item/' + this.props.match.params.id + '/dependencies/recipes')
       .then(response => response.json())
       .then(data => {
         this.setState({ libraryItemRecipes: data })
@@ -415,7 +417,7 @@ class LibraryItem extends Component {
   }
 
   loadClusterData() {
-    fetch('http://localhost:4000/api/library/item/' + this.props.match.params.id + '/dependencies/cluster')
+    fetch('http://' + hn + ':4000/api/library/item/' + this.props.match.params.id + '/dependencies/cluster')
       .then(response => response.json())
       .then(data => {
         this.setState({ libraryItemCluster: data })
@@ -424,7 +426,7 @@ class LibraryItem extends Component {
   }
 
   loadBundleContent() {
-    fetch('http://localhost:4000/api/library/item/' + this.props.match.params.id + '/contents')
+    fetch('http://' + hn + ':4000/api/library/item/' + this.props.match.params.id + '/contents')
       .then(response => response.json())
       .then(data => {
         this.setState({ libraryItemContent: data })

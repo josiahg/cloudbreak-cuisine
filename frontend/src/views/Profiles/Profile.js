@@ -9,6 +9,8 @@ import {
   Label, Nav, NavItem, NavLink, TabContent, TabPane, CardFooter
 } from 'reactstrap';
 
+var hn = window.location.hostname
+
 class Profile extends Component {
   constructor(props) {
     super(props)
@@ -32,7 +34,7 @@ class Profile extends Component {
 
 
   loadData() {
-    fetch('http://localhost:4000/api/profiles/')
+    fetch('http://' + hn + ':4000/api/profiles/')
       .then(response => response.json())
       .then(data => {
         this.setState({ profilesData: data })
@@ -40,7 +42,7 @@ class Profile extends Component {
       .catch(err => console.error(this.props.url, err.toString()))
   }
   loadWhovilleData() {
-    fetch('http://localhost:4000/api/profiles/whoville')
+    fetch('http://' + hn + ':4000/api/profiles/whoville')
       .then(response => response.json())
       .then(data => {
         this.setState({ whovilleData: data })
@@ -50,7 +52,7 @@ class Profile extends Component {
 
 
   loadProfileTagData() {
-    fetch('http://localhost:4000/api/profiles/tags/')
+    fetch('http://' + hn + ':4000/api/profiles/tags/')
       .then(response => response.json())
       .then(data => {
         this.setState({ profilesTagsData: data })
@@ -60,7 +62,7 @@ class Profile extends Component {
 
 
   loadProfileCredentialData() {
-    fetch('http://localhost:4000/api/profiles/credentials/')
+    fetch('http://' + hn + ':4000/api/profiles/credentials/')
       .then(response => response.json())
       .then(data => {
         this.setState({ profilesCredentialsData: data })
