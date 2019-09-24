@@ -244,7 +244,9 @@ router.route('/refreshProfile').get((req, res) => {
                 
                         } else {
 
-                        res.json("no CB data!");
+                                    res.json("no CB data!");
+                
+                        
                     }});
     
     
