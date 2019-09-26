@@ -43,6 +43,8 @@ router.route('/deletestack/:name').get((req, res) => {
 
 
 
+
+
 router.route('/refresh').get((req, res) => {
     request('http://whoville:5000/api/whoville/v1/getMenu', function (error, response, body) {
         if(body){
@@ -336,6 +338,15 @@ router.route('/deploy/:id').get((req,res) => {
         .catch(error => {
             console.log('ERROR:', error)
         })
+})
+
+
+router.route('/purge').get((req,res) => {
+
+            request('http://whoville:5000/api/whoville/v1/purge', function(error,response,body) {
+                res.json(body)
+            })
+        
 })
 
 module.exports = router;

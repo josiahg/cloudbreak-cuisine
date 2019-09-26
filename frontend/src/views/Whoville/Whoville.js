@@ -65,10 +65,6 @@ class Whoville extends Component {
                           <Button size="lg" color="warning" onClick={this.refreshPage.bind(this)}>
                                           <i className="fa fa-refresh"></i>&nbsp;Refresh
                               </Button>
-                              &nbsp;
-                              <Button size="lg" color="danger" disabled>
-                                          <i className="fa fa-bomb"></i>&nbsp;Nuke
-                              </Button>
                           </div>
                           </Col>
           </Row>

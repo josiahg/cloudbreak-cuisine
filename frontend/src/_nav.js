@@ -15,7 +15,7 @@ export default {
       class: ''             // optional class names space delimited list for title item ex: "text-center"
     },
     {
-      name: 'Local',
+      name: 'CDP Bundles',
       url: '/library',
       icon: 'fa fa-book',
     },
@@ -33,7 +33,7 @@ export default {
       },
     },
     {
-      name: 'Bundles',
+      name: 'Bundle Generator',
       url: '/generator',
       icon: 'icon-magic-wand',
     },

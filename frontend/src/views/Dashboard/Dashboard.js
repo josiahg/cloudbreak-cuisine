@@ -200,7 +200,9 @@ class Dashboard extends Component {
       directorClusterData: [],
       errorLoading: false,
       profileError: false,
-      cbError: false
+      cbError: false,
+      confirmPurge: false,
+      purging: false
     };
   }
 
@@ -251,6 +253,19 @@ class Dashboard extends Component {
     this.setState({['dirRefPostDelete'+cluster]: false})
   }
   
+  purgeCloudbreak = (e) => {
+    this.setState({
+      confirmPurge: !this.state.confirmPurge,
+      purging: !this.state.purging
+    });
+     fetch('http://' + hn + ':4000/api/whoville/purge/' + e.target.id)
+       .then(response => response.json())
+       .catch(err => console.error(this.props.url, err.toString()))
+
+   
+  }
+
+
   deleteStack = (e) => {
     this.setState({['modal'+e.target.name]: !this.state['modal'+e.target.name],
                   ['modaldelete'+e.target.name]: !this.state['modaldelete'+e.target.name]})
@@ -481,18 +496,40 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
                 <i className={isLoading ? 'fa fa-refresh fa-spin' : 'fa fa-refresh'}></i>&nbsp;Refresh
                               </Button>
               &nbsp;
-                              <Button size="lg" color="danger" disabled>
-                <i className="fa fa-bomb"></i>&nbsp;Nuke
+                              <Button size="lg" color="danger" onClick={() => { this.setState({ confirmPurge: !this.state.confirmPurge }); }} disabled={isLoading}>
+                              <i class="fa fa-recycle"></i>&nbsp;Purge
                               </Button>
                               &nbsp;
-              <Button size="lg" color="success" href={"https://" + this.state.cbUrl +"/sl"} target="_blank">
+              <Button size="lg" color="success" href={"https://" + this.state.cbUrl +"/sl"} target="_blank" disabled={isLoading}>
                 <i className='fa fa-external-link'></i>&nbsp;Cloudbreak
                               </Button>
                               &nbsp;
-                              <Button size="lg" color="success" href={"https://" + this.state.cbUrl +":7189/"} target="_blank">
+                              <Button size="lg" color="success" href={"https://" + this.state.cbUrl +":7189/"} target="_blank" disabled={isLoading}>
                 <i className='fa fa-external-link'></i>&nbsp;Director
                               </Button>
             </div>
+
+            <Modal isOpen={this.state.confirmPurge} toggle={() => { this.setState({ confirmPurge: !this.state.confirmPurge }); }}
+                       className={'modal-danger ' + this.props.className}>
+                  <ModalHeader toggle={() => { this.setState({ confirmPurge: !this.state.confirmPurge}); }}>Purge Cloudbreak</ModalHeader>
+                  <ModalBody>
+                  <h3>Are you sure you want to purge Cloudbreak?</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                  <Button color='secondary' onClick={() => { this.setState({ confirmPurge: !this.state.confirmPurge}); }}><i className="icon-ban"></i>&nbsp; Cancel</Button>
+                  <Button color='danger' id={this.state.bundleId} onClick={this.purgeCloudbreak.bind(this)}><i className="fa fa-recycle"></i>&nbsp; Purge</Button>
+                   </ModalFooter>
+                </Modal>
+                <Modal isOpen={this.state.purging} toggle={this.purging}
+                       className={'modal-primary ' + this.props.className}>
+                  {/* <ModalHeader toggle={this.togglePrimary}>Deploying to Cloudbreak</ModalHeader> */}
+                  <ModalBody>
+                  <h3>Cloudbreak is being purged ... <i className='fa fa-spinner fa-spin'></i></h3>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="primary" onClick={this.refreshPage.bind(this)}>Back to Dashboard <i className="fa fa-long-arrow-right"></i></Button>
+                  </ModalFooter>
+                </Modal>
           </Col>
         </Row>
         <Row>
@@ -537,7 +574,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
                   </ModalFooter>
                 </Modal>
 
-                  <Modal isOpen={this.state['modal'+dashboardItem.name]} toggle={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}
+                <Modal isOpen={this.state['modal'+dashboardItem.name]} toggle={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}
                        className={'modal-'+((theStatus.toString() === 'AVAILABLE' || theStatus.toString() === 'CREATE_FAILED') ? 'danger ' : 'warning ')+' ' + this.props.className}>
                   <ModalHeader toggle={() => { this.setState({ ['modal'+dashboardItem.name]: !this.state['modal'+dashboardItem.name] }); }}>Deleting Stack</ModalHeader>
                   <ModalBody>
@@ -548,6 +585,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
                     <Button name={dashboardItem.name}  id={dashboardItem.id} color={(theStatus.toString() === 'AVAILABLE' || theStatus.toString() === 'CREATE_FAILED') ? 'danger' : 'warning'} onClick={this.deleteStack.bind(this)} disabled={!(theStatus.toString() === 'AVAILABLE' || theStatus.toString() === 'CREATE_FAILED') }><i className="fa fa-remove"></i>&nbsp; Terminate Stack</Button>
                   </ModalFooter>
                 </Modal>
+
                 </CardBody>
                 <div className="chart-wrapper" style={{ height: '20px', margin: '20px' }}>
                   <Progress className={ProgressClassName(theStatus)} color='white' value={dashboardItem.progress} value={ProgressValue(theStatus)} />
