@@ -611,7 +611,7 @@ this.setState({['modaldelete'+e.target.id]: !this.state['modaldelete'+e.target.i
                       <DropdownMenu right>
                         {/* <DropdownItem><i className="icon-eyeglass"></i>&nbsp;Details</DropdownItem> */}
                         <DropdownItem id={dashboardItem[2].clusterName} onClick={this.goToBundle.bind(this)}><i className="fa fa-building-o"></i>&nbsp;Whoville Bundle</DropdownItem>
-                        <DropdownItem href={'https://' + dashboardItem[0].managerInstance.properties.publicIpAddress + ':7183'} target="_blank"><i className="fa fa-external-link"></i>&nbsp;Go to Manager</DropdownItem>
+                        <DropdownItem href={'https://' + dashboardItem[0].managerInstance.properties.publicIpAddress + ':7180'} target="_blank"><i className="fa fa-external-link"></i>&nbsp;Go to Manager</DropdownItem>
                         <DropdownItem name={dashboardItem[2].clusterName} id={theStatus} onClick={() => { this.setState({ ['modal'+dashboardItem[2].clusterName]: !this.state['modal'+dashboardItem[2].clusterName] }); }}><i className="fa fa-remove"></i>&nbsp;Terminate</DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
