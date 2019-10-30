@@ -23,11 +23,9 @@
     "babel-watch": "^2.0.7"
   },
   "dependencies": {
-    "archiver": "^3.0.0",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-zip": "^2.0.1",
-    "mongoose": "^5.3.13",
     "nodejs-base64-encode": "0.0.2",
     "pg-promise": "^8.5.3",
     "request": "^2.88.0",
